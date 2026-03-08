@@ -3,6 +3,7 @@ import HeroSection from "@/components/HeroSection";
 import AboutSection from "@/components/AboutSection";
 import SkillsSection from "@/components/SkillsSection";
 import ProjectsSection from "@/components/ProjectsSection";
+import AIStackSection from "@/components/AIStackSection";
 import AIWorkflowSection from "@/components/AIWorkflowSection";
 import FreelanceSection from "@/components/FreelanceSection";
 

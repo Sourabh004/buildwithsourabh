@@ -50,8 +50,10 @@ const HeroSection = () => {
                 View Projects <ArrowDown className="ml-1 h-4 w-4" />
               </a>
             </Button>
-            <Button variant="hero-outline" size="lg">
-              <Download className="mr-1 h-4 w-4" /> Download Resume
+            <Button variant="hero-outline" size="lg" asChild>
+              <a href="/resume">
+                <Download className="mr-1 h-4 w-4" /> Download Resume
+              </a>
             </Button>
             <Button variant="glass" size="lg" asChild>
               <a href="#contact">

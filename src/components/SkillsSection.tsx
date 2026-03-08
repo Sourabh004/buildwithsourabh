@@ -25,6 +25,47 @@ const categories = [
   },
 ];
 
+const SkillCard = ({ cat, i }: { cat: typeof categories[0]; i: number }) => {
+  const cardRef = useRef(null);
+  const isInView = useInView(cardRef, { once: true, margin: "-60px" });
+
+  return (
+    <motion.div
+      ref={cardRef}
+      initial={{ opacity: 0, y: 40, rotateX: 10 }}
+      animate={isInView ? { opacity: 1, y: 0, rotateX: 0 } : {}}
+      transition={{ duration: 0.6, delay: i * 0.12, type: "spring", stiffness: 100 }}
+      whileHover={{ y: -6, scale: 1.02 }}
+      className="glass-card group p-6 transition-all duration-300 hover:glow-primary"
+    >
+      <div className="mb-4 flex items-center gap-3">
+        <motion.div
+          initial={{ scale: 0, rotate: -90 }}
+          animate={isInView ? { scale: 1, rotate: 0 } : {}}
+          transition={{ delay: i * 0.12 + 0.3, type: "spring", stiffness: 200 }}
+          className="flex h-12 w-12 items-center justify-center rounded-xl bg-primary/10 transition-colors group-hover:bg-primary/20"
+        >
+          <cat.icon className="h-6 w-6 text-primary" />
+        </motion.div>
+        <h3 className="font-display text-xl font-semibold">{cat.title}</h3>
+      </div>
+      <div className="flex flex-wrap gap-2">
+        {cat.skills.map((skill, si) => (
+          <motion.span
+            key={skill}
+            initial={{ opacity: 0, scale: 0.8 }}
+            animate={isInView ? { opacity: 1, scale: 1 } : {}}
+            transition={{ delay: i * 0.12 + 0.4 + si * 0.05 }}
+            className="rounded-full border border-border bg-secondary/50 px-3 py-1 text-xs text-muted-foreground transition-colors hover:border-primary/30 hover:text-foreground"
+          >
+            {skill}
+          </motion.span>
+        ))}
+      </div>
+    </motion.div>
+  );
+};
+
 const SkillsSection = () => {
   const ref = useRef(null);
   const isInView = useInView(ref, { once: true, margin: "-100px" });
@@ -45,30 +86,7 @@ const SkillsSection = () => {
 
         <div className="grid gap-6 md:grid-cols-2">
           {categories.map((cat, i) => (
-            <motion.div
-              key={i}
-              initial={{ opacity: 0, y: 30 }}
-              animate={isInView ? { opacity: 1, y: 0 } : {}}
-              transition={{ duration: 0.5, delay: i * 0.1 }}
-              className="glass-card group p-6 transition-all duration-300 hover:glow-primary"
-            >
-              <div className="mb-4 flex items-center gap-3">
-                <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-primary/10 transition-colors group-hover:bg-primary/20">
-                  <cat.icon className="h-6 w-6 text-primary" />
-                </div>
-                <h3 className="font-display text-xl font-semibold">{cat.title}</h3>
-              </div>
-              <div className="flex flex-wrap gap-2">
-                {cat.skills.map((skill) => (
-                  <span
-                    key={skill}
-                    className="rounded-full border border-border bg-secondary/50 px-3 py-1 text-xs text-muted-foreground transition-colors hover:border-primary/30 hover:text-foreground"
-                  >
-                    {skill}
-                  </span>
-                ))}
-              </div>
-            </motion.div>
+            <SkillCard key={i} cat={cat} i={i} />
           ))}
         </div>
       </div>

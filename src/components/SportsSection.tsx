@@ -42,21 +42,34 @@ const SportsSection = () => {
         </motion.div>
 
         <div className="grid gap-6 md:grid-cols-3">
-          {cards.map((card, i) => (
-            <motion.div
-              key={i}
-              initial={{ opacity: 0, y: 30 }}
-              animate={isInView ? { opacity: 1, y: 0 } : {}}
-              transition={{ duration: 0.5, delay: i * 0.12 }}
-              className="glass-card group p-6 text-center transition-all duration-300 hover:glow-primary"
-            >
-              <div className="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-2xl bg-primary/10 transition-colors group-hover:bg-primary/20">
-                <card.icon className="h-7 w-7 text-primary" />
-              </div>
-              <h3 className="mb-2 font-display text-lg font-semibold">{card.title}</h3>
-              <p className="text-sm leading-relaxed text-muted-foreground">{card.description}</p>
-            </motion.div>
-          ))}
+          {cards.map((card, i) => {
+            const CardContent = () => {
+              const cardRef = useRef(null);
+              const cardInView = useInView(cardRef, { once: true, margin: "-60px" });
+              return (
+                <motion.div
+                  ref={cardRef}
+                  initial={{ opacity: 0, y: 50, scale: 0.9 }}
+                  animate={cardInView ? { opacity: 1, y: 0, scale: 1 } : {}}
+                  transition={{ duration: 0.5, delay: i * 0.15, type: "spring", stiffness: 100 }}
+                  whileHover={{ y: -8, scale: 1.03 }}
+                  className="glass-card group p-6 text-center transition-all duration-300 hover:glow-primary"
+                >
+                  <motion.div
+                    initial={{ scale: 0 }}
+                    animate={cardInView ? { scale: 1 } : {}}
+                    transition={{ delay: i * 0.15 + 0.2, type: "spring", stiffness: 200 }}
+                    className="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-2xl bg-primary/10 transition-colors group-hover:bg-primary/20"
+                  >
+                    <card.icon className="h-7 w-7 text-primary" />
+                  </motion.div>
+                  <h3 className="mb-2 font-display text-lg font-semibold">{card.title}</h3>
+                  <p className="text-sm leading-relaxed text-muted-foreground">{card.description}</p>
+                </motion.div>
+              );
+            };
+            return <CardContent key={i} />;
+          })}
         </div>
       </div>
     </section>

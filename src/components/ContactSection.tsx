@@ -15,6 +15,12 @@ const ContactSection = () => {
     setForm({ name: "", email: "", message: "" });
   };
 
+  const socialLinks = [
+    { href: "mailto:sourabh@example.com", icon: Mail, label: "Email", value: "sourabh@example.com" },
+    { href: "https://linkedin.com", icon: Linkedin, label: "LinkedIn", value: "Connect on LinkedIn" },
+    { href: "https://instagram.com", icon: Instagram, label: "Instagram", value: "Follow on Instagram" },
+  ];
+
   return (
     <section id="contact" className="section-padding" ref={ref}>
       <div className="mx-auto max-w-4xl">
@@ -31,46 +37,40 @@ const ContactSection = () => {
 
         <div className="grid gap-10 md:grid-cols-2">
           {/* Social links */}
-          <motion.div
-            initial={{ opacity: 0, x: -30 }}
-            animate={isInView ? { opacity: 1, x: 0 } : {}}
-            transition={{ duration: 0.5, delay: 0.1 }}
-            className="flex flex-col justify-center gap-6"
-          >
-            <a href="mailto:sourabh@example.com" className="glass-card flex items-center gap-4 p-5 transition-all hover:glow-primary">
-              <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-primary/10">
-                <Mail className="h-5 w-5 text-primary" />
-              </div>
-              <div>
-                <p className="text-xs text-muted-foreground">Email</p>
-                <p className="font-display text-sm font-medium">sourabh@example.com</p>
-              </div>
-            </a>
-            <a href="https://linkedin.com" target="_blank" rel="noopener noreferrer" className="glass-card flex items-center gap-4 p-5 transition-all hover:glow-primary">
-              <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-primary/10">
-                <Linkedin className="h-5 w-5 text-primary" />
-              </div>
-              <div>
-                <p className="text-xs text-muted-foreground">LinkedIn</p>
-                <p className="font-display text-sm font-medium">Connect on LinkedIn</p>
-              </div>
-            </a>
-            <a href="https://instagram.com" target="_blank" rel="noopener noreferrer" className="glass-card flex items-center gap-4 p-5 transition-all hover:glow-primary">
-              <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-primary/10">
-                <Instagram className="h-5 w-5 text-primary" />
-              </div>
-              <div>
-                <p className="text-xs text-muted-foreground">Instagram</p>
-                <p className="font-display text-sm font-medium">Follow on Instagram</p>
-              </div>
-            </a>
-          </motion.div>
+          <div className="flex flex-col justify-center gap-6">
+            {socialLinks.map((link, i) => (
+              <motion.a
+                key={link.label}
+                href={link.href}
+                target={link.label !== "Email" ? "_blank" : undefined}
+                rel={link.label !== "Email" ? "noopener noreferrer" : undefined}
+                initial={{ opacity: 0, x: -40, scale: 0.95 }}
+                animate={isInView ? { opacity: 1, x: 0, scale: 1 } : {}}
+                transition={{ duration: 0.5, delay: 0.1 + i * 0.12, type: "spring", stiffness: 100 }}
+                whileHover={{ x: 6, scale: 1.02 }}
+                className="glass-card flex items-center gap-4 p-5 transition-all hover:glow-primary"
+              >
+                <motion.div
+                  initial={{ rotate: -20, scale: 0 }}
+                  animate={isInView ? { rotate: 0, scale: 1 } : {}}
+                  transition={{ delay: 0.3 + i * 0.12, type: "spring", stiffness: 200 }}
+                  className="flex h-12 w-12 items-center justify-center rounded-xl bg-primary/10"
+                >
+                  <link.icon className="h-5 w-5 text-primary" />
+                </motion.div>
+                <div>
+                  <p className="text-xs text-muted-foreground">{link.label}</p>
+                  <p className="font-display text-sm font-medium">{link.value}</p>
+                </div>
+              </motion.a>
+            ))}
+          </div>
 
           {/* Contact form */}
           <motion.form
-            initial={{ opacity: 0, x: 30 }}
-            animate={isInView ? { opacity: 1, x: 0 } : {}}
-            transition={{ duration: 0.5, delay: 0.2 }}
+            initial={{ opacity: 0, x: 40, scale: 0.95 }}
+            animate={isInView ? { opacity: 1, x: 0, scale: 1 } : {}}
+            transition={{ duration: 0.6, delay: 0.2, type: "spring", stiffness: 100 }}
             onSubmit={handleSubmit}
             className="glass-card space-y-4 p-6"
           >

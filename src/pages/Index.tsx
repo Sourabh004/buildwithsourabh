@@ -22,6 +22,7 @@ const Index = () => {
       <SkillsSection />
       <AIStackSection />
       <ProjectsSection />
+      <WorkShowcaseSection />
       <AIWorkflowSection />
       <FreelanceSection />
       

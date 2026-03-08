@@ -1,15 +1,26 @@
-import { motion } from "framer-motion";
+import { motion, useScroll, useTransform } from "framer-motion";
+import { useRef } from "react";
 import { Button } from "@/components/ui/button";
 import { ArrowDown, Download, Mail } from "lucide-react";
 import ParticleBackground from "./ParticleBackground";
 
 const HeroSection = () => {
+  const ref = useRef(null);
+  const { scrollYProgress } = useScroll({
+    target: ref,
+    offset: ["start start", "end start"],
+  });
+
+  const y = useTransform(scrollYProgress, [0, 1], [0, 200]);
+  const opacity = useTransform(scrollYProgress, [0, 0.8], [1, 0]);
+  const scale = useTransform(scrollYProgress, [0, 0.8], [1, 0.9]);
+
   return (
-    <section className="relative flex min-h-screen items-center justify-center overflow-hidden section-padding pt-24">
+    <section ref={ref} className="relative flex min-h-screen items-center justify-center overflow-hidden section-padding pt-24">
       <ParticleBackground />
       <div className="tech-grid absolute inset-0 opacity-30" />
-      
-      <div className="relative z-10 mx-auto max-w-4xl text-center">
+
+      <motion.div style={{ y, opacity, scale }} className="relative z-10 mx-auto max-w-4xl text-center">
         <motion.div
           initial={{ opacity: 0, y: 40 }}
           animate={{ opacity: 1, y: 0 }}
@@ -29,15 +40,25 @@ const HeroSection = () => {
             <span className="text-gradient">Sourabh</span>
           </h1>
 
-          <p className="mx-auto mt-6 max-w-2xl font-display text-lg text-muted-foreground md:text-xl">
+          <motion.p
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 0.3, duration: 0.6 }}
+            className="mx-auto mt-6 max-w-2xl font-display text-lg text-muted-foreground md:text-xl"
+          >
             Data Analyst • AI Workflow Builder • Community Builder
-          </p>
+          </motion.p>
 
-          <p className="mx-auto mt-4 max-w-xl text-sm leading-relaxed text-muted-foreground/80 md:text-base">
+          <motion.p
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 0.45, duration: 0.6 }}
+            className="mx-auto mt-4 max-w-xl text-sm leading-relaxed text-muted-foreground/80 md:text-base"
+          >
             I design systems that turn data into insights and automate workflows using AI.
             My work focuses on data analytics, AI automation, and building communities
             around technology, sports, and gaming.
-          </p>
+          </motion.p>
 
           <motion.div
             initial={{ opacity: 0, y: 20 }}
@@ -62,11 +83,27 @@ const HeroSection = () => {
             </Button>
           </motion.div>
         </motion.div>
-      </div>
+      </motion.div>
 
       {/* Gradient orbs */}
       <div className="pointer-events-none absolute -top-40 left-1/4 h-[500px] w-[500px] rounded-full bg-primary/10 blur-[120px] animate-glow-pulse" />
       <div className="pointer-events-none absolute -bottom-40 right-1/4 h-[400px] w-[400px] rounded-full bg-accent/10 blur-[120px] animate-glow-pulse" style={{ animationDelay: "1.5s" }} />
+
+      {/* Scroll indicator */}
+      <motion.div
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ delay: 1.2 }}
+        className="absolute bottom-8 left-1/2 -translate-x-1/2"
+      >
+        <motion.div
+          animate={{ y: [0, 10, 0] }}
+          transition={{ duration: 1.5, repeat: Infinity, ease: "easeInOut" }}
+          className="flex h-10 w-6 items-start justify-center rounded-full border-2 border-muted-foreground/30 pt-2"
+        >
+          <motion.div className="h-2 w-1 rounded-full bg-primary" />
+        </motion.div>
+      </motion.div>
     </section>
   );
 };

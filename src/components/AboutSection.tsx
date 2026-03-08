@@ -1,5 +1,4 @@
-import { motion } from "framer-motion";
-import { useInView } from "framer-motion";
+import { motion, useInView, useScroll, useTransform } from "framer-motion";
 import { useRef } from "react";
 import { GraduationCap, Briefcase, BarChart3, Bot, Gamepad2 } from "lucide-react";
 
@@ -31,9 +30,55 @@ const timeline = [
   },
 ];
 
+const TimelineItem = ({ item, i }: { item: typeof timeline[0]; i: number }) => {
+  const itemRef = useRef(null);
+  const isInView = useInView(itemRef, { once: true, margin: "-50px" });
+
+  return (
+    <motion.div
+      ref={itemRef}
+      initial={{ opacity: 0, x: i % 2 === 0 ? -60 : 60, scale: 0.9 }}
+      animate={isInView ? { opacity: 1, x: 0, scale: 1 } : {}}
+      transition={{ duration: 0.6, delay: 0.1, type: "spring", stiffness: 100 }}
+      className={`relative flex flex-col md:flex-row ${i % 2 === 0 ? "md:flex-row" : "md:flex-row-reverse"} items-start gap-8`}
+    >
+      <div className={`flex-1 ${i % 2 === 0 ? "md:text-right" : "md:text-left"}`}>
+        <motion.div
+          whileHover={{ scale: 1.02, y: -4 }}
+          transition={{ type: "spring", stiffness: 300 }}
+          className="glass-card p-6"
+        >
+          <div className={`mb-3 flex items-center gap-3 ${i % 2 === 0 ? "md:justify-end" : ""}`}>
+            <motion.div
+              initial={{ rotate: -20, scale: 0 }}
+              animate={isInView ? { rotate: 0, scale: 1 } : {}}
+              transition={{ delay: 0.3, type: "spring", stiffness: 200 }}
+              className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-primary/10"
+            >
+              <item.icon className="h-5 w-5 text-primary" />
+            </motion.div>
+            <h3 className="font-display text-lg font-semibold">{item.title}</h3>
+          </div>
+          <p className="text-sm leading-relaxed text-muted-foreground">{item.description}</p>
+        </motion.div>
+      </div>
+      {/* Center dot */}
+      <motion.div
+        initial={{ scale: 0 }}
+        animate={isInView ? { scale: 1 } : {}}
+        transition={{ delay: 0.2, type: "spring", stiffness: 300 }}
+        className="absolute left-6 top-8 hidden h-3 w-3 -translate-x-1/2 rounded-full bg-primary md:left-1/2 md:block"
+      />
+      <div className="hidden flex-1 md:block" />
+    </motion.div>
+  );
+};
+
 const AboutSection = () => {
   const ref = useRef(null);
   const isInView = useInView(ref, { once: true, margin: "-100px" });
+  const { scrollYProgress } = useScroll({ target: ref, offset: ["start end", "end start"] });
+  const lineHeight = useTransform(scrollYProgress, [0, 1], ["0%", "100%"]);
 
   return (
     <section id="about" className="section-padding" ref={ref}>
@@ -53,33 +98,16 @@ const AboutSection = () => {
         </motion.div>
 
         <div className="relative">
-          {/* Timeline line */}
-          <div className="absolute left-6 top-0 hidden h-full w-px bg-border md:left-1/2 md:block" />
+          {/* Animated timeline line */}
+          <div className="absolute left-6 top-0 hidden h-full w-px bg-border/30 md:left-1/2 md:block" />
+          <motion.div
+            style={{ height: lineHeight }}
+            className="absolute left-6 top-0 hidden w-px bg-primary md:left-1/2 md:block"
+          />
 
           <div className="space-y-12">
             {timeline.map((item, i) => (
-              <motion.div
-                key={i}
-                initial={{ opacity: 0, x: i % 2 === 0 ? -40 : 40 }}
-                animate={isInView ? { opacity: 1, x: 0 } : {}}
-                transition={{ duration: 0.5, delay: i * 0.15 }}
-                className={`relative flex flex-col md:flex-row ${i % 2 === 0 ? "md:flex-row" : "md:flex-row-reverse"} items-start gap-8`}
-              >
-                <div className={`flex-1 ${i % 2 === 0 ? "md:text-right" : "md:text-left"}`}>
-                  <div className="glass-card p-6">
-                    <div className={`mb-3 flex items-center gap-3 ${i % 2 === 0 ? "md:justify-end" : ""}`}>
-                      <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-primary/10">
-                        <item.icon className="h-5 w-5 text-primary" />
-                      </div>
-                      <h3 className="font-display text-lg font-semibold">{item.title}</h3>
-                    </div>
-                    <p className="text-sm leading-relaxed text-muted-foreground">{item.description}</p>
-                  </div>
-                </div>
-                {/* Center dot */}
-                <div className="absolute left-6 top-8 hidden h-3 w-3 -translate-x-1/2 rounded-full bg-primary md:left-1/2 md:block" />
-                <div className="hidden flex-1 md:block" />
-              </motion.div>
+              <TimelineItem key={i} item={item} i={i} />
             ))}
           </div>
         </div>

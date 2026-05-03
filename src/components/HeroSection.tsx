@@ -72,7 +72,7 @@ const HeroSection = () => {
               </a>
             </Button>
             <Button variant="hero-outline" size="lg" asChild>
-              <a href="/resume">
+              <a href="/SOURABH_K_Resume.pdf" download target="_blank" rel="noopener noreferrer">
                 <Download className="mr-1 h-4 w-4" /> Download Resume
               </a>
             </Button>

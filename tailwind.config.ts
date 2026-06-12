@@ -14,7 +14,8 @@ export default {
     },
     extend: {
       fontFamily: {
-        display: ['"Space Grotesk"', 'sans-serif'],
+        display: ['"Archivo Black"', '"Space Grotesk"', 'sans-serif'],
+        grotesk: ['"Space Grotesk"', 'sans-serif'],
         body: ['Inter', 'sans-serif'],
       },
       colors: {
@@ -99,7 +100,9 @@ export default {
         "fade-up": "fade-up 0.6s ease-out forwards",
         "fade-in": "fade-in 0.5s ease-out forwards",
         "slide-in-right": "slide-in-right 0.4s ease-out",
-        "glow-pulse": "glow-pulse 3s ease-in-out infinite",
+        "glow-pulse": "glow-pulse 4s ease-in-out infinite",
+        "marquee": "marquee 28s linear infinite",
+        "marquee-reverse": "marquee-reverse 28s linear infinite",
       },
     },
   },

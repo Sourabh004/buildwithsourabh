@@ -1,92 +1,91 @@
 import { motion, useInView } from "framer-motion";
-import { useRef, useState } from "react";
-import { Bot, BarChart3, Trophy, ChevronDown, ChevronUp, Handshake, ArrowRight } from "lucide-react";
-import { Button } from "@/components/ui/button";
+import { useRef } from "react";
+import { Bot, BarChart3, Trophy, ArrowUpRight } from "lucide-react";
 
 const services = [
   {
+    num: "01",
     icon: Bot,
-    title: "AI Workflow Automation",
-    description: "Design and build automation systems using n8n and AI tools.",
-    examples: [
-      "AI-powered sales follow-up workflows",
-      "Lead qualification automation",
-      "Automated reporting and analytics workflows",
-      "AI content generation pipelines",
-      "CRM and API workflow automation",
+    title: "AI WORKFLOW AUTOMATION",
+    tagline: "Build once. Run forever.",
+    color: "#F77F1A",
+    deliverables: [
+      "n8n workflow design & build",
+      "AI-powered sales follow-up",
+      "Lead qualification systems",
+      "Automated reporting pipelines",
+      "CRM & API integrations",
     ],
   },
   {
+    num: "02",
     icon: BarChart3,
-    title: "Data Analytics",
-    description: "Helping teams turn data into insights.",
-    examples: [
-      "Dashboard creation (Power BI / Looker Studio)",
-      "Data analysis and reporting",
-      "User behavior and engagement analysis",
-      "Growth analytics",
+    title: "DATA ANALYTICS",
+    tagline: "Turn noise into signal.",
+    color: "#019EA5",
+    deliverables: [
+      "Power BI / Looker Studio dashboards",
+      "SQL data analysis & modeling",
+      "User behavior analysis",
+      "Growth & engagement reporting",
+      "BigQuery data warehousing",
     ],
   },
   {
+    num: "03",
     icon: Trophy,
-    title: "Sports & Esports Content Strategy",
-    description: "Helping sports and gaming brands grow their online presence.",
-    examples: [
-      "Content planning for sports and esports pages",
-      "Social media strategy",
-      "Viral content ideas for Instagram and short-form video",
-      "Community engagement strategies",
-      "Analytics for sports and gaming audiences",
+    title: "SPORTS & ESPORTS CONTENT",
+    tagline: "Grow your community.",
+    color: "#FF7A9C",
+    deliverables: [
+      "Content strategy for sports brands",
+      "Viral short-form video concepts",
+      "Instagram & TikTok planning",
+      "Audience analytics",
+      "Community engagement playbooks",
     ],
   },
 ];
 
-const ServiceCard = ({ service, index, isInView }: { service: typeof services[0]; index: number; isInView: boolean }) => {
-  const [expanded, setExpanded] = useState(false);
+const ServiceRow = ({ svc, i }: { svc: (typeof services)[0]; i: number }) => {
+  const rowRef = useRef(null);
+  const isInView = useInView(rowRef, { once: true, margin: "-60px" });
+  const Icon = svc.icon;
 
   return (
     <motion.div
-      initial={{ opacity: 0, y: 30 }}
+      ref={rowRef}
+      initial={{ opacity: 0, y: 50 }}
       animate={isInView ? { opacity: 1, y: 0 } : {}}
-      transition={{ duration: 0.5, delay: index * 0.12 }}
-      className="glass-card group cursor-pointer overflow-hidden transition-all duration-300 hover:glow-primary"
-      onClick={() => setExpanded(!expanded)}
+      transition={{ duration: 0.65, delay: i * 0.12, ease: [0.22, 1, 0.36, 1] }}
+      className="group relative overflow-hidden border-2 border-foreground"
+      style={{ boxShadow: "6px 6px 0 hsl(var(--foreground))", marginBottom: i < services.length - 1 ? 16 : 0 }}
     >
-      <div className="p-6">
-        <div className="mb-4 flex items-start justify-between">
-          <div className="flex items-center gap-3">
-            <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-primary/10 transition-colors group-hover:bg-primary/20">
-              <service.icon className="h-6 w-6 text-primary" />
-            </div>
-            <div>
-              <h3 className="font-display text-lg font-semibold">{service.title}</h3>
-              <p className="mt-0.5 text-sm text-muted-foreground">{service.description}</p>
-            </div>
-          </div>
-          {expanded ? (
-            <ChevronUp className="mt-1 h-5 w-5 shrink-0 text-muted-foreground" />
-          ) : (
-            <ChevronDown className="mt-1 h-5 w-5 shrink-0 text-muted-foreground" />
-          )}
-        </div>
+      {/* Color band top */}
+      <div className="flex items-center gap-4 px-6 py-4" style={{ background: svc.color }}>
+        <span className="font-display text-sm font-bold uppercase text-foreground/70">{svc.num}</span>
+        <span className="flex h-8 w-8 items-center justify-center rounded-full border-2 border-foreground bg-background">
+          <Icon className="h-4 w-4" style={{ color: svc.color }} />
+        </span>
+        <h3 className="font-display text-xl font-bold uppercase leading-none tracking-tight md:text-2xl">
+          {svc.title}
+        </h3>
+        <span className="ml-auto font-grotesk text-xs font-bold italic">{svc.tagline}</span>
+      </div>
 
-        {expanded && (
-          <motion.div
-            initial={{ opacity: 0, height: 0 }}
-            animate={{ opacity: 1, height: "auto" }}
-            className="border-t border-border pt-4"
+      {/* Deliverables grid */}
+      <div className="grid gap-0 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5">
+        {svc.deliverables.map((item, di) => (
+          <div
+            key={di}
+            className="border-r-2 border-t-2 border-foreground px-4 py-4 last:border-r-0 transition-colors duration-200 hover:bg-foreground hover:text-background"
           >
-            <p className="mb-2 text-xs font-semibold uppercase tracking-wider text-primary">What I can help with</p>
-            <ul className="space-y-2">
-              {service.examples.map((ex, i) => (
-                <li key={i} className="flex items-start gap-2 text-sm text-muted-foreground">
-                  <span className="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-primary/60" />
-                  {ex}
-                </li>
-              ))}
-            </ul>
-          </motion.div>
-        )}
+            <span className="block font-grotesk text-[10px] font-bold uppercase tracking-widest text-muted-foreground mb-1">
+              {String(di + 1).padStart(2, "0")}
+            </span>
+            <span className="font-grotesk text-xs font-medium leading-snug">{item}</span>
+          </div>
+        ))}
       </div>
     </motion.div>
   );
@@ -97,45 +96,59 @@ const FreelanceSection = () => {
   const isInView = useInView(ref, { once: true, margin: "-100px" });
 
   return (
-    <section id="freelance" className="section-padding relative overflow-hidden" ref={ref}>
-      <div className="pointer-events-none absolute inset-0 bg-[var(--gradient-hero)]" />
+    <section id="freelance" className="section-padding" ref={ref}>
+      <div className="mx-auto max-w-6xl">
+        {/* Header */}
+        <div className="mb-12 flex flex-wrap items-end justify-between gap-6">
+          <div>
+            <motion.span
+              initial={{ opacity: 0 }}
+              animate={isInView ? { opacity: 1 } : {}}
+              className="section-label"
+            >
+              <span className="inline-block h-2 w-2 rotate-45 bg-primary" />
+              Open for Work
+            </motion.span>
 
-      <div className="relative mx-auto max-w-6xl">
-        <motion.div
-          initial={{ opacity: 0, y: 30 }}
-          animate={isInView ? { opacity: 1, y: 0 } : {}}
-          transition={{ duration: 0.6 }}
-          className="mb-6 text-center"
-        >
-          <div className="mb-4 inline-flex items-center gap-2 rounded-full border border-primary/30 bg-primary/10 px-4 py-1.5 text-xs font-medium text-primary">
-            <Handshake className="h-3.5 w-3.5" /> Open for Work
+            <div className="overflow-hidden">
+              <motion.h2
+                initial={{ y: "100%" }}
+                animate={isInView ? { y: "0%" } : {}}
+                transition={{ duration: 0.8, delay: 0.1, ease: [0.22, 1, 0.36, 1] }}
+                className="font-display text-4xl uppercase leading-tight md:text-6xl"
+              >
+                FREELANCE &amp; <span className="text-primary">COLLAB</span>
+              </motion.h2>
+            </div>
           </div>
-          <h2 className="font-display text-3xl font-bold md:text-5xl">
-            Open for Freelance & <span className="text-gradient">Collaborations</span>
-          </h2>
-          <p className="mx-auto mt-4 max-w-2xl text-sm leading-relaxed text-muted-foreground md:text-base">
-            I'm open to freelance projects and collaborations where I can help businesses automate workflows with AI, analyze data for better decision-making, and build engaging content strategies for sports and esports communities.
-          </p>
-        </motion.div>
 
-        <div className="mt-12 grid gap-6 md:grid-cols-3">
-          {services.map((service, i) => (
-            <ServiceCard key={i} service={service} index={i} isInView={isInView} />
+          <motion.a
+            href="#contact"
+            initial={{ opacity: 0, x: 20 }}
+            animate={isInView ? { opacity: 1, x: 0 } : {}}
+            transition={{ delay: 0.5 }}
+            className="btn-brutal flex items-center gap-2"
+          >
+            LET'S WORK TOGETHER <ArrowUpRight className="h-4 w-4" />
+          </motion.a>
+        </div>
+
+        {/* Service rows */}
+        <div>
+          {services.map((svc, i) => (
+            <ServiceRow key={svc.num} svc={svc} i={i} />
           ))}
         </div>
 
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={isInView ? { opacity: 1, y: 0 } : {}}
-          transition={{ duration: 0.5, delay: 0.5 }}
-          className="mt-12 text-center"
+        {/* Bottom note */}
+        <motion.p
+          initial={{ opacity: 0 }}
+          animate={isInView ? { opacity: 1 } : {}}
+          transition={{ delay: 0.8 }}
+          className="mt-8 text-center font-grotesk text-xs font-medium text-muted-foreground"
         >
-          <Button variant="hero" size="lg" asChild>
-            <a href="#contact">
-              Let's Work Together <ArrowRight className="ml-2 h-4 w-4" />
-            </a>
-          </Button>
-        </motion.div>
+          Available for remote contracts, part-time retainers, or one-off projects. DM to discuss scope.
+        </motion.p>
       </div>
     </section>
   );

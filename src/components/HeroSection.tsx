@@ -1,107 +1,166 @@
 import { motion, useScroll, useTransform } from "framer-motion";
 import { useRef } from "react";
-import { Button } from "@/components/ui/button";
 import { ArrowDown, Download, Mail } from "lucide-react";
-import ParticleBackground from "./ParticleBackground";
+import SpinningBadge from "./SpinningBadge";
+
+const lineReveal = {
+  hidden: { y: "110%" },
+  visible: (delay: number) => ({
+    y: "0%",
+    transition: { duration: 0.9, delay, ease: [0.22, 1, 0.36, 1] },
+  }),
+};
 
 const HeroSection = () => {
   const ref = useRef(null);
-  const { scrollYProgress } = useScroll({
-    target: ref,
-    offset: ["start start", "end start"],
-  });
-
-  const y = useTransform(scrollYProgress, [0, 1], [0, 200]);
-  const opacity = useTransform(scrollYProgress, [0, 0.8], [1, 0]);
-  const scale = useTransform(scrollYProgress, [0, 0.8], [1, 0.9]);
+  const { scrollYProgress } = useScroll({ target: ref, offset: ["start start", "end start"] });
+  const y = useTransform(scrollYProgress, [0, 1], [0, 160]);
+  const opacity = useTransform(scrollYProgress, [0, 0.85], [1, 0]);
+  const badgeRotate = useTransform(scrollYProgress, [0, 1], [0, 180]);
 
   return (
-    <section ref={ref} className="relative flex min-h-screen items-center justify-center overflow-hidden section-padding pt-24">
-      <ParticleBackground />
-      <div className="tech-grid absolute inset-0 opacity-30" />
-
-      <motion.div style={{ y, opacity, scale }} className="relative z-10 mx-auto max-w-4xl text-center">
+    <section
+      ref={ref}
+      className="relative flex min-h-screen items-center overflow-hidden section-padding pt-32"
+    >
+      <motion.div style={{ y, opacity }} className="relative z-10 mx-auto w-full max-w-6xl">
+        {/* Eyebrow */}
         <motion.div
-          initial={{ opacity: 0, y: 40 }}
+          initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8 }}
+          transition={{ duration: 0.6, delay: 0.15 }}
+          className="mb-8 inline-flex items-center gap-3 rounded-full border-2 border-foreground bg-card px-5 py-2"
+          style={{ boxShadow: "3px 3px 0 hsl(var(--foreground))" }}
         >
-          <motion.div
-            initial={{ scale: 0.9, opacity: 0 }}
-            animate={{ scale: 1, opacity: 1 }}
-            transition={{ delay: 0.2, duration: 0.5 }}
-            className="mb-6 inline-block rounded-full border border-primary/30 bg-primary/10 px-4 py-1.5 text-xs font-medium text-primary"
-          >
-            Available for opportunities
-          </motion.div>
+          <span className="h-2.5 w-2.5 animate-pulse rounded-full bg-primary" />
+          <span className="text-xs font-bold uppercase tracking-[0.2em]">Available for opportunities</span>
+        </motion.div>
 
-          <h1 className="font-display text-5xl font-bold leading-tight tracking-tight md:text-7xl lg:text-8xl">
-            <span className="text-foreground">Hi, I'm </span>
-            <span className="text-gradient">Sourabh</span>
-          </h1>
+        {/* Headline */}
+        <h1 className="font-display uppercase leading-[0.92] tracking-tight">
+          <div className="overflow-hidden">
+            <motion.span
+              custom={0.25}
+              variants={lineReveal}
+              initial="hidden"
+              animate="visible"
+              className="block text-[clamp(2.6rem,8.5vw,7.5rem)]"
+            >
+              Making Data
+            </motion.span>
+          </div>
+          <div className="overflow-hidden">
+            <motion.span
+              custom={0.4}
+              variants={lineReveal}
+              initial="hidden"
+              animate="visible"
+              className="block text-[clamp(2.6rem,8.5vw,7.5rem)]"
+            >
+              <span className="text-primary">Go Boom</span> — I'm
+            </motion.span>
+          </div>
+          <div className="overflow-hidden">
+            <motion.span
+              custom={0.55}
+              variants={lineReveal}
+              initial="hidden"
+              animate="visible"
+              className="block text-[clamp(2.6rem,8.5vw,7.5rem)]"
+            >
+              Sourabh<span className="text-primary">.</span>
+            </motion.span>
+          </div>
+        </h1>
 
-          <motion.p
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ delay: 0.3, duration: 0.6 }}
-            className="mx-auto mt-6 max-w-2xl font-display text-lg text-muted-foreground md:text-xl"
-          >
-            Data Analyst • AI Workflow Builder • Community Builder
-          </motion.p>
+        {/* Descriptor row */}
+        <motion.div
+          initial={{ opacity: 0, y: 24 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6, delay: 0.9 }}
+          className="mt-8 flex flex-wrap items-center gap-3"
+        >
+          {["Data Analyst", "AI Workflow Builder", "Community Builder"].map((tag, i) => {
+            const colors = ["#FCAD50", "#019EA5", "#FF7A9C"];
+            return (
+              <span
+                key={tag}
+                className="rounded-full border-2 border-foreground px-4 py-1.5 text-xs font-bold uppercase tracking-wide"
+                style={{ background: colors[i], boxShadow: "2px 2px 0 hsl(var(--foreground))" }}
+              >
+                {tag}
+              </span>
+            );
+          })}
+        </motion.div>
 
-          <motion.p
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ delay: 0.45, duration: 0.6 }}
-            className="mx-auto mt-4 max-w-xl text-sm leading-relaxed text-muted-foreground/80 md:text-base"
-          >
-            I design systems that turn data into insights and automate workflows using AI.
-            My work focuses on data analytics, AI automation, and building communities
-            around technology, sports, and gaming.
-          </motion.p>
+        {/* Sub-copy */}
+        <motion.p
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6, delay: 1.05 }}
+          className="mt-6 max-w-lg font-grotesk text-base leading-relaxed text-muted-foreground md:text-lg"
+        >
+          I design systems that turn data into insights and automate workflows with AI —
+          analytics, automation, and communities around tech, sports & gaming.
+        </motion.p>
 
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.6, duration: 0.5 }}
-            className="mt-10 flex flex-wrap items-center justify-center gap-4"
+        {/* CTAs */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5, delay: 1.2 }}
+          className="mt-10 flex flex-wrap items-center gap-4"
+        >
+          <a href="#projects" className="btn-brutal cursor-hover">
+            View Projects <ArrowDown className="h-4 w-4" />
+          </a>
+          <a
+            href="/SOURABH_K_Resume.pdf"
+            download
+            target="_blank"
+            rel="noopener noreferrer"
+            className="btn-brutal-ghost cursor-hover"
           >
-            <Button variant="hero" size="lg" asChild>
-              <a href="#projects">
-                View Projects <ArrowDown className="ml-1 h-4 w-4" />
-              </a>
-            </Button>
-            <Button variant="hero-outline" size="lg" asChild>
-              <a href="/SOURABH_K_Resume.pdf" download target="_blank" rel="noopener noreferrer">
-                <Download className="mr-1 h-4 w-4" /> Download Resume
-              </a>
-            </Button>
-            <Button variant="glass" size="lg" asChild>
-              <a href="#contact">
-                <Mail className="mr-1 h-4 w-4" /> Contact Me
-              </a>
-            </Button>
-          </motion.div>
+            <Download className="h-4 w-4" /> Resume
+          </a>
+          <a
+            href="#contact"
+            className="cursor-hover inline-flex items-center gap-2 text-sm font-bold uppercase tracking-wide underline decoration-primary decoration-2 underline-offset-4 transition-colors hover:text-primary"
+          >
+            <Mail className="h-4 w-4" /> Say hello
+          </a>
         </motion.div>
       </motion.div>
 
-      {/* Gradient orbs */}
-      <div className="pointer-events-none absolute -top-40 left-1/4 h-[500px] w-[500px] rounded-full bg-primary/10 blur-[120px] animate-glow-pulse" />
-      <div className="pointer-events-none absolute -bottom-40 right-1/4 h-[400px] w-[400px] rounded-full bg-accent/10 blur-[120px] animate-glow-pulse" style={{ animationDelay: "1.5s" }} />
+      {/* Spinning badge — rotates extra with scroll */}
+      <motion.div
+        initial={{ opacity: 0, scale: 0 }}
+        animate={{ opacity: 1, scale: 1 }}
+        transition={{ delay: 1.1, type: "spring", stiffness: 150 }}
+        style={{ rotate: badgeRotate }}
+        className="absolute bottom-16 right-8 z-10 md:bottom-24 md:right-24"
+      >
+        <SpinningBadge />
+      </motion.div>
+
+      {/* Decorative shapes */}
+      <span className="pointer-events-none absolute left-[8%] top-[18%] hidden animate-spin-slow font-display text-5xl text-primary lg:block">✱</span>
+      <span className="pointer-events-none absolute right-[14%] top-[22%] hidden h-6 w-6 rotate-12 border-2 border-foreground bg-accent lg:block" style={{ boxShadow: "3px 3px 0 hsl(var(--foreground))" }} />
 
       {/* Scroll indicator */}
       <motion.div
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
-        transition={{ delay: 1.2 }}
-        className="absolute bottom-8 left-1/2 -translate-x-1/2"
+        transition={{ delay: 1.7 }}
+        className="absolute bottom-10 left-1/2 hidden -translate-x-1/2 flex-col items-center gap-2 md:flex"
       >
+        <span className="text-[10px] font-bold uppercase tracking-[0.25em] text-muted-foreground">Scroll</span>
         <motion.div
-          animate={{ y: [0, 10, 0] }}
-          transition={{ duration: 1.5, repeat: Infinity, ease: "easeInOut" }}
-          className="flex h-10 w-6 items-start justify-center rounded-full border-2 border-muted-foreground/30 pt-2"
+          animate={{ y: [0, 8, 0] }}
+          transition={{ duration: 1.6, repeat: Infinity, ease: "easeInOut" }}
         >
-          <motion.div className="h-2 w-1 rounded-full bg-primary" />
+          <ArrowDown className="h-5 w-5 text-foreground" />
         </motion.div>
       </motion.div>
     </section>

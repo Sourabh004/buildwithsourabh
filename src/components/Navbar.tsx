@@ -1,12 +1,12 @@
 import { useState } from "react";
+import { Link } from "react-router-dom";
 import { motion, AnimatePresence, useScroll, useMotionValueEvent } from "framer-motion";
 import { Menu, X } from "lucide-react";
 
 const navLinks = [
   { label: "About", href: "#about" },
-  { label: "Skills", href: "#skills" },
-  { label: "Projects", href: "#projects" },
-  { label: "AI Workflows", href: "#ai-workflows" },
+  { label: "Tech", href: "/tech" },
+  { label: "Gaming", href: "/gaming" },
 ];
 
 const Navbar = () => {
@@ -46,17 +46,30 @@ const Navbar = () => {
           {/* Desktop links */}
           <div className="hidden items-center gap-8 md:flex">
             {navLinks.map((link, i) => (
-              <motion.a
+              <motion.span
                 key={link.href}
-                href={link.href}
                 initial={{ opacity: 0, y: -8 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.08 * i + 0.3, duration: 0.4 }}
-                className="cursor-hover group relative text-xs font-bold uppercase tracking-[0.15em] text-foreground/70 transition-colors hover:text-foreground"
               >
-                {link.label}
-                <span className="absolute -bottom-1 left-0 h-0.5 w-0 bg-primary transition-all duration-300 group-hover:w-full" />
-              </motion.a>
+                {link.href.startsWith("/") ? (
+                  <Link
+                    to={link.href}
+                    className="cursor-hover group relative text-xs font-bold uppercase tracking-[0.15em] text-foreground/70 transition-colors hover:text-foreground"
+                  >
+                    {link.label}
+                    <span className="absolute -bottom-1 left-0 h-0.5 w-0 bg-primary transition-all duration-300 group-hover:w-full" />
+                  </Link>
+                ) : (
+                  <a
+                    href={link.href}
+                    className="cursor-hover group relative text-xs font-bold uppercase tracking-[0.15em] text-foreground/70 transition-colors hover:text-foreground"
+                  >
+                    {link.label}
+                    <span className="absolute -bottom-1 left-0 h-0.5 w-0 bg-primary transition-all duration-300 group-hover:w-full" />
+                  </a>
+                )}
+              </motion.span>
             ))}
             <motion.a
               href="#contact"
@@ -91,17 +104,30 @@ const Navbar = () => {
             >
               <div className="flex flex-col gap-5 px-6 py-7">
                 {[...navLinks, { label: "Contact", href: "#contact" }].map((link, i) => (
-                  <motion.a
+                  <motion.span
                     key={link.href}
-                    href={link.href}
-                    onClick={() => setIsOpen(false)}
                     initial={{ opacity: 0, x: -16 }}
                     animate={{ opacity: 1, x: 0 }}
                     transition={{ delay: 0.05 * i }}
-                    className="cursor-hover font-display text-lg uppercase tracking-wide text-foreground transition-colors hover:text-primary"
                   >
-                    {link.label}
-                  </motion.a>
+                    {link.href.startsWith("/") ? (
+                      <Link
+                        to={link.href}
+                        onClick={() => setIsOpen(false)}
+                        className="cursor-hover font-display text-lg uppercase tracking-wide text-foreground transition-colors hover:text-primary"
+                      >
+                        {link.label}
+                      </Link>
+                    ) : (
+                      <a
+                        href={link.href}
+                        onClick={() => setIsOpen(false)}
+                        className="cursor-hover font-display text-lg uppercase tracking-wide text-foreground transition-colors hover:text-primary"
+                      >
+                        {link.label}
+                      </a>
+                    )}
+                  </motion.span>
                 ))}
               </div>
             </motion.div>

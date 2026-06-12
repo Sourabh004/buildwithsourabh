@@ -1,6 +1,6 @@
-import { motion, useInView } from "framer-motion";
-import { useRef, useState } from "react";
-import { TrendingUp, DollarSign, LineChart, Bot, ChevronDown, ChevronUp } from "lucide-react";
+import { motion, useScroll, useTransform, useInView } from "framer-motion";
+import { useRef } from "react";
+import { TrendingUp, DollarSign, LineChart, Bot } from "lucide-react";
 
 const projects = [
   {
@@ -9,7 +9,9 @@ const projects = [
     problem: "Low push notification engagement at just 0.5% click-through rate.",
     approach: "Analyzed large datasets using BigQuery, segmented users by behavior, and optimized notification timing and content.",
     tools: ["BigQuery", "SQL", "Data Visualization"],
-    impact: "Improved engagement from 0.5% to 5% — a 10x increase.",
+    impact: "0.5% → 5% — a 10x increase",
+    number: "01",
+    color: "#FCAD50",
   },
   {
     icon: DollarSign,
@@ -17,7 +19,9 @@ const projects = [
     problem: "Ad revenue was underperforming relative to user base size.",
     approach: "Identified key user behavior patterns and optimized ad placement and frequency.",
     tools: ["BigQuery", "Analytics Dashboards", "A/B Testing"],
-    impact: "Increased AdMob revenue nearly 2x within two months.",
+    impact: "Revenue nearly 2x in two months",
+    number: "02",
+    color: "#019EA5",
   },
   {
     icon: LineChart,
@@ -25,7 +29,9 @@ const projects = [
     problem: "Need for historical trend analysis of gold prices for investment insights.",
     approach: "Analyzed historical gold price data and built visual dashboards with trend indicators.",
     tools: ["Excel", "Power BI", "Statistical Analysis"],
-    impact: "Created comprehensive dashboards revealing actionable market patterns.",
+    impact: "Dashboards revealing market patterns",
+    number: "03",
+    color: "#FF7A9C",
   },
   {
     icon: Bot,
@@ -33,91 +39,123 @@ const projects = [
     problem: "Sales teams spending hours on manual follow-up after calls.",
     approach: "Built an AI workflow using n8n that analyzes sales call transcripts and generates personalized follow-ups.",
     tools: ["n8n", "AI Agents", "API Integrations"],
-    impact: "Automated follow-up process, saving hours of manual work per week.",
+    impact: "Hours of manual work saved weekly",
+    number: "04",
+    color: "#758C32",
   },
 ];
 
-const ProjectCard = ({ project, index, isInView }: { project: typeof projects[0]; index: number; isInView: boolean }) => {
-  const [expanded, setExpanded] = useState(false);
+const StackCard = ({
+  project,
+  index,
+  total,
+  progress,
+}: {
+  project: (typeof projects)[0];
+  index: number;
+  total: number;
+  progress: ReturnType<typeof useScroll>["scrollYProgress"];
+}) => {
+  // Earlier cards shrink slightly as later ones stack on top
+  const targetScale = 1 - (total - 1 - index) * 0.05;
+  const scale = useTransform(progress, [index / total, 1], [1, targetScale]);
 
   return (
-    <motion.div
-      initial={{ opacity: 0, y: 30 }}
-      animate={isInView ? { opacity: 1, y: 0 } : {}}
-      transition={{ duration: 0.5, delay: index * 0.12 }}
-      className="glass-card group cursor-pointer overflow-hidden transition-all duration-300 hover:glow-primary"
-      onClick={() => setExpanded(!expanded)}
-    >
-      <div className="p-6">
-        <div className="mb-4 flex items-start justify-between">
-          <div className="flex items-center gap-3">
-            <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-primary/10 transition-colors group-hover:bg-primary/20">
-              <project.icon className="h-5 w-5 text-primary" />
+    <div className="sticky" style={{ top: `${110 + index * 26}px` }}>
+      <motion.div
+        style={{ scale }}
+        className="glass-card relative mx-auto mb-10 max-w-4xl origin-top overflow-hidden"
+      >
+        {/* Color band header */}
+        <div
+          className="flex items-center justify-between border-b-2 border-foreground px-6 py-4 md:px-10"
+          style={{ background: project.color }}
+        >
+          <div className="flex items-center gap-4">
+            <div className="flex h-11 w-11 items-center justify-center rounded-full border-2 border-foreground bg-card">
+              <project.icon className="h-5 w-5 text-foreground" />
             </div>
-            <h3 className="font-display text-lg font-semibold">{project.title}</h3>
+            <h3 className="font-display text-lg uppercase leading-tight md:text-2xl">{project.title}</h3>
           </div>
-          {expanded ? (
-            <ChevronUp className="h-5 w-5 shrink-0 text-muted-foreground" />
-          ) : (
-            <ChevronDown className="h-5 w-5 shrink-0 text-muted-foreground" />
-          )}
+          <span className="font-display text-3xl md:text-5xl opacity-30">{project.number}</span>
         </div>
 
-        <p className="text-sm text-muted-foreground">{project.impact}</p>
+        <div className="grid gap-6 p-6 md:grid-cols-2 md:gap-10 md:p-10">
+          <div className="space-y-5">
+            <div>
+              <span className="text-[10px] font-bold uppercase tracking-[0.25em] text-primary">Problem</span>
+              <p className="mt-1.5 text-sm leading-relaxed text-muted-foreground">{project.problem}</p>
+            </div>
+            <div>
+              <span className="text-[10px] font-bold uppercase tracking-[0.25em] text-primary">Approach</span>
+              <p className="mt-1.5 text-sm leading-relaxed text-muted-foreground">{project.approach}</p>
+            </div>
+          </div>
 
-        {expanded && (
-          <motion.div
-            initial={{ opacity: 0, height: 0 }}
-            animate={{ opacity: 1, height: "auto" }}
-            className="mt-4 space-y-3 border-t border-border pt-4"
-          >
+          <div className="flex flex-col justify-between gap-6">
             <div>
-              <span className="text-xs font-semibold uppercase tracking-wider text-primary">Problem</span>
-              <p className="mt-1 text-sm text-muted-foreground">{project.problem}</p>
+              <span className="text-[10px] font-bold uppercase tracking-[0.25em] text-primary">Impact</span>
+              <p className="mt-2 font-display text-2xl uppercase leading-tight md:text-3xl">{project.impact}</p>
             </div>
-            <div>
-              <span className="text-xs font-semibold uppercase tracking-wider text-primary">Approach</span>
-              <p className="mt-1 text-sm text-muted-foreground">{project.approach}</p>
+            <div className="flex flex-wrap gap-2">
+              {project.tools.map((tool) => (
+                <span
+                  key={tool}
+                  className="rounded-full border-2 border-foreground bg-background px-3 py-1 text-xs font-bold"
+                  style={{ boxShadow: "2px 2px 0 hsl(var(--foreground))" }}
+                >
+                  {tool}
+                </span>
+              ))}
             </div>
-            <div>
-              <span className="text-xs font-semibold uppercase tracking-wider text-primary">Tools</span>
-              <div className="mt-1 flex flex-wrap gap-2">
-                {project.tools.map((tool) => (
-                  <span key={tool} className="rounded-full border border-border bg-secondary/50 px-2.5 py-0.5 text-xs text-muted-foreground">
-                    {tool}
-                  </span>
-                ))}
-              </div>
-            </div>
-          </motion.div>
-        )}
-      </div>
-    </motion.div>
+          </div>
+        </div>
+      </motion.div>
+    </div>
   );
 };
 
 const ProjectsSection = () => {
   const ref = useRef(null);
-  const isInView = useInView(ref, { once: true, margin: "-100px" });
+  const headRef = useRef(null);
+  const isInView = useInView(headRef, { once: true, margin: "-100px" });
+  const { scrollYProgress } = useScroll({ target: ref, offset: ["start start", "end end"] });
 
   return (
     <section id="projects" className="section-padding" ref={ref}>
       <div className="mx-auto max-w-6xl">
         <motion.div
+          ref={headRef}
           initial={{ opacity: 0, y: 30 }}
           animate={isInView ? { opacity: 1, y: 0 } : {}}
-          transition={{ duration: 0.6 }}
-          className="mb-16 text-center"
+          transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
+          className="mb-16"
         >
-          <h2 className="font-display text-3xl font-bold md:text-5xl">
-            Featured <span className="text-gradient">Projects</span>
-          </h2>
-          <p className="mt-4 text-muted-foreground">Click to expand and see details.</p>
+          <span className="section-label">
+            <span className="inline-block h-2 w-2 rotate-45 bg-primary" />
+            Case Studies
+          </span>
+          <div className="overflow-hidden">
+            <motion.h2
+              initial={{ y: "100%" }}
+              animate={isInView ? { y: "0%" } : {}}
+              transition={{ duration: 0.8, delay: 0.1, ease: [0.22, 1, 0.36, 1] }}
+              className="font-display text-4xl uppercase leading-tight md:text-6xl"
+            >
+              Featured <span className="text-primary">Projects</span>
+            </motion.h2>
+          </div>
         </motion.div>
 
-        <div className="grid gap-6 md:grid-cols-2">
+        <div>
           {projects.map((project, i) => (
-            <ProjectCard key={i} project={project} index={i} isInView={isInView} />
+            <StackCard
+              key={i}
+              project={project}
+              index={i}
+              total={projects.length}
+              progress={scrollYProgress}
+            />
           ))}
         </div>
       </div>

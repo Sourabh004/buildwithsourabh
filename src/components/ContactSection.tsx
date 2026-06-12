@@ -1,7 +1,6 @@
 import { motion, useInView } from "framer-motion";
 import { useRef, useState } from "react";
-import { Mail, Linkedin, Instagram, Send } from "lucide-react";
-import { Button } from "@/components/ui/button";
+import { Mail, Linkedin, Instagram, Send, ArrowUpRight } from "lucide-react";
 import { toast } from "sonner";
 
 const ContactSection = () => {
@@ -23,63 +22,80 @@ const ContactSection = () => {
 
   return (
     <section id="contact" className="section-padding" ref={ref}>
-      <div className="mx-auto max-w-4xl">
+      <div className="mx-auto max-w-5xl">
         <motion.div
           initial={{ opacity: 0, y: 30 }}
           animate={isInView ? { opacity: 1, y: 0 } : {}}
-          transition={{ duration: 0.6 }}
-          className="mb-16 text-center"
+          transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
+          className="mb-16"
         >
-          <h2 className="font-display text-3xl font-bold md:text-5xl">
-            Get In <span className="text-gradient">Touch</span>
-          </h2>
+          <span className="section-label">
+            <span className="inline-block h-2 w-2 rotate-45 bg-primary" />
+            Contact
+          </span>
+          <div className="overflow-hidden">
+            <motion.h2
+              initial={{ y: "100%" }}
+              animate={isInView ? { y: "0%" } : {}}
+              transition={{ duration: 0.8, delay: 0.1, ease: [0.22, 1, 0.36, 1] }}
+              className="font-display text-4xl uppercase leading-tight md:text-6xl"
+            >
+              Let's Make Your
+              <br />
+              <span className="text-primary">Wish Come True</span>
+            </motion.h2>
+          </div>
+          <motion.p
+            initial={{ opacity: 0 }}
+            animate={isInView ? { opacity: 1 } : {}}
+            transition={{ delay: 0.4 }}
+            className="mt-4 max-w-lg text-sm leading-relaxed text-muted-foreground"
+          >
+            Have a project in mind or want to chat about data, AI, or community building? I'd love to hear from you.
+          </motion.p>
         </motion.div>
 
         <div className="grid gap-10 md:grid-cols-2">
           {/* Social links */}
-          <div className="flex flex-col justify-center gap-6">
+          <div className="flex flex-col justify-center gap-4">
             {socialLinks.map((link, i) => (
               <motion.a
                 key={link.label}
                 href={link.href}
                 target={link.label !== "Email" ? "_blank" : undefined}
                 rel={link.label !== "Email" ? "noopener noreferrer" : undefined}
-                initial={{ opacity: 0, x: -40, scale: 0.95 }}
-                animate={isInView ? { opacity: 1, x: 0, scale: 1 } : {}}
-                transition={{ duration: 0.5, delay: 0.1 + i * 0.12, type: "spring", stiffness: 100 }}
-                whileHover={{ x: 6, scale: 1.02 }}
-                className="glass-card flex items-center gap-4 p-5 transition-all hover:glow-primary"
+                initial={{ opacity: 0, x: -30 }}
+                animate={isInView ? { opacity: 1, x: 0 } : {}}
+                transition={{ duration: 0.6, delay: 0.15 + i * 0.12, ease: [0.22, 1, 0.36, 1] }}
+                whileHover={{ x: 6 }}
+                className="cursor-hover group flex items-center gap-4 rounded-2xl border border-border/40 bg-card/40 p-5 backdrop-blur-sm transition-all duration-300 hover:border-primary/30 hover:glow-primary"
               >
-                <motion.div
-                  initial={{ rotate: -20, scale: 0 }}
-                  animate={isInView ? { rotate: 0, scale: 1 } : {}}
-                  transition={{ delay: 0.3 + i * 0.12, type: "spring", stiffness: 200 }}
-                  className="flex h-12 w-12 items-center justify-center rounded-xl bg-primary/10"
-                >
-                  <link.icon className="h-5 w-5 text-primary" />
-                </motion.div>
-                <div>
-                  <p className="text-xs text-muted-foreground">{link.label}</p>
-                  <p className="font-display text-sm font-medium">{link.value}</p>
+                <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-primary/10 ring-1 ring-primary/20 transition-colors group-hover:bg-primary/20">
+                  <link.icon className="h-4 w-4 text-primary" />
                 </div>
+                <div className="flex-1">
+                  <p className="text-[10px] font-semibold uppercase tracking-[0.15em] text-muted-foreground">{link.label}</p>
+                  <p className="mt-0.5 font-display text-sm font-medium">{link.value}</p>
+                </div>
+                <ArrowUpRight className="h-4 w-4 text-muted-foreground/50 transition-all duration-300 group-hover:text-primary group-hover:-translate-y-0.5 group-hover:translate-x-0.5" />
               </motion.a>
             ))}
           </div>
 
           {/* Contact form */}
           <motion.form
-            initial={{ opacity: 0, x: 40, scale: 0.95 }}
-            animate={isInView ? { opacity: 1, x: 0, scale: 1 } : {}}
-            transition={{ duration: 0.6, delay: 0.2, type: "spring", stiffness: 100 }}
+            initial={{ opacity: 0, x: 30 }}
+            animate={isInView ? { opacity: 1, x: 0 } : {}}
+            transition={{ duration: 0.7, delay: 0.25, ease: [0.22, 1, 0.36, 1] }}
             onSubmit={handleSubmit}
-            className="glass-card space-y-4 p-6"
+            className="flex flex-col gap-4 rounded-2xl border border-border/40 bg-card/40 p-6 backdrop-blur-sm"
           >
             <input
               value={form.name}
               onChange={(e) => setForm({ ...form, name: e.target.value })}
               placeholder="Your name"
               required
-              className="w-full rounded-xl border border-input bg-background px-4 py-3 text-sm outline-none placeholder:text-muted-foreground focus:ring-2 focus:ring-ring"
+              className="rounded-xl border border-border/50 bg-background/50 px-4 py-3 text-sm outline-none placeholder:text-muted-foreground/50 focus:border-primary/40 focus:ring-1 focus:ring-primary/30 transition-all"
             />
             <input
               value={form.email}
@@ -87,7 +103,7 @@ const ContactSection = () => {
               type="email"
               placeholder="Your email"
               required
-              className="w-full rounded-xl border border-input bg-background px-4 py-3 text-sm outline-none placeholder:text-muted-foreground focus:ring-2 focus:ring-ring"
+              className="rounded-xl border border-border/50 bg-background/50 px-4 py-3 text-sm outline-none placeholder:text-muted-foreground/50 focus:border-primary/40 focus:ring-1 focus:ring-primary/30 transition-all"
             />
             <textarea
               value={form.message}
@@ -95,11 +111,12 @@ const ContactSection = () => {
               placeholder="Your message"
               rows={4}
               required
-              className="w-full resize-none rounded-xl border border-input bg-background px-4 py-3 text-sm outline-none placeholder:text-muted-foreground focus:ring-2 focus:ring-ring"
+              className="resize-none rounded-xl border border-border/50 bg-background/50 px-4 py-3 text-sm outline-none placeholder:text-muted-foreground/50 focus:border-primary/40 focus:ring-1 focus:ring-primary/30 transition-all"
             />
-            <Button type="submit" variant="hero" size="lg" className="w-full">
-              <Send className="mr-2 h-4 w-4" /> Send Message
-            </Button>
+            <button type="submit" className="btn-brutal cursor-hover mt-1 w-full">
+              <Send className="h-4 w-4" />
+              Send Message
+            </button>
           </motion.form>
         </div>
       </div>

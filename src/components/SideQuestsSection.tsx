@@ -49,8 +49,9 @@ const QuestWord = ({
   total: number;
   progress: MotionValue<number>;
 }) => {
-  const start = index / total;
-  const end = (index + 1) / total;
+  // Overlapping windows so the fill sweeps through quickly
+  const start = (index / total) * 0.85;
+  const end = start + 0.15;
   const opacity = useTransform(progress, [start, end], [0.12, 1]);
   const y = useTransform(progress, [start, end], [18, 0]);
 
@@ -80,7 +81,7 @@ const SideQuestsSection = () => {
   const inView = useInView(ref, { once: true, margin: "-80px" });
   const { scrollYProgress } = useScroll({
     target: ref,
-    offset: ["start 0.85", "end 0.5"],
+    offset: ["start 0.9", "start 0.25"],
   });
 
   return (

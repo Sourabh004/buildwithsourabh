@@ -1,14 +1,14 @@
 import { motion, useInView, useScroll, useTransform } from "framer-motion";
 import { useRef } from "react";
-import { GraduationCap, Briefcase, BarChart3, Bot, Gamepad2 } from "lucide-react";
+import { GraduationCap, Briefcase, Bot, Gamepad2 } from "lucide-react";
 
 const timeline = [
   {
-    icon: GraduationCap,
-    title: "MCA Graduate",
-    description: "Built a strong foundation in computer applications with a growing passion for data analytics and AI.",
-    color: "#FCAD50",
-    tag: "Education",
+    icon: Gamepad2,
+    title: "Community & Culture",
+    description: "Passionate about sports, esports, and gaming culture — building communities at the intersection of tech and entertainment.",
+    color: "#CA5449",
+    tag: "Community",
   },
   {
     icon: Briefcase,
@@ -18,11 +18,11 @@ const timeline = [
     tag: "First Gig",
   },
   {
-    icon: BarChart3,
-    title: "Data-Driven Impact",
-    description: "Analyzed user behavior, improved engagement metrics, and turned raw data into actionable insights using BigQuery and dashboards.",
-    color: "#FF7A9C",
-    tag: "Analytics",
+    icon: GraduationCap,
+    title: "MCA Graduate",
+    description: "Built a strong foundation in computer applications with a growing passion for data analytics and AI.",
+    color: "#FCAD50",
+    tag: "Education",
   },
   {
     icon: Bot,
@@ -30,13 +30,6 @@ const timeline = [
     description: "Started building powerful AI automations using n8n — from sales follow-ups to content pipelines.",
     color: "#758C32",
     tag: "Automation",
-  },
-  {
-    icon: Gamepad2,
-    title: "Community & Culture",
-    description: "Passionate about sports, esports, and gaming culture — building communities at the intersection of tech and entertainment.",
-    color: "#CA5449",
-    tag: "Community",
   },
 ];
 
@@ -147,9 +140,9 @@ const AboutSection = () => {
               transition={{ duration: 0.8, delay: 0.1, ease: [0.22, 1, 0.36, 1] }}
               className="font-display text-4xl uppercase leading-tight md:text-6xl"
             >
-              A Journey From
+              Main Quest:
               <br />
-              <span className="text-primary">CS to Data & AI</span>
+              <span className="text-primary">How I Leveled Up</span>
             </motion.h2>
           </div>
         </motion.div>

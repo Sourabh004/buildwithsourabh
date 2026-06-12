@@ -1,5 +1,5 @@
 import { useRef } from "react";
-import { motion, useInView } from "framer-motion";
+import { motion, useInView, useScroll, useTransform, MotionValue } from "framer-motion";
 import { PartyPopper, Terminal } from "lucide-react";
 
 const VOLT = "#C6F24E";
@@ -17,27 +17,71 @@ const terminalLines = [
   { text: "> scheduling... see you at the venue ✦", color: VOLT },
 ];
 
-const statementLines = [
-  <>I FREELANCE</>,
-  <>
-    <span style={{ color: ORANGE }}>GAMING EVENTS</span> —
-  </>,
-  <>OR ELSE I'M</>,
-  <>
-    <span style={{ color: VOLT }}>VIBE CODING</span> &
-  </>,
-  <>
-    SHIPPING <span style={{ color: PINK }}>BUGS</span>
-  </>,
-  <>
-    & FEATURES <span style={{ color: VOLT }}>!!!</span>
-  </>,
+// One flat word stream — color marks the highlight words, br marks line breaks
+const statementWords: { t: string; c?: string; br?: boolean }[] = [
+  { t: "I" },
+  { t: "FREELANCE", br: true },
+  { t: "GAMING", c: ORANGE },
+  { t: "EVENTS", c: ORANGE },
+  { t: "—", br: true },
+  { t: "OR" },
+  { t: "ELSE" },
+  { t: "I'M", br: true },
+  { t: "VIBE", c: VOLT },
+  { t: "CODING", c: VOLT },
+  { t: "&", br: true },
+  { t: "SHIPPING" },
+  { t: "BUGS", c: PINK, br: true },
+  { t: "&" },
+  { t: "FEATURES" },
+  { t: "!!!", c: VOLT },
 ];
+
+/** Word fills in with scroll, jumps + tilts when hovered */
+const QuestWord = ({
+  word,
+  index,
+  total,
+  progress,
+}: {
+  word: (typeof statementWords)[0];
+  index: number;
+  total: number;
+  progress: MotionValue<number>;
+}) => {
+  const start = index / total;
+  const end = (index + 1) / total;
+  const opacity = useTransform(progress, [start, end], [0.12, 1]);
+  const y = useTransform(progress, [start, end], [18, 0]);
+
+  return (
+    <>
+      <motion.span
+        style={{ opacity, y, color: word.c ?? CREAM }}
+        whileHover={{
+          y: -10,
+          rotate: index % 2 ? 3 : -3,
+          scale: 1.06,
+          transition: { type: "spring", stiffness: 400, damping: 12 },
+        }}
+        className="inline-block cursor-default whitespace-pre"
+      >
+        {word.t}
+        {!word.br && " "}
+      </motion.span>
+      {word.br && <br />}
+    </>
+  );
+};
 
 /** Dark inverted band on the cream home page — events freelancing + vibe coding */
 const SideQuestsSection = () => {
   const ref = useRef(null);
   const inView = useInView(ref, { once: true, margin: "-80px" });
+  const { scrollYProgress } = useScroll({
+    target: ref,
+    offset: ["start 0.85", "end 0.5"],
+  });
 
   return (
     <section
@@ -65,18 +109,17 @@ const SideQuestsSection = () => {
             Side Quests
           </motion.span>
 
-          {statementLines.map((line, i) => (
-            <div key={i} className="overflow-hidden">
-              <motion.h2
-                initial={{ y: "110%" }}
-                animate={inView ? { y: "0%" } : {}}
-                transition={{ duration: 0.7, delay: 0.08 * i, ease: [0.22, 1, 0.36, 1] }}
-                className="font-display text-4xl uppercase leading-[1.02] tracking-tight md:text-6xl"
-              >
-                {line}
-              </motion.h2>
-            </div>
-          ))}
+          <h2 className="font-display text-4xl uppercase leading-[1.08] tracking-tight md:text-6xl">
+            {statementWords.map((word, i) => (
+              <QuestWord
+                key={i}
+                word={word}
+                index={i}
+                total={statementWords.length}
+                progress={scrollYProgress}
+              />
+            ))}
+          </h2>
 
           <motion.p
             initial={{ opacity: 0, y: 16 }}

@@ -1,13 +1,14 @@
 import { useEffect, useRef } from "react";
 import { motion, useInView } from "framer-motion";
 import { Link } from "react-router-dom";
-import { ArrowLeft, Cpu, Gamepad2, Trophy, TrendingUp, Plus } from "lucide-react";
+import { ArrowLeft, Cpu, Gamepad2, Trophy, TrendingUp, Plus, PartyPopper } from "lucide-react";
 import { useLenis } from "@/hooks/useLenis";
 import CustomCursor from "@/components/CustomCursor";
 
 const VOLT = "#C6F24E";
 const PINK = "#FF7A9C";
 const TEAL = "#019EA5";
+const ORANGE = "#F77F1A";
 
 /* Add new gaming cards here — they slot straight into the grid */
 const arena = [
@@ -40,6 +41,16 @@ const arena = [
     stat: "↑",
     statLabel: "Always growing",
     color: TEAL,
+  },
+  {
+    num: "04",
+    icon: PartyPopper,
+    title: "GAMING EVENTS",
+    sub: "Freelance — tournaments & community nights",
+    body: "I freelance gaming events — tournaments, watch parties, community nights and esports activations. Planning, ops, hype: handled.",
+    stat: "OPEN",
+    statLabel: "For event gigs",
+    color: ORANGE,
   },
 ];
 
@@ -220,7 +231,7 @@ const GamingPage = () => {
           <h2 className="mb-12 font-display text-4xl uppercase leading-tight md:text-6xl">
             WHAT I'M <span style={{ color: VOLT }}>INTO</span>
           </h2>
-          <div className="grid gap-6 md:grid-cols-3">
+          <div className="grid gap-6 md:grid-cols-2">
             {arena.map((item, i) => (
               <ArenaCard key={item.num} item={item} i={i} />
             ))}

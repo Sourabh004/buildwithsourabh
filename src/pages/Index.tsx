@@ -2,6 +2,7 @@ import { useLenis } from "@/hooks/useLenis";
 import CustomCursor from "@/components/CustomCursor";
 import VelocityMarquee from "@/components/VelocityMarquee";
 import StatementSection from "@/components/StatementSection";
+import SideQuestsSection from "@/components/SideQuestsSection";
 import SplitPortal from "@/components/SplitPortal";
 import Navbar from "@/components/Navbar";
 import HeroSection from "@/components/HeroSection";
@@ -21,6 +22,7 @@ const Index = () => {
       <VelocityMarquee text="DATA ✱ AI ✱ AUTOMATION ✱ GAMING ✱" outline />
       <SplitPortal />
       <StatementSection />
+      <SideQuestsSection />
       <AboutSection />
       <VelocityMarquee text="TECH ✱ GAMING ✱ COMMUNITY ✱ CULTURE ✱" baseVelocity={-2} />
       <FreelanceSection />

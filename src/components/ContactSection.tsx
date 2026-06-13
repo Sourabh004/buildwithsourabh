@@ -241,7 +241,7 @@ const ContactSection = () => {
                   exit={{ opacity: 0, y: -10 }}
                   className="flex items-center justify-center gap-2"
                 >
-                  Send it <ArrowRight className="h-5 w-5" />
+                  Make it happen <ArrowRight className="h-5 w-5" />
                 </motion.span>
               ) : (
                 <motion.span
@@ -251,7 +251,7 @@ const ContactSection = () => {
                   exit={{ opacity: 0, y: -10 }}
                   className="flex items-center justify-center gap-2"
                 >
-                  Fill the form first
+                  Don't be shy — type something
                 </motion.span>
               )}
             </AnimatePresence>

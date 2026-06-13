@@ -1,7 +1,12 @@
 import { motion, useScroll, useTransform } from "framer-motion";
 import { useRef } from "react";
 import { ArrowDown, Download, Mail } from "lucide-react";
-import SpinningBadge from "./SpinningBadge";
+
+const VOLT   = "#C6F24E";
+const CREAM  = "#FAF0D7";
+const INK    = "#1F271B";
+const PINK   = "#FF7A9C";
+const ORANGE = "#F77F1A";
 
 const lineReveal = {
   hidden: { y: "110%" },
@@ -16,7 +21,6 @@ const HeroSection = () => {
   const { scrollYProgress } = useScroll({ target: ref, offset: ["start start", "end start"] });
   const y = useTransform(scrollYProgress, [0, 1], [0, 160]);
   const opacity = useTransform(scrollYProgress, [0, 0.85], [1, 0]);
-  const badgeRotate = useTransform(scrollYProgress, [0, 1], [0, 180]);
 
   return (
     <section
@@ -121,15 +125,59 @@ const HeroSection = () => {
         </motion.div>
       </motion.div>
 
-      {/* Spinning badge — rotates extra with scroll */}
+      {/* Floating terminal card */}
       <motion.div
-        initial={{ opacity: 0, scale: 0 }}
-        animate={{ opacity: 1, scale: 1 }}
-        transition={{ delay: 1.1, type: "spring", stiffness: 150 }}
-        style={{ rotate: badgeRotate }}
-        className="absolute bottom-16 right-8 z-10 md:bottom-24 md:right-24"
+        initial={{ opacity: 0, y: 30, rotate: -6 }}
+        animate={{ opacity: 1, y: 0, rotate: -3 }}
+        transition={{ delay: 1.1, type: "spring", stiffness: 120, damping: 14 }}
+        className="absolute bottom-16 right-6 z-10 hidden md:bottom-20 md:right-20 md:block"
       >
-        <SpinningBadge />
+        <motion.div
+          animate={{ y: [0, -10, 0] }}
+          transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
+          className="overflow-hidden border-2"
+          style={{ background: INK, borderColor: INK, boxShadow: `6px 6px 0 ${VOLT}`, width: 210 }}
+        >
+          {/* Title bar */}
+          <div
+            className="flex items-center justify-between px-3 py-2 border-b"
+            style={{ borderColor: `${VOLT}30` }}
+          >
+            <span className="font-mono text-[10px] font-bold" style={{ color: VOLT }}>
+              sourabh.exe
+            </span>
+            <span className="flex gap-1.5">
+              <span className="h-2.5 w-2.5 rounded-full" style={{ background: PINK }} />
+              <span className="h-2.5 w-2.5 rounded-full" style={{ background: ORANGE }} />
+              <span className="h-2.5 w-2.5 rounded-full" style={{ background: VOLT }} />
+            </span>
+          </div>
+
+          {/* Body rows */}
+          <div className="space-y-2 px-3 py-3 font-mono text-[11px]">
+            {[
+              { key: "ROLE",   val: "PM + Vibe Coder" },
+              { key: "STACK",  val: "AI & Automation" },
+              { key: "ENERGY", val: "Esports & Gaming" },
+            ].map(({ key, val }) => (
+              <p key={key} className="flex gap-2">
+                <span style={{ color: VOLT }}>{key}</span>
+                <span style={{ color: `${CREAM}50` }}>→</span>
+                <span style={{ color: CREAM }}>{val}</span>
+              </p>
+            ))}
+            <p className="flex gap-2 pt-0.5">
+              <span style={{ color: VOLT }}>STATUS</span>
+              <span style={{ color: `${CREAM}50` }}>→</span>
+              <span style={{ color: CREAM }}>Building</span>
+              <motion.span
+                animate={{ opacity: [1, 0, 1] }}
+                transition={{ duration: 1, repeat: Infinity }}
+                style={{ color: VOLT }}
+              >▮</motion.span>
+            </p>
+          </div>
+        </motion.div>
       </motion.div>
 
       {/* Decorative shapes */}

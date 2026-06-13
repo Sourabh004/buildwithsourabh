@@ -112,6 +112,8 @@ const ContactSection = () => {
   const [form, setForm] = useState({ email: "", message: "" });
   const [sent, setSent] = useState(false);
 
+  const ready = form.email.trim().length > 0 && form.message.trim().length > 0;
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     setSent(true);
@@ -207,16 +209,18 @@ const ContactSection = () => {
           {/* CTA button */}
           <motion.button
             type="submit"
-            whileHover={{ x: 3, y: 3, boxShadow: `2px 2px 0 ${VOLT}` }}
-            whileTap={{ x: 5, y: 5, boxShadow: "none" }}
-            transition={{ type: "spring", stiffness: 400, damping: 18 }}
-            className="cursor-hover mt-2 w-full rounded-full border-2 py-4 font-display text-lg uppercase tracking-widest"
-            style={{
-              background: CREAM,
-              borderColor: CREAM,
-              color: INK,
-              boxShadow: `5px 5px 0 ${VOLT}`,
+            disabled={!ready || sent}
+            animate={{
+              background: ready ? CREAM : `${CREAM}22`,
+              borderColor: ready ? CREAM : `${CREAM}30`,
+              color: ready ? INK : `${CREAM}50`,
+              boxShadow: ready ? `5px 5px 0 ${VOLT}` : "none",
             }}
+            whileHover={ready ? { x: 3, y: 3, boxShadow: `2px 2px 0 ${VOLT}` } : {}}
+            whileTap={ready ? { x: 5, y: 5, boxShadow: "none" } : {}}
+            transition={{ type: "spring", stiffness: 400, damping: 18 }}
+            className="mt-2 w-full rounded-full border-2 py-4 font-display text-lg uppercase tracking-widest"
+            style={{ cursor: ready ? "pointer" : "not-allowed" }}
           >
             <AnimatePresence mode="wait">
               {sent ? (
@@ -229,15 +233,25 @@ const ContactSection = () => {
                 >
                   ✦ Sent!
                 </motion.span>
-              ) : (
+              ) : ready ? (
                 <motion.span
-                  key="idle"
+                  key="ready"
                   initial={{ opacity: 0, y: 10 }}
                   animate={{ opacity: 1, y: 0 }}
                   exit={{ opacity: 0, y: -10 }}
                   className="flex items-center justify-center gap-2"
                 >
                   Send it <ArrowRight className="h-5 w-5" />
+                </motion.span>
+              ) : (
+                <motion.span
+                  key="empty"
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -10 }}
+                  className="flex items-center justify-center gap-2"
+                >
+                  Fill the form first
                 </motion.span>
               )}
             </AnimatePresence>

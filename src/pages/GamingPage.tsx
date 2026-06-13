@@ -64,7 +64,7 @@ const events = [
     color: "#F5C518",
     emoji: "🏆",
     year: "2024",
-    photo: "/ewc-riyadh.jpg",
+    photo: "/ewc.jpg",
   },
   {
     name: "Red Bull",
@@ -74,7 +74,7 @@ const events = [
     color: "#CC1E1E",
     emoji: "🐂",
     year: "2023–24",
-    photo: "/redbull.jpg",
+    photo: "/redbull.jpeg",
   },
   {
     name: "Krafton",
@@ -84,7 +84,7 @@ const events = [
     color: "#F77F1A",
     emoji: "🎮",
     year: "2023–24",
-    photo: "/krafton.jpg",
+    photo: "/krafton.jpeg",
   },
   {
     name: "Comic-Con",
@@ -94,7 +94,7 @@ const events = [
     color: "#9B5DE5",
     emoji: "🦸",
     year: "2024",
-    photo: "/comiccon.jpg",
+    photo: "/comiccon.jpeg",
   },
 ];
 

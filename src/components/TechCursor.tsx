@@ -1,8 +1,8 @@
 import { useEffect, useRef } from "react";
 
 const TRAIL_MAX = 14;
-const ORANGE_RGB = "247, 127, 26";
-const ORANGE = "#F77F1A";
+const GREEN_RGB = "0, 255, 65";
+const GREEN = "#00FF41";
 
 interface TrailPoint {
   x: number; y: number; vx: number; vy: number; life: number;
@@ -85,7 +85,7 @@ const TechCursor = () => {
         if (radius < 0.3) continue;
         ctx.beginPath();
         ctx.arc(p.x, p.y, radius, 0, Math.PI * 2);
-        ctx.fillStyle = `rgba(${ORANGE_RGB}, ${opacity})`;
+        ctx.fillStyle = `rgba(${GREEN_RGB}, ${opacity})`;
         ctx.fill();
       }
       rafId = requestAnimationFrame(animate);
@@ -115,10 +115,10 @@ const TechCursor = () => {
         <span
           style={{
             fontFamily: "'Courier New', Courier, monospace",
-            fontSize: 16,
+            fontSize: 22,
             fontWeight: "bold",
-            color: ORANGE,
-            textShadow: `0 0 10px ${ORANGE}, 0 0 20px ${ORANGE}60`,
+            color: GREEN,
+            textShadow: `0 0 8px ${GREEN}, 0 0 18px ${GREEN}, 0 0 40px ${GREEN}90`,
             whiteSpace: "nowrap",
             letterSpacing: "0.02em",
           }}

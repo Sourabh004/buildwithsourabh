@@ -16,8 +16,8 @@ const Word = ({
   progress: MotionValue<number>;
 }) => {
   // Overlapping windows so the fill sweeps through quickly
-  const start = (index / total) * 0.85;
-  const end = start + 0.15;
+  const start = (index / total) * 0.82;
+  const end = start + 0.18;
   const opacity = useTransform(progress, [start, end], [0.12, 1]);
   const y = useTransform(progress, [start, end], [12, 0]);
 
@@ -39,7 +39,7 @@ const StatementSection = () => {
   const ref = useRef(null);
   const { scrollYProgress } = useScroll({
     target: ref,
-    offset: ["start 0.9", "start 0.2"],
+    offset: ["start 0.85", "start 0.3"],
   });
 
   const words = STATEMENT.split(" ");

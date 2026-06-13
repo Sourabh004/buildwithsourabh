@@ -17,8 +17,11 @@ const terminalLines = [
   { text: "> scheduling... see you at the venue ✦", color: VOLT },
 ];
 
-// One flat word stream — color marks the highlight words, br marks line breaks
-const statementWords: { t: string; c?: string; br?: boolean }[] = [
+type WordFx = "wave" | "glitch";
+
+// One flat word stream — color marks the highlight words, br marks line breaks,
+// fx adds a special letter-level hover effect
+const statementWords: { t: string; c?: string; br?: boolean; fx?: WordFx }[] = [
   { t: "I" },
   { t: "FREELANCE", br: true },
   { t: "GAMING", c: ORANGE },
@@ -27,15 +30,31 @@ const statementWords: { t: string; c?: string; br?: boolean }[] = [
   { t: "OR" },
   { t: "ELSE" },
   { t: "I'M", br: true },
-  { t: "VIBE", c: VOLT },
-  { t: "CODING", c: VOLT },
+  { t: "VIBE", c: VOLT, fx: "wave" },
+  { t: "CODING", c: VOLT, fx: "wave" },
   { t: "&", br: true },
   { t: "SHIPPING" },
-  { t: "BUGS", c: PINK, br: true },
+  { t: "BUGS", c: PINK, br: true, fx: "glitch" },
   { t: "&" },
   { t: "FEATURES" },
   { t: "!!!", c: VOLT },
 ];
+
+// Letter-level hover effects: "wave" = rainbow mexican wave, "glitch" = bug panic
+const letterFx: Record<WordFx, (i: number) => object> = {
+  wave: (i) => ({
+    y: [0, -18, 0],
+    color: [VOLT, PINK, ORANGE, "#019EA5", VOLT],
+    transition: { delay: i * 0.06, duration: 0.7, repeat: Infinity, repeatDelay: 0.35 },
+  }),
+  glitch: (i) => ({
+    x: [0, -3, 4, -2, 3, 0],
+    y: [0, 3, -5, 2, -3, 0],
+    rotate: [0, -6, 7, -3, 4, 0],
+    color: [PINK, CREAM, PINK, VOLT, PINK],
+    transition: { delay: i * 0.03, duration: 0.3, repeat: Infinity },
+  }),
+};
 
 /** Word fills in with scroll, jumps + tilts when hovered */
 const QuestWord = ({
@@ -50,10 +69,59 @@ const QuestWord = ({
   progress: MotionValue<number>;
 }) => {
   // Overlapping windows so the fill sweeps through quickly
-  const start = (index / total) * 0.85;
-  const end = start + 0.15;
+  const start = (index / total) * 0.82;
+  const end = start + 0.18;
   const opacity = useTransform(progress, [start, end], [0.12, 1]);
-  const y = useTransform(progress, [start, end], [18, 0]);
+  const y = useTransform(progress, [start, end], [24, 0]);
+
+  // Special words explode into per-letter animation on hover
+  if (word.fx) {
+    return (
+      <>
+        <motion.span
+          style={{ opacity, y, color: word.c ?? CREAM }}
+          initial="rest"
+          whileHover="fx"
+          className="relative inline-block cursor-default whitespace-pre"
+        >
+          {word.t.split("").map((ch, li) => (
+            <motion.span
+              key={li}
+              custom={li}
+              variants={{
+                // explicit reset so letters snap home when the hover ends
+                rest: { x: 0, y: 0, rotate: 0, color: word.c ?? CREAM },
+                fx: letterFx[word.fx!],
+              }}
+              className="inline-block"
+            >
+              {ch}
+            </motion.span>
+          ))}
+          {!word.br && " "}
+          {/* A bug makes a run for it when you hover BUGS */}
+          {word.fx === "glitch" && (
+            <motion.span
+              variants={{
+                rest: { opacity: 0, x: 0, y: 0, rotate: 0 },
+                fx: {
+                  opacity: [0, 1, 1, 1, 0],
+                  x: [0, 30, 60, 95, 130],
+                  y: [0, -10, 4, -12, 2],
+                  rotate: [0, 20, -15, 25, 10],
+                  transition: { duration: 1.3, repeat: Infinity },
+                },
+              }}
+              className="pointer-events-none absolute -right-6 top-1 text-3xl"
+            >
+              🐛
+            </motion.span>
+          )}
+        </motion.span>
+        {word.br && <br />}
+      </>
+    );
+  }
 
   return (
     <>
@@ -81,7 +149,7 @@ const SideQuestsSection = () => {
   const inView = useInView(ref, { once: true, margin: "-80px" });
   const { scrollYProgress } = useScroll({
     target: ref,
-    offset: ["start 0.9", "start 0.25"],
+    offset: ["start 0.85", "start 0.3"],
   });
 
   return (

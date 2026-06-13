@@ -41,7 +41,7 @@ const tools: Tool[] = [
 const categoryColor: Record<string, string> = {
   "AI & Automation": "#F77F1A",
   "Data & Analytics": "#019EA5",
-  "Community & Platforms": "#FF7A9C",
+  "Community & Platforms": "#9B5DE5",
 };
 
 const rowVariants = {

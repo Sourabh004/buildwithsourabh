@@ -1,14 +1,60 @@
 import { motion, useInView } from "framer-motion";
 import { useRef } from "react";
-import { FlaskConical, Bot, Wrench, BarChart3, Gamepad2, Share2 } from "lucide-react";
+import { FlaskConical, Bot, Wrench, BarChart3, Zap, LineChart } from "lucide-react";
+
+const ORANGE = "#F77F1A";
+const TEAL   = "#019EA5";
+const PURPLE = "#9B5DE5";
 
 const experiments = [
-  { icon: Bot, label: "AI workflow automation", color: "#F77F1A", rotate: -2 },
-  { icon: Wrench, label: "AI-powered productivity tools", color: "#019EA5", rotate: 1.5 },
-  { icon: BarChart3, label: "Data analytics projects", color: "#FF7A9C", rotate: -1 },
-  { icon: Gamepad2, label: "Sports & esports analytics", color: "#8B5CF6", rotate: 2.5 },
-  { icon: Share2, label: "Social media experiments", color: "#F77F1A", rotate: -1.5 },
+  {
+    icon: Bot,
+    label: "AI Workflow Automation",
+    desc: "End-to-end n8n pipelines that replace repetitive manual tasks with smart, triggered automation.",
+    color: ORANGE,
+    rotate: -1.5,
+    status: "Active",
+  },
+  {
+    icon: Wrench,
+    label: "AI-Powered Productivity Tools",
+    desc: "LLM-backed tools that collapse hours of knowledge-work into seconds.",
+    color: TEAL,
+    rotate: 1.5,
+    status: "Building",
+  },
+  {
+    icon: BarChart3,
+    label: "Data Analytics Projects",
+    desc: "Turning raw data into visual stories and insights that actually change decisions.",
+    color: PURPLE,
+    rotate: -1,
+    status: "Active",
+  },
+  {
+    icon: Zap,
+    label: "LLM-Powered Internal Tools",
+    desc: "Custom AI tools built for teams — designed around how people actually work, not how tools want them to.",
+    color: TEAL,
+    rotate: 2,
+    status: "Exploring",
+  },
+  {
+    icon: LineChart,
+    label: "Dashboard & Data Storytelling",
+    desc: "Dashboards that make numbers feel human and turn metrics into momentum.",
+    color: PURPLE,
+    rotate: -1.5,
+    status: "Ongoing",
+  },
 ];
+
+const STATUS_COLOR: Record<string, string> = {
+  Active:    "#C6F24E",
+  Building:  ORANGE,
+  Exploring: TEAL,
+  Ongoing:   PURPLE,
+};
 
 const ExperimentsSection = () => {
   const ref = useRef(null);
@@ -17,8 +63,9 @@ const ExperimentsSection = () => {
   return (
     <section className="section-padding" ref={ref}>
       <div className="mx-auto max-w-5xl">
+
         {/* Header */}
-        <div className="mb-16 flex flex-wrap items-end justify-between gap-6">
+        <div className="mb-12 flex flex-wrap items-end justify-between gap-6">
           <div>
             <motion.span
               initial={{ opacity: 0 }}
@@ -51,44 +98,77 @@ const ExperimentsSection = () => {
           </motion.div>
         </div>
 
-        {/* Pill scatter — centered flex-wrap */}
-        <div className="flex flex-wrap justify-center gap-4">
+        {/* Card grid */}
+        <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
           {experiments.map((exp, i) => {
             const Icon = exp.icon;
+            const statusColor = STATUS_COLOR[exp.status] ?? ORANGE;
+            // Last card spans 2 cols on lg if odd count
+            const isLast = i === experiments.length - 1 && experiments.length % 3 !== 0;
+
             return (
               <motion.div
                 key={i}
-                initial={{ opacity: 0, y: 40, scale: 0.8, rotate: exp.rotate * 2 }}
-                animate={isInView ? { opacity: 1, y: 0, scale: 1, rotate: exp.rotate } : {}}
-                transition={{ duration: 0.6, delay: i * 0.12, type: "spring", stiffness: 150, damping: 18 }}
-                whileHover={{ scale: 1.08, rotate: 0, transition: { duration: 0.2 } }}
-                className="flex cursor-default items-center gap-3 border-2 border-foreground px-5 py-3"
-                style={{
-                  boxShadow: "4px 4px 0 hsl(var(--foreground))",
-                  background: exp.color + "15",
-                  borderRadius: 0,
-                }}
+                initial={{ opacity: 0, y: 40, rotate: exp.rotate * 1.5 }}
+                animate={isInView ? { opacity: 1, y: 0, rotate: exp.rotate } : {}}
+                transition={{ duration: 0.6, delay: i * 0.1, type: "spring", stiffness: 140, damping: 18 }}
+                whileHover={{ y: -6, rotate: 0, transition: { duration: 0.2 } }}
+                className={`group relative flex flex-col border-2 border-foreground bg-card overflow-hidden cursor-default${isLast ? " lg:col-span-2" : ""}`}
+                style={{ boxShadow: `5px 5px 0 hsl(var(--foreground))` }}
               >
-                <span
-                  className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full border-2 border-foreground"
-                  style={{ background: exp.color }}
-                >
-                  <Icon className="h-4 w-4 text-white" />
-                </span>
-                <span className="font-display text-sm font-bold uppercase tracking-wide md:text-base">
-                  {exp.label}
-                </span>
+                {/* Accent bar */}
+                <div className="h-1.5 w-full" style={{ background: exp.color }} />
+
+                <div className="flex flex-1 flex-col p-5">
+                  {/* Icon + status row */}
+                  <div className="mb-4 flex items-start justify-between">
+                    <span
+                      className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full border-2 border-foreground"
+                      style={{ background: exp.color + "25" }}
+                    >
+                      <Icon className="h-4 w-4" style={{ color: exp.color }} />
+                    </span>
+                    <span
+                      className="rounded-full border-2 border-foreground px-2.5 py-0.5 font-grotesk text-[9px] font-bold uppercase tracking-widest"
+                      style={{ background: statusColor + "20", color: statusColor, borderColor: statusColor }}
+                    >
+                      ● {exp.status}
+                    </span>
+                  </div>
+
+                  {/* Title */}
+                  <h3
+                    className="mb-2 font-display text-base uppercase leading-tight tracking-tight md:text-lg"
+                    style={{ color: "hsl(var(--foreground))" }}
+                  >
+                    {exp.label}
+                  </h3>
+
+                  {/* Description */}
+                  <p className="text-xs leading-relaxed text-muted-foreground">
+                    {exp.desc}
+                  </p>
+                </div>
+
+                {/* Hover color wash */}
+                <motion.div
+                  className="pointer-events-none absolute inset-0"
+                  initial={{ opacity: 0 }}
+                  whileHover={{ opacity: 1 }}
+                  transition={{ duration: 0.25 }}
+                  style={{ background: exp.color + "0A" }}
+                />
               </motion.div>
             );
           })}
         </div>
 
-        {/* Bottom note */}
+        {/* Bottom rule */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={isInView ? { opacity: 1, y: 0 } : {}}
           transition={{ delay: 0.9 }}
-          className="mt-16 flex items-center justify-center gap-3"
+          className="mt-14 flex items-center justify-center gap-3"
         >
           <div className="h-px flex-1 bg-foreground/20" />
           <span className="font-grotesk text-xs font-bold uppercase tracking-widest text-muted-foreground">

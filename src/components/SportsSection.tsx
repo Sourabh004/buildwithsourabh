@@ -33,7 +33,7 @@ const panels = [
     body: "Tracking the explosive growth of esports: viewership analytics, audience behaviour, community dynamics, and the creator economy around competitive gaming.",
     stat: "↑",
     statLabel: "Always growing",
-    color: "#FF7A9C",
+    color: "#9B5DE5",
     bg: "hsl(var(--background))",
   },
 ];

@@ -1,7 +1,13 @@
 import { motion, useScroll, useTransform } from "framer-motion";
 import { useRef } from "react";
 import { ArrowDown, Download, Mail } from "lucide-react";
-import SpinningBadge from "./SpinningBadge";
+
+const VOLT   = "#C6F24E";
+const CREAM  = "#FAF0D7";
+const INK    = "#1F271B";
+const PINK   = "#9B5DE5";
+const ORANGE = "#F77F1A";
+const TEAL   = "#019EA5";
 
 const lineReveal = {
   hidden: { y: "110%" },
@@ -16,7 +22,6 @@ const HeroSection = () => {
   const { scrollYProgress } = useScroll({ target: ref, offset: ["start start", "end start"] });
   const y = useTransform(scrollYProgress, [0, 1], [0, 160]);
   const opacity = useTransform(scrollYProgress, [0, 0.85], [1, 0]);
-  const badgeRotate = useTransform(scrollYProgress, [0, 1], [0, 180]);
 
   return (
     <section
@@ -24,18 +29,6 @@ const HeroSection = () => {
       className="relative flex min-h-screen items-center overflow-hidden section-padding pt-32"
     >
       <motion.div style={{ y, opacity }} className="relative z-10 mx-auto w-full max-w-6xl">
-        {/* Eyebrow */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6, delay: 0.15 }}
-          className="mb-8 inline-flex items-center gap-3 rounded-full border-2 border-foreground bg-card px-5 py-2"
-          style={{ boxShadow: "3px 3px 0 hsl(var(--foreground))" }}
-        >
-          <span className="h-2.5 w-2.5 animate-pulse rounded-full bg-primary" />
-          <span className="text-xs font-bold uppercase tracking-[0.2em]">Available for opportunities</span>
-        </motion.div>
-
         {/* Headline */}
         <h1 className="font-display uppercase leading-[0.92] tracking-tight">
           <div className="overflow-hidden">
@@ -46,7 +39,7 @@ const HeroSection = () => {
               animate="visible"
               className="block text-[clamp(2.6rem,8.5vw,7.5rem)]"
             >
-              Making Data
+              AI, PM &amp;
             </motion.span>
           </div>
           <div className="overflow-hidden">
@@ -57,7 +50,7 @@ const HeroSection = () => {
               animate="visible"
               className="block text-[clamp(2.6rem,8.5vw,7.5rem)]"
             >
-              <span className="text-primary">Go Boom</span> — I'm
+              <span className="text-primary">Vibe Code</span> —
             </motion.span>
           </div>
           <div className="overflow-hidden">
@@ -68,7 +61,7 @@ const HeroSection = () => {
               animate="visible"
               className="block text-[clamp(2.6rem,8.5vw,7.5rem)]"
             >
-              Sourabh<span className="text-primary">.</span>
+              I'm Sourabh<span className="text-primary">.</span>
             </motion.span>
           </div>
         </h1>
@@ -80,8 +73,8 @@ const HeroSection = () => {
           transition={{ duration: 0.6, delay: 0.9 }}
           className="mt-8 flex flex-wrap items-center gap-3"
         >
-          {["Data Analyst", "AI Workflow Builder", "Community Builder"].map((tag, i) => {
-            const colors = ["#FCAD50", "#019EA5", "#FF7A9C"];
+          {["AI Workflow Builder", "Community Builder", "Esports & Gaming"].map((tag, i) => {
+            const colors = ["#019EA5", "#9B5DE5", "#FCAD50"];
             return (
               <span
                 key={tag}
@@ -133,15 +126,103 @@ const HeroSection = () => {
         </motion.div>
       </motion.div>
 
-      {/* Spinning badge — rotates extra with scroll */}
+      {/* Sticky note — peek from right edge, slide in on hover */}
       <motion.div
-        initial={{ opacity: 0, scale: 0 }}
-        animate={{ opacity: 1, scale: 1 }}
-        transition={{ delay: 1.1, type: "spring", stiffness: 150 }}
-        style={{ rotate: badgeRotate }}
-        className="absolute bottom-16 right-8 z-10 md:bottom-24 md:right-24"
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ delay: 1.3 }}
+        whileHover="open"
+        className="absolute bottom-24 right-0 z-20 hidden cursor-pointer md:block"
+        style={{ width: 220 }}
       >
-        <SpinningBadge />
+        <motion.div
+          variants={{
+            open: { x: -16, rotate: -3, transition: { type: "spring", stiffness: 220, damping: 22 } },
+          }}
+          initial={{ x: "calc(100% - 36px)", rotate: -6 }}
+          animate={{ x: "calc(100% - 36px)", rotate: -6 }}
+          style={{ originX: 1, originY: 0.5 }}
+        >
+          {/* Paper sticky note */}
+          <div
+            className="overflow-hidden"
+            style={{
+              width: 220,
+              background: "linear-gradient(160deg, #fffef0 0%, #fef9c3 60%, #fef3a0 100%)",
+              boxShadow: "1px 2px 8px rgba(0,0,0,0.18), 3px 5px 20px rgba(0,0,0,0.12), inset 0 1px 0 rgba(255,255,255,0.8)",
+              borderRadius: 2,
+            }}
+          >
+            {/* Volt adhesive strip at top */}
+            <div
+              className="flex items-center justify-between px-3"
+              style={{
+                height: 28,
+                background: `linear-gradient(180deg, ${VOLT} 0%, #b8e040 100%)`,
+                boxShadow: "inset 0 -1px 0 rgba(0,0,0,0.12)",
+              }}
+            >
+              <span className="font-grotesk text-[9px] font-black uppercase tracking-widest" style={{ color: INK }}>
+                who am i
+              </span>
+              {/* Peek arrow — visible when closed */}
+              <motion.span
+                variants={{ open: { opacity: 0 } }}
+                className="font-bold text-xs"
+                style={{ color: INK }}
+              >
+                ←
+              </motion.span>
+            </div>
+
+            {/* Faint ruled lines — paper feel */}
+            <div className="relative px-4 pt-3 pb-4 space-y-3"
+              style={{
+                backgroundImage: "repeating-linear-gradient(transparent, transparent 23px, #e5d9a0 23px, #e5d9a0 24px)",
+                backgroundPositionY: "12px",
+              }}
+            >
+              {[
+                { dot: ORANGE, label: "Role",   val: "PM + Vibe Coder" },
+                { dot: PINK,   label: "Stack",  val: "AI & Automation" },
+                { dot: TEAL,   label: "Energy", val: "Esports & Gaming" },
+              ].map(({ dot, label, val }) => (
+                <div key={label} className="flex items-start gap-2">
+                  <span className="mt-1.5 h-2.5 w-2.5 shrink-0 rounded-full" style={{ background: dot, boxShadow: `0 0 0 1.5px ${INK}40` }} />
+                  <div>
+                    <p className="font-grotesk text-[8px] font-bold uppercase tracking-widest opacity-50" style={{ color: INK }}>{label}</p>
+                    <p className="font-display text-sm uppercase leading-tight" style={{ color: INK }}>{val}</p>
+                  </div>
+                </div>
+              ))}
+
+              {/* Status row */}
+              <div className="flex items-center gap-2 pt-0.5">
+                <motion.span
+                  animate={{ opacity: [1, 0.2, 1] }}
+                  transition={{ duration: 1.4, repeat: Infinity }}
+                  className="h-2 w-2 rounded-full"
+                  style={{ background: INK }}
+                />
+                <span className="font-grotesk text-[9px] font-bold uppercase tracking-widest opacity-60" style={{ color: INK }}>
+                  Currently building...
+                </span>
+              </div>
+            </div>
+
+            {/* Folded corner */}
+            <div
+              className="absolute bottom-0 right-0"
+              style={{
+                width: 0, height: 0,
+                borderStyle: "solid",
+                borderWidth: "0 0 18px 18px",
+                borderColor: `transparent transparent #c9b84a transparent`,
+                filter: "drop-shadow(-1px -1px 2px rgba(0,0,0,0.15))",
+              }}
+            />
+          </div>
+        </motion.div>
       </motion.div>
 
       {/* Decorative shapes */}

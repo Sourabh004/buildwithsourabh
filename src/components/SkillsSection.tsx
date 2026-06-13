@@ -20,7 +20,7 @@ const categories = [
   {
     icon: Database,
     title: "Data Tools",
-    color: "#FF7A9C",
+    color: "#9B5DE5",
     tag: "Stack",
     skills: ["BigQuery", "Looker Studio", "Data Dashboards", "Growth Analytics"],
   },
@@ -119,7 +119,7 @@ const SkillsSection = () => {
       <span className="pointer-events-none absolute right-[7%] top-24 hidden animate-spin-slow font-display text-6xl text-primary/70 lg:block">✱</span>
       <span
         className="pointer-events-none absolute bottom-32 left-[5%] hidden h-7 w-7 -rotate-6 border-2 border-foreground lg:block"
-        style={{ background: "#FF7A9C", boxShadow: "3px 3px 0 hsl(var(--foreground))" }}
+        style={{ background: "#9B5DE5", boxShadow: "3px 3px 0 hsl(var(--foreground))" }}
       />
 
       <div className="mx-auto max-w-6xl">

@@ -31,7 +31,7 @@ const workflows = [
     description:
       "A fully automated pipeline that takes a topic brief, generates platform-native content via AI, schedules it, and tracks performance.",
     steps: ["Brief entered", "AI writes + formats", "Scheduled across platforms", "Analytics loop back"],
-    color: "#FF7A9C",
+    color: "#9B5DE5",
   },
   {
     num: "04",

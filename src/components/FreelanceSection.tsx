@@ -36,7 +36,7 @@ const services = [
     icon: Trophy,
     title: "SPORTS & ESPORTS CONTENT",
     tagline: "Grow your community.",
-    color: "#FF7A9C",
+    color: "#9B5DE5",
     deliverables: [
       "Content strategy for sports brands",
       "Viral short-form video concepts",

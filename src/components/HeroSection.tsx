@@ -24,18 +24,6 @@ const HeroSection = () => {
       className="relative flex min-h-screen items-center overflow-hidden section-padding pt-32"
     >
       <motion.div style={{ y, opacity }} className="relative z-10 mx-auto w-full max-w-6xl">
-        {/* Eyebrow */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6, delay: 0.15 }}
-          className="mb-8 inline-flex items-center gap-3 rounded-full border-2 border-foreground bg-card px-5 py-2"
-          style={{ boxShadow: "3px 3px 0 hsl(var(--foreground))" }}
-        >
-          <span className="h-2.5 w-2.5 animate-pulse rounded-full bg-primary" />
-          <span className="text-xs font-bold uppercase tracking-[0.2em]">Available for opportunities</span>
-        </motion.div>
-
         {/* Headline */}
         <h1 className="font-display uppercase leading-[0.92] tracking-tight">
           <div className="overflow-hidden">

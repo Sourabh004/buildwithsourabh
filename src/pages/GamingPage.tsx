@@ -54,6 +54,151 @@ const arena = [
   },
 ];
 
+// ── Brands & Events ──────────────────────────────────────────────────────────
+const events = [
+  {
+    name: "EWC Riyadh",
+    full: "Esports World Cup",
+    location: "Riyadh, Saudi Arabia",
+    sub: ["Opening Ceremony", "Main Stage", "Fan Zone"],
+    color: "#F5C518",
+    emoji: "🏆",
+    year: "2024",
+  },
+  {
+    name: "Red Bull",
+    full: "Motojam & Events",
+    location: "Multiple Cities",
+    sub: ["Motojam", "Gaming Activations", "Brand Events"],
+    color: "#CC1E1E",
+    emoji: "🐂",
+    year: "2023–24",
+  },
+  {
+    name: "Krafton",
+    full: "PUBG Mobile Circuit",
+    location: "India",
+    sub: ["BMPS", "BGIS", "BGIC"],
+    color: "#F77F1A",
+    emoji: "🎮",
+    year: "2023–24",
+  },
+  {
+    name: "Comic-Con",
+    full: "Comic-Con India",
+    location: "India",
+    sub: ["Gaming Zone", "Creator Meet", "Panels"],
+    color: "#9B5DE5",
+    emoji: "🦸",
+    year: "2024",
+  },
+];
+
+const EventsSection = () => {
+  const ref = useRef<HTMLElement>(null);
+  const isInView = useInView(ref, { once: true, margin: "-80px" });
+
+  return (
+    <section ref={ref} className="border-t-2 border-[#FAF0D7]/20 px-6 py-24 md:px-12 lg:px-24">
+      <div className="mx-auto max-w-6xl">
+        {/* Header */}
+        <div className="mb-12">
+          <span className="mb-3 flex items-center gap-2 font-grotesk text-xs font-bold uppercase tracking-[0.25em] text-[#FAF0D7]/50">
+            <span className="inline-block h-2 w-2 rotate-45" style={{ background: VOLT }} />
+            Been There
+          </span>
+          <div className="flex flex-wrap items-end justify-between gap-4">
+            <motion.h2
+              initial={{ opacity: 0, y: 30 }}
+              animate={isInView ? { opacity: 1, y: 0 } : {}}
+              transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
+              className="font-display text-4xl uppercase leading-tight md:text-6xl"
+            >
+              BRANDS <span style={{ color: VOLT }}>&</span> EVENTS
+            </motion.h2>
+            <motion.p
+              initial={{ opacity: 0 }}
+              animate={isInView ? { opacity: 1 } : {}}
+              transition={{ delay: 0.3 }}
+              className="max-w-xs font-grotesk text-xs leading-relaxed text-[#FAF0D7]/50"
+            >
+              Events I've attended, brands I've worked with, moments I was part of.
+            </motion.p>
+          </div>
+        </div>
+
+        {/* Cards */}
+        <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
+          {events.map((ev, i) => (
+            <motion.div
+              key={ev.name}
+              initial={{ opacity: 0, y: 50, rotate: i % 2 === 0 ? -2 : 2 }}
+              animate={isInView ? { opacity: 1, y: 0, rotate: i % 2 === 0 ? -1 : 1 } : {}}
+              transition={{ duration: 0.6, delay: i * 0.1, type: "spring", stiffness: 130, damping: 18 }}
+              whileHover={{ rotate: 0, y: -8, transition: { duration: 0.2 } }}
+              className="group relative flex flex-col overflow-hidden border-2 border-[#FAF0D7]/20 bg-[#23291E]"
+              style={{ boxShadow: `5px 5px 0 ${ev.color}` }}
+            >
+              {/* Accent header */}
+              <div
+                className="flex items-center justify-between px-5 py-4 border-b-2 border-[#FAF0D7]/10"
+                style={{ background: ev.color + "18" }}
+              >
+                <span className="text-3xl leading-none">{ev.emoji}</span>
+                <span
+                  className="font-grotesk text-[9px] font-bold uppercase tracking-widest rounded-full px-2.5 py-0.5 border"
+                  style={{ color: ev.color, borderColor: ev.color + "50", background: ev.color + "15" }}
+                >
+                  {ev.year}
+                </span>
+              </div>
+
+              {/* Body */}
+              <div className="flex flex-1 flex-col p-5">
+                <h3
+                  className="font-display text-2xl uppercase leading-none tracking-tight mb-1"
+                  style={{ color: ev.color }}
+                >
+                  {ev.name}
+                </h3>
+                <p className="mb-1 font-grotesk text-[10px] font-bold uppercase tracking-widest text-[#FAF0D7]/40">
+                  {ev.full}
+                </p>
+                <p className="mb-4 font-grotesk text-[10px] uppercase tracking-wider text-[#FAF0D7]/30">
+                  📍 {ev.location}
+                </p>
+
+                {/* Sub-events */}
+                <div className="mt-auto flex flex-wrap gap-1.5">
+                  {ev.sub.map((s) => (
+                    <span
+                      key={s}
+                      className="rounded-sm border px-2 py-0.5 font-grotesk text-[9px] font-bold uppercase tracking-wider text-[#FAF0D7]/60"
+                      style={{ borderColor: ev.color + "40", background: ev.color + "0D" }}
+                    >
+                      {s}
+                    </span>
+                  ))}
+                </div>
+              </div>
+
+              {/* Bottom volt bar on hover */}
+              <motion.div
+                className="absolute bottom-0 left-0 h-0.5 w-full"
+                style={{ background: ev.color, originX: 0 }}
+                initial={{ scaleX: 0 }}
+                whileHover={{ scaleX: 1 }}
+                transition={{ duration: 0.3 }}
+              />
+            </motion.div>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+};
+// ─────────────────────────────────────────────────────────────────────────────
+
 // ── IRL Gallery ──────────────────────────────────────────────────────────────
 const photos = [
   { slot: 1, label: "Event drop",      hint: "Drop your event photo here", span: "md:col-span-2 md:row-span-2", tilt: -1.2 },
@@ -339,6 +484,9 @@ const GamingPage = () => {
           </div>
         </div>
       </section>
+
+      {/* Brands & Events */}
+      <EventsSection />
 
       {/* IRL Gallery */}
       <GallerySection />

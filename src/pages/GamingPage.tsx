@@ -139,15 +139,36 @@ const EventsSection = () => {
               className="group relative flex flex-col overflow-hidden border-2 border-[#FAF0D7]/20 bg-[#23291E]"
               style={{ boxShadow: `5px 5px 0 ${ev.color}` }}
             >
-              {/* Accent header */}
+              {/* Image placeholder */}
               <div
-                className="flex items-center justify-between px-5 py-4 border-b-2 border-[#FAF0D7]/10"
-                style={{ background: ev.color + "18" }}
+                className="relative flex items-center justify-center overflow-hidden border-b-2 border-[#FAF0D7]/10"
+                style={{ height: 160, background: ev.color + "12" }}
               >
-                <span className="text-3xl leading-none">{ev.emoji}</span>
+                {/* Dashed inner border */}
+                <div
+                  className="pointer-events-none absolute inset-3 rounded-sm border border-dashed"
+                  style={{ borderColor: ev.color + "35" }}
+                />
+                {/* Pulsing icon */}
+                <div className="flex flex-col items-center gap-2 text-center">
+                  <motion.span
+                    className="text-4xl leading-none"
+                    animate={{ scale: [1, 1.1, 1], opacity: [0.55, 0.9, 0.55] }}
+                    transition={{ duration: 2.6, repeat: Infinity, ease: "easeInOut", delay: i * 0.5 }}
+                  >
+                    {ev.emoji}
+                  </motion.span>
+                  <span
+                    className="font-grotesk text-[9px] font-bold uppercase tracking-widest"
+                    style={{ color: ev.color + "80" }}
+                  >
+                    Add photo
+                  </span>
+                </div>
+                {/* Year badge — top-right */}
                 <span
-                  className="font-grotesk text-[9px] font-bold uppercase tracking-widest rounded-full px-2.5 py-0.5 border"
-                  style={{ color: ev.color, borderColor: ev.color + "50", background: ev.color + "15" }}
+                  className="absolute right-3 top-3 font-grotesk text-[9px] font-bold uppercase tracking-widest rounded-full px-2.5 py-0.5 border"
+                  style={{ color: ev.color, borderColor: ev.color + "50", background: "#23291E" }}
                 >
                   {ev.year}
                 </span>

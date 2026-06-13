@@ -11,10 +11,10 @@ const PINK = "#9B5DE5";
 const TEAL = "#019EA5";
 
 const socialLinks = [
-  { href: "mailto:whoissourabh@gmail.com", icon: Mail, label: "Email", color: ORANGE },
-  { href: "https://www.linkedin.com/in/sourabh-pawar-a94039216/", icon: Linkedin, label: "LinkedIn", color: TEAL },
-  { href: "https://www.instagram.com/who_is_sourabh_/", icon: Instagram, label: "Instagram", color: PINK },
-  { href: "https://x.com/0xSOURABH", icon: Twitter, label: "X", color: VOLT },
+  { href: "mailto:whoissourabh@gmail.com", icon: Mail, label: "Email", color: ORANGE, tilt: -6 },
+  { href: "https://www.linkedin.com/in/sourabh-pawar-a94039216/", icon: Linkedin, label: "LinkedIn", color: TEAL, tilt: 4 },
+  { href: "https://www.instagram.com/who_is_sourabh_/", icon: Instagram, label: "Instagram", color: PINK, tilt: -4 },
+  { href: "https://x.com/0xSOURABH", icon: Twitter, label: "X", color: VOLT, tilt: 6 },
 ];
 
 // Decorative sticker on the sides
@@ -259,45 +259,87 @@ const ContactSection = () => {
         </motion.form>
 
         {/* Social icons */}
-        <div className="mt-14 flex flex-wrap items-center justify-center gap-3">
+        <div className="mt-14 flex flex-wrap items-center justify-center gap-4">
           {socialLinks.map((link, i) => (
-            <motion.a
+            <motion.div
               key={link.label}
-              href={link.href}
-              target={link.label !== "Email" ? "_blank" : undefined}
-              rel={link.label !== "Email" ? "noopener noreferrer" : undefined}
               initial={{ opacity: 0, y: 20 }}
               animate={isInView ? { opacity: 1, y: 0 } : {}}
               transition={{ delay: 0.65 + i * 0.1, ease: [0.22, 1, 0.36, 1] }}
               whileHover="hovered"
-              className="cursor-hover group relative overflow-hidden rounded-full border-2 px-5 py-3"
-              style={{
-                borderColor: link.color,
-                boxShadow: `4px 4px 0 ${link.color}`,
-                color: link.color,
-              }}
+              whileTap="tapped"
+              className="relative cursor-pointer"
             >
-              {/* flood fill on hover */}
+              {/* Ripple ring — sits outside overflow-hidden */}
               <motion.span
                 variants={{
-                  hovered: { scaleX: 1, originX: 0 },
+                  hovered: { scale: 1.65, opacity: 0, transition: { duration: 0.5, ease: "easeOut" } },
                 }}
-                initial={{ scaleX: 0, originX: 0 }}
-                transition={{ duration: 0.25, ease: [0.22, 1, 0.36, 1] }}
-                className="pointer-events-none absolute inset-0 rounded-full"
-                style={{ background: link.color }}
+                initial={{ scale: 1, opacity: 0 }}
+                className="pointer-events-none absolute inset-0 rounded-full border-2"
+                style={{ borderColor: link.color }}
               />
-              <motion.span
+
+              <motion.a
+                href={link.href}
+                target={link.label !== "Email" ? "_blank" : undefined}
+                rel={link.label !== "Email" ? "noopener noreferrer" : undefined}
                 variants={{
-                  hovered: { color: INK },
+                  hovered: {
+                    y: -10,
+                    rotate: link.tilt,
+                    scale: 1.08,
+                    boxShadow: `7px 7px 0 ${link.color}`,
+                    transition: { type: "spring", stiffness: 500, damping: 14 },
+                  },
+                  tapped: {
+                    y: 2,
+                    rotate: 0,
+                    scale: 0.93,
+                    boxShadow: "none",
+                    transition: { duration: 0.08 },
+                  },
                 }}
-                className="relative flex items-center gap-2 font-grotesk text-xs font-bold uppercase tracking-widest"
-                transition={{ duration: 0.15 }}
+                className="relative block overflow-hidden rounded-full border-2 px-5 py-3"
+                style={{
+                  borderColor: link.color,
+                  boxShadow: `4px 4px 0 ${link.color}`,
+                  color: link.color,
+                }}
               >
-                <link.icon className="h-4 w-4" />
-                {link.label}
-              </motion.span>
-            </motion.a>
+                {/* Flood fill */}
+                <motion.span
+                  variants={{
+                    hovered: { scaleX: 1, transition: { duration: 0.18, ease: [0.22, 1, 0.36, 1] } },
+                  }}
+                  initial={{ scaleX: 0 }}
+                  className="pointer-events-none absolute inset-0 rounded-full"
+                  style={{ background: link.color, transformOrigin: "left" }}
+                />
+
+                <span className="relative flex items-center gap-2">
+                  {/* Icon — spins on hover */}
+                  <motion.span
+                    variants={{
+                      hovered: { rotate: 360, scale: 1.3, transition: { duration: 0.4, ease: "easeOut" } },
+                      tapped: { scale: 0.8 },
+                    }}
+                    className="inline-flex"
+                  >
+                    <link.icon className="h-4 w-4" />
+                  </motion.span>
+
+                  {/* Label — turns dark when flooded */}
+                  <motion.span
+                    variants={{ hovered: { color: INK }, tapped: { color: link.color } }}
+                    className="font-grotesk text-xs font-bold uppercase tracking-widest"
+                    transition={{ duration: 0.12 }}
+                  >
+                    {link.label}
+                  </motion.span>
+                </span>
+              </motion.a>
+            </motion.div>
           ))}
         </div>
       </div>

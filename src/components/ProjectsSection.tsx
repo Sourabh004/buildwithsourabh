@@ -64,7 +64,8 @@ const StackCard = ({
     <div className="sticky" style={{ top: `${110 + index * 26}px` }}>
       <motion.div
         style={{ scale }}
-        className="glass-card relative mx-auto mb-10 max-w-4xl origin-top overflow-hidden"
+        className="relative mx-auto mb-10 max-w-4xl origin-top overflow-hidden border-2 border-foreground bg-card"
+      style={{ boxShadow: `6px 6px 0 ${project.color}` }}
       >
         {/* Color band header */}
         <div
@@ -95,7 +96,12 @@ const StackCard = ({
           <div className="flex flex-col justify-between gap-6">
             <div>
               <span className="text-[10px] font-bold uppercase tracking-[0.25em] text-primary">Impact</span>
-              <p className="mt-2 font-display text-2xl uppercase leading-tight md:text-3xl">{project.impact}</p>
+              <p
+                className="mt-2 font-display text-3xl uppercase leading-tight md:text-4xl"
+                style={{ color: project.color }}
+              >
+                {project.impact}
+              </p>
             </div>
             <div className="flex flex-wrap gap-2">
               {project.tools.map((tool) => (

@@ -24,36 +24,86 @@ const Sticker = ({
   color,
   side,
   delay,
+  variant,
 }: {
   emoji: string;
   rotate: number;
   color: string;
   side: "left" | "right";
   delay: number;
+  variant: "controller" | "lightning";
 }) => {
   const posClass = side === "left"
     ? "left-2 top-1/2 -translate-y-1/2 lg:left-8"
     : "right-2 top-1/2 -translate-y-1/2 lg:right-8";
 
+  const floatDuration = variant === "lightning" ? 2.2 : 3;
+
   return (
-    <motion.div
-      initial={{ opacity: 0, scale: 0.5, rotate: rotate - 20 }}
-      animate={{ opacity: 1, scale: 1, rotate }}
-      transition={{ delay, type: "spring", stiffness: 180, damping: 14 }}
-      whileHover={{ rotate: rotate * -0.5, scale: 1.12, y: -8 }}
-      className={`pointer-events-auto absolute hidden xl:flex ${posClass} cursor-default select-none flex-col items-center justify-center`}
-      style={{
-        width: 120,
-        height: 120,
-        background: CREAM,
-        border: `3px solid ${INK}`,
-        borderRadius: "50%",
-        boxShadow: `5px 5px 0 ${color}`,
-        fontSize: 56,
-      }}
-    >
-      {emoji}
-    </motion.div>
+    <div className={`pointer-events-auto absolute hidden xl:block ${posClass}`}>
+      {/* Entrance */}
+      <motion.div
+        initial={{ opacity: 0, scale: 0.4, rotate: rotate - 25 }}
+        animate={{ opacity: 1, scale: 1, rotate }}
+        transition={{ delay, type: "spring", stiffness: 160, damping: 14 }}
+      >
+        {/* Continuous float */}
+        <motion.div
+          animate={{ y: [0, -12, 0] }}
+          transition={{ duration: floatDuration, repeat: Infinity, ease: "easeInOut", delay: delay + 0.6 }}
+          whileHover={{ scale: 1.18, y: -18, transition: { type: "spring", stiffness: 400, damping: 14 } }}
+          className="cursor-default select-none"
+        >
+          {/* Pulsing glow ring — radiates outward */}
+          <motion.div
+            animate={{
+              boxShadow: [
+                `0 0 0 0px ${color}00`,
+                `0 0 0 14px ${color}50`,
+                `0 0 0 28px ${color}00`,
+              ],
+            }}
+            transition={{ duration: 2.4, repeat: Infinity, ease: "easeOut", delay: delay + 1.2 }}
+            className="absolute inset-0 rounded-full"
+          />
+
+          {/* Circle */}
+          <motion.div
+            animate={{
+              boxShadow: [`5px 5px 0 ${color}`, `9px 9px 0 ${color}`, `5px 5px 0 ${color}`],
+            }}
+            transition={{ duration: floatDuration, repeat: Infinity, ease: "easeInOut", delay: delay + 0.6 }}
+            className="relative flex items-center justify-center"
+            style={{
+              width: 120,
+              height: 120,
+              background: CREAM,
+              border: `3px solid ${INK}`,
+              borderRadius: "50%",
+            }}
+          >
+            {/* Emoji — controller vibrates, lightning flashes */}
+            <motion.span
+              style={{ fontSize: 52 }}
+              animate={
+                variant === "controller"
+                  ? { x: [-3, 3, -2, 2, -1, 1, 0], rotate: [-4, 4, -2, 0] }
+                  : { scale: [1, 1.35, 0.9, 1.15, 1], opacity: [1, 0.7, 1, 0.85, 1] }
+              }
+              transition={{
+                duration: variant === "lightning" ? 0.6 : 0.5,
+                repeat: Infinity,
+                repeatDelay: variant === "lightning" ? 2.5 : 3.5,
+                ease: "easeInOut",
+                delay: delay + 2,
+              }}
+            >
+              {emoji}
+            </motion.span>
+          </motion.div>
+        </motion.div>
+      </motion.div>
+    </div>
   );
 };
 
@@ -141,8 +191,8 @@ const ContactSection = () => {
       />
 
       {/* Side stickers */}
-      <Sticker emoji="🎮" rotate={-12} color={VOLT} side="left" delay={0.6} />
-      <Sticker emoji="⚡" rotate={10} color={ORANGE} side="right" delay={0.75} />
+      <Sticker emoji="🎮" rotate={-12} color={VOLT} side="left" delay={0.6} variant="controller" />
+      <Sticker emoji="⚡" rotate={10} color={ORANGE} side="right" delay={0.75} variant="lightning" />
 
       <div className="relative mx-auto max-w-2xl px-6 py-24 text-center md:py-32">
         {/* SAY HELLO badge */}

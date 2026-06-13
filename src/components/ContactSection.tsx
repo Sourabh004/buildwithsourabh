@@ -1,6 +1,6 @@
 import { motion, useInView } from "framer-motion";
 import { useRef, useState } from "react";
-import { Mail, Linkedin, Instagram, Send, ArrowUpRight } from "lucide-react";
+import { Mail, Linkedin, Instagram, Twitter, Send, ArrowUpRight } from "lucide-react";
 import { toast } from "sonner";
 
 const ContactSection = () => {
@@ -15,9 +15,10 @@ const ContactSection = () => {
   };
 
   const socialLinks = [
-    { href: "mailto:sourabh@example.com", icon: Mail, label: "Email", value: "sourabh@example.com" },
-    { href: "https://linkedin.com", icon: Linkedin, label: "LinkedIn", value: "Connect on LinkedIn" },
-    { href: "https://instagram.com", icon: Instagram, label: "Instagram", value: "Follow on Instagram" },
+    { href: "mailto:whoissourabh@gmail.com", icon: Mail, label: "Email", value: "whoissourabh@gmail.com" },
+    { href: "https://www.linkedin.com/in/sourabh-pawar-a94039216/", icon: Linkedin, label: "LinkedIn", value: "Connect on LinkedIn" },
+    { href: "https://www.instagram.com/who_is_sourabh_/", icon: Instagram, label: "Instagram", value: "@who_is_sourabh_" },
+    { href: "https://x.com/0xSOURABH", icon: Twitter, label: "X", value: "@0xSOURABH" },
   ];
 
   return (

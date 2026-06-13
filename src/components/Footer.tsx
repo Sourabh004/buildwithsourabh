@@ -25,13 +25,19 @@ const Footer = () => {
           © {new Date().getFullYear()} — Designed & built by Sourabh
         </p>
         <div className="flex gap-6">
-          {["GitHub", "LinkedIn", "Twitter"].map((name) => (
+          {[
+            { label: "LinkedIn", href: "https://www.linkedin.com/in/sourabh-pawar-a94039216/" },
+            { label: "Instagram", href: "https://www.instagram.com/who_is_sourabh_/" },
+            { label: "X", href: "https://x.com/0xSOURABH" },
+          ].map(({ label, href }) => (
             <a
-              key={name}
-              href="#"
+              key={label}
+              href={href}
+              target="_blank"
+              rel="noopener noreferrer"
               className="cursor-hover text-xs font-medium uppercase tracking-[0.12em] text-muted-foreground/50 transition-colors hover:text-foreground"
             >
-              {name}
+              {label}
             </a>
           ))}
         </div>

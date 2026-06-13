@@ -5,7 +5,7 @@ import { FlaskConical, Bot, Wrench, BarChart3, Gamepad2, Share2 } from "lucide-r
 const experiments = [
   { icon: Bot, label: "AI workflow automation", color: "#F77F1A", rotate: -2 },
   { icon: Wrench, label: "AI-powered productivity tools", color: "#019EA5", rotate: 1.5 },
-  { icon: BarChart3, label: "Data analytics projects", color: "#FF7A9C", rotate: -1 },
+  { icon: BarChart3, label: "Data analytics projects", color: "#9B5DE5", rotate: -1 },
   { icon: Gamepad2, label: "Sports & esports analytics", color: "#8B5CF6", rotate: 2.5 },
   { icon: Share2, label: "Social media experiments", color: "#F77F1A", rotate: -1.5 },
 ];

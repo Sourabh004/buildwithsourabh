@@ -31,7 +31,7 @@ const projects = [
     tools: ["Excel", "Power BI", "Statistical Analysis"],
     impact: "Dashboards revealing market patterns",
     number: "03",
-    color: "#FF7A9C",
+    color: "#9B5DE5",
   },
   {
     icon: Bot,

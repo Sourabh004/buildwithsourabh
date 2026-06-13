@@ -5,7 +5,7 @@ import { ArrowDown, Download, Mail } from "lucide-react";
 const VOLT   = "#C6F24E";
 const CREAM  = "#FAF0D7";
 const INK    = "#1F271B";
-const PINK   = "#FF7A9C";
+const PINK   = "#9B5DE5";
 const ORANGE = "#F77F1A";
 const TEAL   = "#019EA5";
 
@@ -74,7 +74,7 @@ const HeroSection = () => {
           className="mt-8 flex flex-wrap items-center gap-3"
         >
           {["AI Workflow Builder", "Community Builder", "Esports & Gaming"].map((tag, i) => {
-            const colors = ["#019EA5", "#FF7A9C", "#FCAD50"];
+            const colors = ["#019EA5", "#9B5DE5", "#FCAD50"];
             return (
               <span
                 key={tag}

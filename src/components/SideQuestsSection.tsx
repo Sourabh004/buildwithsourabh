@@ -3,7 +3,7 @@ import { motion, useInView, useScroll, useTransform, MotionValue } from "framer-
 import { PartyPopper, Terminal } from "lucide-react";
 
 const VOLT = "#C6F24E";
-const PINK = "#FF7A9C";
+const PINK = "#9B5DE5";
 const ORANGE = "#F77F1A";
 const CREAM = "#FAF0D7";
 

@@ -7,7 +7,7 @@ const INK = "#1F271B";
 const CREAM = "#FAF0D7";
 const VOLT = "#C6F24E";
 const ORANGE = "#F77F1A";
-const PINK = "#FF7A9C";
+const PINK = "#9B5DE5";
 const TEAL = "#019EA5";
 
 const socialLinks = [

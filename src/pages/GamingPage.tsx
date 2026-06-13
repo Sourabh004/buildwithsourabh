@@ -6,7 +6,7 @@ import { useLenis } from "@/hooks/useLenis";
 import CustomCursor from "@/components/CustomCursor";
 
 const VOLT = "#C6F24E";
-const PINK = "#FF7A9C";
+const PINK = "#9B5DE5";
 const TEAL = "#019EA5";
 const ORANGE = "#F77F1A";
 

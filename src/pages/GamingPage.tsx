@@ -1,7 +1,7 @@
 import { useEffect, useRef } from "react";
 import { motion, useInView } from "framer-motion";
 import { Link } from "react-router-dom";
-import { ArrowLeft, Cpu, Gamepad2, Trophy, TrendingUp, Plus, PartyPopper } from "lucide-react";
+import { ArrowLeft, Cpu, Gamepad2, Trophy, TrendingUp, Plus, PartyPopper, Camera, ImagePlus } from "lucide-react";
 import { useLenis } from "@/hooks/useLenis";
 import GamingCursor from "@/components/GamingCursor";
 
@@ -53,6 +53,107 @@ const arena = [
     color: ORANGE,
   },
 ];
+
+// ── IRL Gallery ──────────────────────────────────────────────────────────────
+const photos = [
+  { slot: 1, label: "Event drop",      hint: "Drop your event photo here", span: "md:col-span-2 md:row-span-2", tilt: -1.2 },
+  { slot: 2, label: "Meet & greet",    hint: "Gaming celeb or creator pic",  span: "",                           tilt:  1.5 },
+  { slot: 3, label: "On stage",        hint: "Stage / tournament moment",    span: "",                           tilt: -0.8 },
+  { slot: 4, label: "Behind the scenes", hint: "Event ops or backstage",     span: "",                           tilt:  2   },
+  { slot: 5, label: "Squad shot",      hint: "With your crew",               span: "",                           tilt: -1.5 },
+  { slot: 6, label: "Highlight reel",  hint: "Best moment of the night",     span: "md:col-span-2",              tilt:  0.8 },
+];
+
+const GallerySection = () => {
+  const ref = useRef<HTMLElement>(null);
+  const isInView = useInView(ref, { once: true, margin: "-80px" });
+
+  return (
+    <section ref={ref} className="border-t-2 border-[#FAF0D7]/20 px-6 py-24 md:px-12 lg:px-24">
+      <div className="mx-auto max-w-6xl">
+        {/* Header */}
+        <div className="mb-10">
+          <span className="mb-3 flex items-center gap-2 font-grotesk text-xs font-bold uppercase tracking-[0.25em] text-[#FAF0D7]/50">
+            <Camera className="h-3 w-3" style={{ color: VOLT }} /> IRL Moments
+          </span>
+          <div className="flex flex-wrap items-end justify-between gap-4">
+            <motion.h2
+              initial={{ opacity: 0, y: 30 }}
+              animate={isInView ? { opacity: 1, y: 0 } : {}}
+              transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
+              className="font-display text-4xl uppercase leading-tight md:text-6xl"
+            >
+              IN THE <span style={{ color: VOLT }}>FIELD</span>
+            </motion.h2>
+            <motion.p
+              initial={{ opacity: 0 }}
+              animate={isInView ? { opacity: 1 } : {}}
+              transition={{ delay: 0.35 }}
+              className="max-w-xs font-grotesk text-xs leading-relaxed text-[#FAF0D7]/50"
+            >
+              Events, meetups, tournaments — the gaming world IRL.
+            </motion.p>
+          </div>
+        </div>
+
+        {/* Grid */}
+        <div className="grid grid-cols-2 gap-4 md:grid-cols-4 md:grid-rows-3">
+          {photos.map((p, i) => (
+            <motion.div
+              key={p.slot}
+              initial={{ opacity: 0, y: 40, rotate: p.tilt * 2 }}
+              animate={isInView ? { opacity: 1, y: 0, rotate: p.tilt } : {}}
+              transition={{ duration: 0.6, delay: i * 0.09, type: "spring", stiffness: 130, damping: 18 }}
+              whileHover={{ rotate: 0, y: -6, scale: 1.02, transition: { duration: 0.2 } }}
+              className={`group relative overflow-hidden border-2 border-[#FAF0D7]/20 bg-[#23291E] ${p.span}`}
+              style={{ boxShadow: `4px 4px 0 ${VOLT}40`, minHeight: 180 }}
+            >
+              {/* Placeholder body */}
+              <div className="absolute inset-0 flex flex-col items-center justify-center gap-3 p-4 text-center">
+                {/* Dashed inner border */}
+                <div className="pointer-events-none absolute inset-3 border border-dashed border-[#FAF0D7]/15 rounded-sm" />
+
+                <motion.div
+                  animate={{ scale: [1, 1.12, 1], opacity: [0.4, 0.7, 0.4] }}
+                  transition={{ duration: 2.8, repeat: Infinity, ease: "easeInOut", delay: i * 0.4 }}
+                >
+                  <ImagePlus className="h-7 w-7" style={{ color: VOLT }} />
+                </motion.div>
+
+                <div>
+                  <p className="font-display text-sm uppercase tracking-wide text-[#FAF0D7]/70">
+                    {p.label}
+                  </p>
+                  <p className="mt-0.5 font-grotesk text-[10px] uppercase tracking-widest text-[#FAF0D7]/30">
+                    {p.hint}
+                  </p>
+                </div>
+
+                {/* Slot number */}
+                <span
+                  className="absolute bottom-3 right-4 font-display text-4xl font-bold leading-none"
+                  style={{ color: VOLT + "18", WebkitTextStroke: `1px ${VOLT}25` }}
+                >
+                  {String(p.slot).padStart(2, "0")}
+                </span>
+              </div>
+
+              {/* Hover accent bar */}
+              <motion.div
+                className="absolute bottom-0 left-0 h-0.5 w-full"
+                style={{ background: VOLT }}
+                initial={{ scaleX: 0, originX: 0 }}
+                whileHover={{ scaleX: 1 }}
+                transition={{ duration: 0.3 }}
+              />
+            </motion.div>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+};
+// ─────────────────────────────────────────────────────────────────────────────
 
 const heroWord = "GAMING";
 
@@ -238,6 +339,9 @@ const GamingPage = () => {
           </div>
         </div>
       </section>
+
+      {/* IRL Gallery */}
+      <GallerySection />
 
       {/* Coming soon */}
       <section ref={comingRef} className="border-t-2 border-[#FAF0D7]/20 px-6 py-24 text-center md:px-12">

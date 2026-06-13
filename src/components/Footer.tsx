@@ -14,13 +14,6 @@ const Footer = () => {
       className="border-t-2 border-foreground bg-card"
     >
       <div className="mx-auto flex max-w-7xl flex-col items-center justify-between gap-4 px-6 py-8 md:flex-row">
-        <a
-          href="#"
-          className="cursor-hover font-display text-lg uppercase italic text-primary"
-          style={{ WebkitTextStroke: "1px hsl(var(--foreground))" }}
-        >
-          Sourabh
-        </a>
         <p className="text-xs text-muted-foreground/50">
           © {new Date().getFullYear()} — Designed & built by Sourabh
         </p>

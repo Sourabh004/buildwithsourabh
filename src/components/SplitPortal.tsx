@@ -261,7 +261,7 @@ const SplitPortal = () => {
               animate={inView ? {
                 scale: 1,
                 rotate: 0,
-                left: hovered === "tech" ? "68%" : hovered === "gaming" ? "32%" : "50%",
+                left: hovered === "tech" ? "75%" : hovered === "gaming" ? "22%" : "50%",
               } : {}}
               transition={{ delay: inView ? 0 : 0.7, type: "spring", stiffness: 160, damping: 18 }}
               style={{ left: "50%" }}

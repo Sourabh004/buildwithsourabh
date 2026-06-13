@@ -74,7 +74,7 @@ const events = [
     color: "#CC1E1E",
     emoji: "🐂",
     year: "2023–24",
-    photo: "",
+    photo: "/redbull.jpg",
   },
   {
     name: "Krafton",
@@ -84,7 +84,7 @@ const events = [
     color: "#F77F1A",
     emoji: "🎮",
     year: "2023–24",
-    photo: "",
+    photo: "/krafton.jpg",
   },
   {
     name: "Comic-Con",
@@ -94,7 +94,7 @@ const events = [
     color: "#9B5DE5",
     emoji: "🦸",
     year: "2024",
-    photo: "",
+    photo: "/comiccon.jpg",
   },
 ];
 

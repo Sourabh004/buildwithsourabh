@@ -1,125 +1,274 @@
-import { motion, useInView } from "framer-motion";
+import { motion, useInView, AnimatePresence } from "framer-motion";
 import { useRef, useState } from "react";
-import { Mail, Linkedin, Instagram, Twitter, Send, ArrowUpRight } from "lucide-react";
+import { Mail, Linkedin, Instagram, Twitter, ArrowRight } from "lucide-react";
 import { toast } from "sonner";
+
+const INK = "#1F271B";
+const CREAM = "#FAF0D7";
+const VOLT = "#C6F24E";
+const ORANGE = "#F77F1A";
+const PINK = "#FF7A9C";
+const TEAL = "#019EA5";
+
+const socialLinks = [
+  { href: "mailto:whoissourabh@gmail.com", icon: Mail, label: "Email", color: ORANGE },
+  { href: "https://www.linkedin.com/in/sourabh-pawar-a94039216/", icon: Linkedin, label: "LinkedIn", color: TEAL },
+  { href: "https://www.instagram.com/who_is_sourabh_/", icon: Instagram, label: "Instagram", color: PINK },
+  { href: "https://x.com/0xSOURABH", icon: Twitter, label: "X", color: VOLT },
+];
+
+// Decorative sticker on the sides
+const Sticker = ({
+  emoji,
+  rotate,
+  color,
+  side,
+  delay,
+}: {
+  emoji: string;
+  rotate: number;
+  color: string;
+  side: "left" | "right";
+  delay: number;
+}) => {
+  const posClass = side === "left"
+    ? "left-2 top-1/2 -translate-y-1/2 lg:left-8"
+    : "right-2 top-1/2 -translate-y-1/2 lg:right-8";
+
+  return (
+    <motion.div
+      initial={{ opacity: 0, scale: 0.5, rotate: rotate - 20 }}
+      animate={{ opacity: 1, scale: 1, rotate }}
+      transition={{ delay, type: "spring", stiffness: 180, damping: 14 }}
+      whileHover={{ rotate: rotate * -0.5, scale: 1.12, y: -8 }}
+      className={`pointer-events-auto absolute hidden xl:flex ${posClass} cursor-default select-none flex-col items-center justify-center`}
+      style={{
+        width: 120,
+        height: 120,
+        background: CREAM,
+        border: `3px solid ${INK}`,
+        borderRadius: "50%",
+        boxShadow: `5px 5px 0 ${color}`,
+        fontSize: 56,
+      }}
+    >
+      {emoji}
+    </motion.div>
+  );
+};
+
+// Underline-only input with volt focus line
+const UnderlineInput = ({
+  value,
+  onChange,
+  placeholder,
+  type = "text",
+  required,
+  as = "input",
+  rows,
+}: {
+  value: string;
+  onChange: (v: string) => void;
+  placeholder: string;
+  type?: string;
+  required?: boolean;
+  as?: "input" | "textarea";
+  rows?: number;
+}) => {
+  const [focused, setFocused] = useState(false);
+  const Tag = as as "input" | "textarea";
+
+  return (
+    <div className="relative w-full">
+      <Tag
+        value={value}
+        onChange={(e) => onChange(e.target.value)}
+        onFocus={() => setFocused(true)}
+        onBlur={() => setFocused(false)}
+        placeholder={placeholder}
+        type={type}
+        required={required}
+        rows={rows}
+        className="w-full resize-none bg-transparent pb-3 pt-1 font-grotesk text-sm font-bold uppercase tracking-widest outline-none placeholder:text-[#FAF0D7]/30"
+        style={{ color: CREAM }}
+      />
+      {/* static dim underline */}
+      <span className="absolute bottom-0 left-0 h-px w-full" style={{ background: `${CREAM}30` }} />
+      {/* animated volt underline on focus */}
+      <motion.span
+        className="absolute bottom-0 left-0 h-px"
+        initial={false}
+        animate={{ width: focused ? "100%" : "0%" }}
+        transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1] }}
+        style={{ background: VOLT }}
+      />
+    </div>
+  );
+};
 
 const ContactSection = () => {
   const ref = useRef(null);
-  const isInView = useInView(ref, { once: true, margin: "-100px" });
-  const [form, setForm] = useState({ name: "", email: "", message: "" });
+  const isInView = useInView(ref, { once: true, margin: "-80px" });
+  const [form, setForm] = useState({ email: "", message: "" });
+  const [sent, setSent] = useState(false);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    toast.success("Message sent! Sourabh will get back to you soon.");
-    setForm({ name: "", email: "", message: "" });
+    setSent(true);
+    toast.success("Message sent! I'll get back to you soon.");
+    setTimeout(() => {
+      setForm({ email: "", message: "" });
+      setSent(false);
+    }, 2500);
   };
 
-  const socialLinks = [
-    { href: "mailto:whoissourabh@gmail.com", icon: Mail, label: "Email", value: "whoissourabh@gmail.com" },
-    { href: "https://www.linkedin.com/in/sourabh-pawar-a94039216/", icon: Linkedin, label: "LinkedIn", value: "Connect on LinkedIn" },
-    { href: "https://www.instagram.com/who_is_sourabh_/", icon: Instagram, label: "Instagram", value: "@who_is_sourabh_" },
-    { href: "https://x.com/0xSOURABH", icon: Twitter, label: "X", value: "@0xSOURABH" },
-  ];
-
   return (
-    <section id="contact" className="section-padding" ref={ref}>
-      <div className="mx-auto max-w-5xl">
+    <section
+      id="contact"
+      ref={ref}
+      className="relative overflow-hidden border-t-2 border-foreground"
+      style={{ background: INK }}
+    >
+      {/* Subtle volt grid overlay */}
+      <div
+        className="pointer-events-none absolute inset-0"
+        style={{
+          backgroundImage: `linear-gradient(${VOLT}08 1px, transparent 1px), linear-gradient(90deg, ${VOLT}08 1px, transparent 1px)`,
+          backgroundSize: "80px 80px",
+        }}
+      />
+
+      {/* Side stickers */}
+      <Sticker emoji="🎮" rotate={-12} color={VOLT} side="left" delay={0.6} />
+      <Sticker emoji="⚡" rotate={10} color={ORANGE} side="right" delay={0.75} />
+
+      <div className="relative mx-auto max-w-2xl px-6 py-24 text-center md:py-32">
+        {/* SAY HELLO badge */}
         <motion.div
-          initial={{ opacity: 0, y: 30 }}
-          animate={isInView ? { opacity: 1, y: 0 } : {}}
-          transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
-          className="mb-16"
+          initial={{ opacity: 0, y: -20, rotate: -6 }}
+          animate={isInView ? { opacity: 1, y: 0, rotate: -3 } : {}}
+          transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
+          className="mb-8 inline-block"
         >
-          <span className="section-label">
-            <span className="inline-block h-2 w-2 rotate-45 bg-primary" />
-            Contact
-          </span>
-          <div className="overflow-hidden">
-            <motion.h2
-              initial={{ y: "100%" }}
-              animate={isInView ? { y: "0%" } : {}}
-              transition={{ duration: 0.8, delay: 0.1, ease: [0.22, 1, 0.36, 1] }}
-              className="font-display text-4xl uppercase leading-tight md:text-6xl"
-            >
-              Let's Make Your
-              <br />
-              <span className="text-primary">Wish Come True</span>
-            </motion.h2>
-          </div>
-          <motion.p
-            initial={{ opacity: 0 }}
-            animate={isInView ? { opacity: 1 } : {}}
-            transition={{ delay: 0.4 }}
-            className="mt-4 max-w-lg text-sm leading-relaxed text-muted-foreground"
+          <span
+            className="inline-block rounded-full border-2 px-5 py-2 font-display text-sm uppercase tracking-widest"
+            style={{ background: VOLT, borderColor: INK, color: INK, boxShadow: `3px 3px 0 ${CREAM}` }}
           >
-            Have a project in mind or want to chat about data, AI, or community building? I'd love to hear from you.
-          </motion.p>
+            ✦ Say Hello
+          </span>
         </motion.div>
 
-        <div className="grid gap-10 md:grid-cols-2">
-          {/* Social links */}
-          <div className="flex flex-col justify-center gap-4">
-            {socialLinks.map((link, i) => (
-              <motion.a
-                key={link.label}
-                href={link.href}
-                target={link.label !== "Email" ? "_blank" : undefined}
-                rel={link.label !== "Email" ? "noopener noreferrer" : undefined}
-                initial={{ opacity: 0, x: -30 }}
-                animate={isInView ? { opacity: 1, x: 0 } : {}}
-                transition={{ duration: 0.6, delay: 0.15 + i * 0.12, ease: [0.22, 1, 0.36, 1] }}
-                whileHover={{ x: 6 }}
-                className="cursor-hover group flex items-center gap-4 rounded-2xl border border-border/40 bg-card/40 p-5 backdrop-blur-sm transition-all duration-300 hover:border-primary/30 hover:glow-primary"
-              >
-                <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-primary/10 ring-1 ring-primary/20 transition-colors group-hover:bg-primary/20">
-                  <link.icon className="h-4 w-4 text-primary" />
-                </div>
-                <div className="flex-1">
-                  <p className="text-[10px] font-semibold uppercase tracking-[0.15em] text-muted-foreground">{link.label}</p>
-                  <p className="mt-0.5 font-display text-sm font-medium">{link.value}</p>
-                </div>
-                <ArrowUpRight className="h-4 w-4 text-muted-foreground/50 transition-all duration-300 group-hover:text-primary group-hover:-translate-y-0.5 group-hover:translate-x-0.5" />
-              </motion.a>
-            ))}
-          </div>
-
-          {/* Contact form */}
-          <motion.form
-            initial={{ opacity: 0, x: 30 }}
-            animate={isInView ? { opacity: 1, x: 0 } : {}}
-            transition={{ duration: 0.7, delay: 0.25, ease: [0.22, 1, 0.36, 1] }}
-            onSubmit={handleSubmit}
-            className="flex flex-col gap-4 rounded-2xl border border-border/40 bg-card/40 p-6 backdrop-blur-sm"
+        {/* Main heading */}
+        <div className="overflow-hidden mb-12">
+          <motion.h2
+            initial={{ y: "110%" }}
+            animate={isInView ? { y: "0%" } : {}}
+            transition={{ duration: 0.8, delay: 0.1, ease: [0.22, 1, 0.36, 1] }}
+            className="font-display text-5xl uppercase leading-[1.0] tracking-tight md:text-7xl lg:text-8xl"
+            style={{ color: CREAM }}
           >
-            <input
-              value={form.name}
-              onChange={(e) => setForm({ ...form, name: e.target.value })}
-              placeholder="Your name"
-              required
-              className="rounded-xl border border-border/50 bg-background/50 px-4 py-3 text-sm outline-none placeholder:text-muted-foreground/50 focus:border-primary/40 focus:ring-1 focus:ring-primary/30 transition-all"
-            />
-            <input
-              value={form.email}
-              onChange={(e) => setForm({ ...form, email: e.target.value })}
-              type="email"
-              placeholder="Your email"
-              required
-              className="rounded-xl border border-border/50 bg-background/50 px-4 py-3 text-sm outline-none placeholder:text-muted-foreground/50 focus:border-primary/40 focus:ring-1 focus:ring-primary/30 transition-all"
-            />
-            <textarea
-              value={form.message}
-              onChange={(e) => setForm({ ...form, message: e.target.value })}
-              placeholder="Your message"
-              rows={4}
-              required
-              className="resize-none rounded-xl border border-border/50 bg-background/50 px-4 py-3 text-sm outline-none placeholder:text-muted-foreground/50 focus:border-primary/40 focus:ring-1 focus:ring-primary/30 transition-all"
-            />
-            <button type="submit" className="btn-brutal cursor-hover mt-1 w-full">
-              <Send className="h-4 w-4" />
-              Send Message
-            </button>
-          </motion.form>
+            Got an idea?
+            <br />
+            <motion.span
+              whileHover={{ skewX: -4 }}
+              transition={{ type: "spring", stiffness: 300, damping: 20 }}
+              className="inline-block"
+              style={{ color: ORANGE }}
+            >
+              Let's build it.
+            </motion.span>
+          </motion.h2>
         </div>
+
+        {/* Form */}
+        <motion.form
+          initial={{ opacity: 0, y: 30 }}
+          animate={isInView ? { opacity: 1, y: 0 } : {}}
+          transition={{ duration: 0.7, delay: 0.3, ease: [0.22, 1, 0.36, 1] }}
+          onSubmit={handleSubmit}
+          className="flex flex-col gap-8"
+        >
+          <UnderlineInput
+            value={form.email}
+            onChange={(v) => setForm({ ...form, email: v })}
+            placeholder="Your best email"
+            type="email"
+            required
+          />
+          <UnderlineInput
+            value={form.message}
+            onChange={(v) => setForm({ ...form, message: v })}
+            placeholder="Tell me what you're building..."
+            as="textarea"
+            rows={3}
+            required
+          />
+
+          {/* CTA button */}
+          <motion.button
+            type="submit"
+            whileHover={{ x: 3, y: 3, boxShadow: `2px 2px 0 ${VOLT}` }}
+            whileTap={{ x: 5, y: 5, boxShadow: "none" }}
+            transition={{ type: "spring", stiffness: 400, damping: 18 }}
+            className="cursor-hover mt-2 w-full rounded-full border-2 py-4 font-display text-lg uppercase tracking-widest"
+            style={{
+              background: CREAM,
+              borderColor: CREAM,
+              color: INK,
+              boxShadow: `5px 5px 0 ${VOLT}`,
+            }}
+          >
+            <AnimatePresence mode="wait">
+              {sent ? (
+                <motion.span
+                  key="sent"
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -10 }}
+                  className="flex items-center justify-center gap-2"
+                >
+                  ✦ Sent!
+                </motion.span>
+              ) : (
+                <motion.span
+                  key="idle"
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -10 }}
+                  className="flex items-center justify-center gap-2"
+                >
+                  Send it <ArrowRight className="h-5 w-5" />
+                </motion.span>
+              )}
+            </AnimatePresence>
+          </motion.button>
+        </motion.form>
+
+        {/* Social icons */}
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={isInView ? { opacity: 1 } : {}}
+          transition={{ delay: 0.6 }}
+          className="mt-14 flex items-center justify-center gap-3"
+        >
+          {socialLinks.map((link, i) => (
+            <motion.a
+              key={link.label}
+              href={link.href}
+              target={link.label !== "Email" ? "_blank" : undefined}
+              rel={link.label !== "Email" ? "noopener noreferrer" : undefined}
+              initial={{ opacity: 0, y: 16 }}
+              animate={isInView ? { opacity: 1, y: 0 } : {}}
+              transition={{ delay: 0.65 + i * 0.08 }}
+              whileHover={{ y: -4, boxShadow: `3px 3px 0 ${link.color}`, borderColor: link.color }}
+              className="cursor-hover flex items-center gap-2 rounded-full border-2 px-4 py-2 font-grotesk text-[11px] font-bold uppercase tracking-widest transition-colors"
+              style={{ borderColor: `${CREAM}30`, color: CREAM }}
+            >
+              <link.icon className="h-3.5 w-3.5" />
+              {link.label}
+            </motion.a>
+          ))}
+        </motion.div>
       </div>
     </section>
   );

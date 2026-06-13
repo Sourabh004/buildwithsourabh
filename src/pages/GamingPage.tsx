@@ -3,7 +3,7 @@ import { motion, useInView } from "framer-motion";
 import { Link } from "react-router-dom";
 import { ArrowLeft, Cpu, Gamepad2, Trophy, TrendingUp, Plus, PartyPopper } from "lucide-react";
 import { useLenis } from "@/hooks/useLenis";
-import CustomCursor from "@/components/CustomCursor";
+import GamingCursor from "@/components/GamingCursor";
 
 const VOLT = "#C6F24E";
 const PINK = "#9B5DE5";
@@ -129,8 +129,8 @@ const GamingPage = () => {
   const comingInView = useInView(comingRef, { once: true, margin: "-80px" });
 
   return (
-    <div className="relative min-h-screen bg-[#1F271B] text-[#FAF0D7]">
-      <CustomCursor />
+    <div className="relative min-h-screen bg-[#1F271B] text-[#FAF0D7] cursor-none">
+      <GamingCursor />
 
       {/* Mini nav */}
       <header className="fixed inset-x-0 top-0 z-50 flex items-center justify-between border-b-2 border-[#FAF0D7]/20 bg-[#1F271B] px-6 py-4 md:px-12">

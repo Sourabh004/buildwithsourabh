@@ -7,6 +7,7 @@ const CREAM  = "#FAF0D7";
 const INK    = "#1F271B";
 const PINK   = "#FF7A9C";
 const ORANGE = "#F77F1A";
+const TEAL   = "#019EA5";
 
 const lineReveal = {
   hidden: { y: "110%" },
@@ -125,57 +126,49 @@ const HeroSection = () => {
         </motion.div>
       </motion.div>
 
-      {/* Floating terminal card */}
+      {/* Floating sticky note */}
       <motion.div
-        initial={{ opacity: 0, y: 30, rotate: -6 }}
-        animate={{ opacity: 1, y: 0, rotate: -3 }}
+        initial={{ opacity: 0, y: 30, rotate: -8 }}
+        animate={{ opacity: 1, y: 0, rotate: -4 }}
         transition={{ delay: 1.1, type: "spring", stiffness: 120, damping: 14 }}
         className="absolute bottom-16 right-6 z-10 hidden md:bottom-20 md:right-20 md:block"
       >
         <motion.div
-          animate={{ y: [0, -10, 0] }}
+          animate={{ y: [0, -8, 0] }}
           transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
-          className="overflow-hidden border-2"
-          style={{ background: INK, borderColor: INK, boxShadow: `6px 6px 0 ${VOLT}`, width: 210 }}
+          whileHover={{ rotate: -1, scale: 1.04 }}
+          className="border-2 border-foreground"
+          style={{ background: VOLT, boxShadow: `6px 6px 0 ${INK}`, width: 210 }}
         >
-          {/* Title bar */}
-          <div
-            className="flex items-center justify-between px-3 py-2 border-b"
-            style={{ borderColor: `${VOLT}30` }}
-          >
-            <span className="font-mono text-[10px] font-bold" style={{ color: VOLT }}>
-              sourabh.exe
-            </span>
-            <span className="flex gap-1.5">
-              <span className="h-2.5 w-2.5 rounded-full" style={{ background: PINK }} />
-              <span className="h-2.5 w-2.5 rounded-full" style={{ background: ORANGE }} />
-              <span className="h-2.5 w-2.5 rounded-full" style={{ background: VOLT }} />
-            </span>
-          </div>
+          {/* Sticky strip at top */}
+          <div className="h-6 w-full border-b-2 border-foreground" style={{ background: `${INK}18` }} />
 
-          {/* Body rows */}
-          <div className="space-y-2 px-3 py-3 font-mono text-[11px]">
+          {/* Note content */}
+          <div className="px-4 py-4 space-y-3">
             {[
-              { key: "ROLE",   val: "PM + Vibe Coder" },
-              { key: "STACK",  val: "AI & Automation" },
-              { key: "ENERGY", val: "Esports & Gaming" },
-            ].map(({ key, val }) => (
-              <p key={key} className="flex gap-2">
-                <span style={{ color: VOLT }}>{key}</span>
-                <span style={{ color: `${CREAM}50` }}>→</span>
-                <span style={{ color: CREAM }}>{val}</span>
-              </p>
+              { dot: ORANGE, label: "Role",   val: "PM + Vibe Coder" },
+              { dot: PINK,   label: "Stack",  val: "AI & Automation" },
+              { dot: TEAL,   label: "Energy", val: "Esports & Gaming" },
+            ].map(({ dot, label, val }) => (
+              <div key={label} className="flex items-start gap-2">
+                <span className="mt-1.5 h-2 w-2 shrink-0 rounded-full border border-foreground" style={{ background: dot }} />
+                <div>
+                  <p className="font-grotesk text-[9px] font-bold uppercase tracking-widest" style={{ color: `${INK}70` }}>{label}</p>
+                  <p className="font-display text-sm uppercase leading-tight" style={{ color: INK }}>{val}</p>
+                </div>
+              </div>
             ))}
-            <p className="flex gap-2 pt-0.5">
-              <span style={{ color: VOLT }}>STATUS</span>
-              <span style={{ color: `${CREAM}50` }}>→</span>
-              <span style={{ color: CREAM }}>Building</span>
+            <div className="flex items-center gap-2 pt-1 border-t border-foreground/20">
               <motion.span
-                animate={{ opacity: [1, 0, 1] }}
-                transition={{ duration: 1, repeat: Infinity }}
-                style={{ color: VOLT }}
-              >▮</motion.span>
-            </p>
+                animate={{ opacity: [1, 0.3, 1] }}
+                transition={{ duration: 1.4, repeat: Infinity }}
+                className="h-2 w-2 rounded-full"
+                style={{ background: INK }}
+              />
+              <span className="font-grotesk text-[10px] font-bold uppercase tracking-widest" style={{ color: INK }}>
+                Currently building...
+              </span>
+            </div>
           </div>
         </motion.div>
       </motion.div>

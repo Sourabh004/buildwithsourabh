@@ -34,7 +34,7 @@ const HeroSection = () => {
               animate="visible"
               className="block text-[clamp(2.6rem,8.5vw,7.5rem)]"
             >
-              AI. PM &amp;
+              AI, PM &amp;
             </motion.span>
           </div>
           <div className="overflow-hidden">

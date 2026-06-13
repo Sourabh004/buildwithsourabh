@@ -11,35 +11,50 @@ interface TrailPoint {
   x: number; y: number; vx: number; vy: number; life: number;
 }
 
-// Inline robot SVG — circuit-faced bot
-const RobotSVG = () => (
-  <svg width="36" height="36" viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg">
-    {/* Glow filter */}
+// Pixel-art Claude Code mascot (orange squid)
+const P = 4; // pixel size
+const O = "#E8774A"; // orange body
+const D = "#8B3A1A"; // dark shadow/detail
+const W = "#FAD5B0"; // highlight
+
+const pixels: ([number, number, string])[] = [
+  // row 0 — top head bumps
+  [2,0,O],[3,0,O],[4,0,O],[5,0,O],[6,0,O],[7,0,O],
+  // row 1
+  [1,1,O],[2,1,O],[3,1,O],[4,1,O],[5,1,O],[6,1,O],[7,1,O],[8,1,O],
+  // row 2 — face with eyes
+  [0,2,O],[1,2,O],[2,2,W],[3,2,D],[4,2,O],[5,2,O],[6,2,D],[7,2,W],[8,2,O],[9,2,O],
+  // row 3
+  [0,3,O],[1,3,O],[2,3,O],[3,3,O],[4,3,O],[5,3,O],[6,3,O],[7,3,O],[8,3,O],[9,3,O],
+  // row 4 — blush / smile
+  [0,4,O],[1,4,O],[2,4,D],[3,4,O],[4,4,O],[5,4,O],[6,4,O],[7,4,D],[8,4,O],[9,4,O],
+  // row 5 — body
+  [1,5,O],[2,5,O],[3,5,O],[4,5,O],[5,5,O],[6,5,O],[7,5,O],[8,5,O],
+  // row 6
+  [1,6,O],[2,6,O],[3,6,O],[4,6,O],[5,6,O],[6,6,O],[7,6,O],[8,6,O],
+  // row 7 — legs split
+  [0,7,O],[1,7,O],[3,7,O],[4,7,O],[5,7,O],[6,7,O],[8,7,O],[9,7,O],
+  // row 8 — feet
+  [0,8,O],[1,8,O],[3,8,D],[4,8,D],[5,8,D],[6,8,D],[8,8,O],[9,8,O],
+];
+
+const ClaudePixel = () => (
+  <svg
+    width={10 * P} height={9 * P}
+    viewBox={`0 0 ${10 * P} ${9 * P}`}
+    style={{ imageRendering: "pixelated" }}
+  >
     <defs>
-      <filter id="glow" x="-40%" y="-40%" width="180%" height="180%">
-        <feGaussianBlur stdDeviation="2.5" result="blur" />
+      <filter id="cglow" x="-30%" y="-30%" width="160%" height="160%">
+        <feGaussianBlur stdDeviation="3" result="blur" />
         <feMerge><feMergeNode in="blur" /><feMergeNode in="SourceGraphic" /></feMerge>
       </filter>
     </defs>
-    {/* Antenna */}
-    <line x1="18" y1="2" x2="18" y2="7" stroke={GREEN} strokeWidth="1.5" strokeLinecap="round" filter="url(#glow)" />
-    <circle cx="18" cy="1.5" r="1.5" fill={GREEN} filter="url(#glow)" />
-    {/* Head */}
-    <rect x="7" y="7" width="22" height="16" rx="3" stroke={GREEN} strokeWidth="1.5" filter="url(#glow)" />
-    {/* Eyes */}
-    <rect x="11" y="11" width="5" height="4" rx="1" fill={GREEN} filter="url(#glow)" />
-    <rect x="20" y="11" width="5" height="4" rx="1" fill={GREEN} filter="url(#glow)" />
-    {/* Mouth */}
-    <line x1="13" y1="19" x2="15" y2="19" stroke={GREEN} strokeWidth="1.5" strokeLinecap="round" />
-    <line x1="17" y1="19" x2="19" y2="19" stroke={GREEN} strokeWidth="1.5" strokeLinecap="round" />
-    <line x1="21" y1="19" x2="23" y2="19" stroke={GREEN} strokeWidth="1.5" strokeLinecap="round" />
-    {/* Neck */}
-    <line x1="15" y1="23" x2="15" y2="26" stroke={GREEN} strokeWidth="1.5" />
-    <line x1="21" y1="23" x2="21" y2="26" stroke={GREEN} strokeWidth="1.5" />
-    {/* Body */}
-    <rect x="9" y="26" width="18" height="9" rx="2" stroke={GREEN} strokeWidth="1.5" filter="url(#glow)" />
-    {/* Chest LED */}
-    <circle cx="18" cy="30.5" r="2" fill={GREEN} filter="url(#glow)" />
+    <g filter="url(#cglow)">
+      {pixels.map(([x, y, fill]) => (
+        <rect key={`${x}-${y}`} x={x * P} y={y * P} width={P} height={P} fill={fill} />
+      ))}
+    </g>
   </svg>
 );
 
@@ -186,13 +201,13 @@ const TechCursor = () => {
     <>
       <canvas ref={canvasRef} className="pointer-events-none fixed inset-0 z-[9998]" />
 
-      {/* Robot companion — drags behind */}
+      {/* Claude Code pixel mascot — drags behind */}
       <div
         ref={robotRef}
         className="pointer-events-none fixed z-[9997]"
-        style={{ opacity: 0.85 }}
+        style={{ opacity: 0.92 }}
       >
-        <RobotSVG />
+        <ClaudePixel />
       </div>
 
       {/* {|} brace cursor — sits exactly at pointer */}

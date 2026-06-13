@@ -1,24 +1,30 @@
 import { useEffect, useRef } from "react";
 
-const TRAIL_MAX = 14;
+const TRAIL_MAX = 12;
 const GREEN_RGB = "0, 255, 65";
 const GREEN = "#00FF41";
+
+const BASE_GAP  = 2;   // px margin each side of center char — tight
+const HOVER_GAP = 8;   // spread on hover
 
 interface TrailPoint {
   x: number; y: number; vx: number; vy: number; life: number;
 }
 
 const TechCursor = () => {
-  const cursorRef  = useRef<HTMLDivElement>(null);
-  const charRef    = useRef<HTMLSpanElement>(null);
-  const canvasRef  = useRef<HTMLCanvasElement>(null);
-  const hoveredRef = useRef(false);
+  const wrapRef   = useRef<HTMLDivElement>(null);
+  const centerRef = useRef<HTMLSpanElement>(null);
+  const canvasRef = useRef<HTMLCanvasElement>(null);
+
+  const gapRef      = useRef(BASE_GAP);
+  const targetGap   = useRef(BASE_GAP);
+  const hoveredRef  = useRef(false);
 
   useEffect(() => {
-    const cursor = cursorRef.current;
-    const char   = charRef.current;
+    const wrap   = wrapRef.current;
+    const center = centerRef.current;
     const canvas = canvasRef.current;
-    if (!cursor || !char || !canvas) return;
+    if (!wrap || !center || !canvas) return;
 
     const resize = () => { canvas.width = window.innerWidth; canvas.height = window.innerHeight; };
     resize();
@@ -28,33 +34,36 @@ const TechCursor = () => {
     let mouseX = 0, mouseY = 0, prevX = 0, prevY = 0;
     let rafId: number;
     const trail: TrailPoint[] = [];
+    const lerp = (a: number, b: number, t: number) => a + (b - a) * t;
 
     const onMouseMove = (e: MouseEvent) => {
       prevX = mouseX; prevY = mouseY;
       mouseX = e.clientX; mouseY = e.clientY;
-      cursor.style.left = `${mouseX}px`;
-      cursor.style.top  = `${mouseY}px`;
+      wrap.style.left = `${mouseX}px`;
+      wrap.style.top  = `${mouseY}px`;
       trail.push({ x: mouseX, y: mouseY, vx: mouseX - prevX, vy: mouseY - prevY, life: 1 });
       if (trail.length > TRAIL_MAX) trail.shift();
     };
 
-    // Blink the underscore at 530ms (terminal rate)
-    let blinkVisible = true;
+    // Blink the pipe at 500ms
+    let blinkOn = true;
     const blinkId = setInterval(() => {
       if (!hoveredRef.current) {
-        blinkVisible = !blinkVisible;
-        char.style.opacity = blinkVisible ? "1" : "0";
+        blinkOn = !blinkOn;
+        center.style.opacity = blinkOn ? "1" : "0";
       }
-    }, 530);
+    }, 500);
 
     const onEnter = () => {
       hoveredRef.current = true;
-      char.textContent = "█";
-      char.style.opacity = "1";
+      targetGap.current  = HOVER_GAP;
+      center.style.opacity = "1";
+      center.textContent   = "·";
     };
     const onLeave = () => {
       hoveredRef.current = false;
-      char.textContent = "_";
+      targetGap.current  = BASE_GAP;
+      center.textContent  = "|";
     };
 
     const attach = () => {
@@ -66,13 +75,17 @@ const TechCursor = () => {
       });
     };
     attach();
-
     const observer = new MutationObserver(attach);
     observer.observe(document.body, { childList: true, subtree: true });
 
     const animate = () => {
+      // Smooth gap interpolation
+      gapRef.current = lerp(gapRef.current, targetGap.current, 0.18);
+      center.style.margin = `0 ${gapRef.current}px`;
+
+      // Trail
       for (const p of trail) {
-        p.life = Math.max(0, p.life - 0.055);
+        p.life = Math.max(0, p.life - 0.06);
         p.x -= p.vx * 0.04;
         p.y -= p.vy * 0.04;
       }
@@ -80,14 +93,15 @@ const TechCursor = () => {
       for (let i = 0; i < trail.length; i++) {
         const p = trail[i];
         const t = i / TRAIL_MAX;
-        const opacity = p.life * t * 0.5;
-        const radius  = t * 4 * p.life;
+        const opacity = p.life * t * 0.45;
+        const radius  = t * 3.5 * p.life;
         if (radius < 0.3) continue;
         ctx.beginPath();
         ctx.arc(p.x, p.y, radius, 0, Math.PI * 2);
         ctx.fillStyle = `rgba(${GREEN_RGB}, ${opacity})`;
         ctx.fill();
       }
+
       rafId = requestAnimationFrame(animate);
     };
     animate();
@@ -102,29 +116,31 @@ const TechCursor = () => {
     };
   }, []);
 
+  const textStyle: React.CSSProperties = {
+    fontFamily: "'Courier New', Courier, monospace",
+    fontSize: 22,
+    fontWeight: "bold",
+    color: GREEN,
+    textShadow: `0 0 8px ${GREEN}, 0 0 20px ${GREEN}, 0 0 40px ${GREEN}70`,
+    lineHeight: 1,
+    userSelect: "none",
+    whiteSpace: "nowrap",
+  };
+
   return (
     <>
       <canvas ref={canvasRef} className="pointer-events-none fixed inset-0 z-[9998]" />
 
-      {/* Terminal prompt — positioned left of cursor tip, centred vertically */}
       <div
-        ref={cursorRef}
-        className="pointer-events-none fixed z-[9999] select-none"
-        style={{ transform: "translate(4px, -50%)" }}
+        ref={wrapRef}
+        className="pointer-events-none fixed z-[9999]"
+        style={{ transform: "translate(-50%, -50%)" }}
       >
-        <span
-          style={{
-            fontFamily: "'Courier New', Courier, monospace",
-            fontSize: 22,
-            fontWeight: "bold",
-            color: GREEN,
-            textShadow: `0 0 8px ${GREEN}, 0 0 18px ${GREEN}, 0 0 40px ${GREEN}90`,
-            whiteSpace: "nowrap",
-            letterSpacing: "0.02em",
-          }}
-        >
-          {">"}&thinsp;<span ref={charRef}>_</span>
-        </span>
+        <div style={{ display: "flex", alignItems: "center" }}>
+          <span style={textStyle}>{"{"}</span>
+          <span ref={centerRef} style={{ ...textStyle, margin: `0 ${BASE_GAP}px` }}>|</span>
+          <span style={textStyle}>{"}"}</span>
+        </div>
       </div>
     </>
   );

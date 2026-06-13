@@ -68,8 +68,8 @@ const HeroSection = () => {
           transition={{ duration: 0.6, delay: 0.9 }}
           className="mt-8 flex flex-wrap items-center gap-3"
         >
-          {["Esports & Gaming", "AI Workflow Builder", "Community Builder"].map((tag, i) => {
-            const colors = ["#FCAD50", "#019EA5", "#FF7A9C"];
+          {["AI Workflow Builder", "Community Builder", "Esports & Gaming"].map((tag, i) => {
+            const colors = ["#019EA5", "#FF7A9C", "#FCAD50"];
             return (
               <span
                 key={tag}

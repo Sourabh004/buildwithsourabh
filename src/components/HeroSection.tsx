@@ -112,8 +112,8 @@ const HeroSection = () => {
           transition={{ duration: 0.5, delay: 1.2 }}
           className="mt-10 flex flex-wrap items-center gap-4"
         >
-          <a href="#projects" className="btn-brutal cursor-hover">
-            View Projects <ArrowDown className="h-4 w-4" />
+          <a href="#sides" className="btn-brutal cursor-hover">
+            Pick a side <ArrowDown className="h-4 w-4" />
           </a>
           <a
             href="/SOURABH_K_Resume.pdf"

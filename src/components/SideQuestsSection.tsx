@@ -1,0 +1,268 @@
+import { useRef } from "react";
+import { motion, useInView, useScroll, useTransform, MotionValue } from "framer-motion";
+import { PartyPopper, Terminal } from "lucide-react";
+
+const VOLT = "#C6F24E";
+const PINK = "#FF7A9C";
+const ORANGE = "#F77F1A";
+const CREAM = "#FAF0D7";
+
+const terminalLines = [
+  { text: "$ whoami", color: CREAM },
+  { text: "> sourabh — event runner / vibe coder", color: VOLT },
+  { text: '$ git commit -m "vibe: it works, don\'t touch it"', color: CREAM },
+  { text: "$ git push --force   # yolo", color: CREAM },
+  { text: "✔ shipped: 3 bugs, 1 feature (a classic ratio)", color: PINK },
+  { text: "$ book-sourabh --event your-tournament", color: CREAM },
+  { text: "> scheduling... see you at the venue ✦", color: VOLT },
+];
+
+type WordFx = "wave" | "glitch";
+
+// One flat word stream — color marks the highlight words, br marks line breaks,
+// fx adds a special letter-level hover effect
+const statementWords: { t: string; c?: string; br?: boolean; fx?: WordFx }[] = [
+  { t: "I" },
+  { t: "FREELANCE", br: true },
+  { t: "GAMING", c: ORANGE },
+  { t: "EVENTS", c: ORANGE },
+  { t: "—", br: true },
+  { t: "OR" },
+  { t: "ELSE" },
+  { t: "I'M", br: true },
+  { t: "VIBE", c: VOLT, fx: "wave" },
+  { t: "CODING", c: VOLT, fx: "wave" },
+  { t: "&", br: true },
+  { t: "SHIPPING" },
+  { t: "BUGS", c: PINK, br: true, fx: "glitch" },
+  { t: "&" },
+  { t: "FEATURES" },
+  { t: "!!!", c: VOLT },
+];
+
+// Letter-level hover effects: "wave" = rainbow mexican wave, "glitch" = bug panic
+const letterFx: Record<WordFx, (i: number) => object> = {
+  wave: (i) => ({
+    y: [0, -18, 0],
+    color: [VOLT, PINK, ORANGE, "#019EA5", VOLT],
+    transition: { delay: i * 0.06, duration: 0.7, repeat: Infinity, repeatDelay: 0.35 },
+  }),
+  glitch: (i) => ({
+    x: [0, -3, 4, -2, 3, 0],
+    y: [0, 3, -5, 2, -3, 0],
+    rotate: [0, -6, 7, -3, 4, 0],
+    color: [PINK, CREAM, PINK, VOLT, PINK],
+    transition: { delay: i * 0.03, duration: 0.3, repeat: Infinity },
+  }),
+};
+
+/** Word fills in with scroll, jumps + tilts when hovered */
+const QuestWord = ({
+  word,
+  index,
+  total,
+  progress,
+}: {
+  word: (typeof statementWords)[0];
+  index: number;
+  total: number;
+  progress: MotionValue<number>;
+}) => {
+  // Overlapping windows so the fill sweeps through quickly
+  const start = (index / total) * 0.82;
+  const end = start + 0.18;
+  const opacity = useTransform(progress, [start, end], [0.12, 1]);
+  const y = useTransform(progress, [start, end], [24, 0]);
+
+  // Special words explode into per-letter animation on hover
+  if (word.fx) {
+    return (
+      <>
+        <motion.span
+          style={{ opacity, y, color: word.c ?? CREAM }}
+          initial="rest"
+          whileHover="fx"
+          className="relative inline-block cursor-default whitespace-pre"
+        >
+          {word.t.split("").map((ch, li) => (
+            <motion.span
+              key={li}
+              custom={li}
+              variants={{
+                // explicit reset so letters snap home when the hover ends
+                rest: { x: 0, y: 0, rotate: 0, color: word.c ?? CREAM },
+                fx: letterFx[word.fx!],
+              }}
+              className="inline-block"
+            >
+              {ch}
+            </motion.span>
+          ))}
+          {!word.br && " "}
+          {/* A bug makes a run for it when you hover BUGS */}
+          {word.fx === "glitch" && (
+            <motion.span
+              variants={{
+                rest: { opacity: 0, x: 0, y: 0, rotate: 0 },
+                fx: {
+                  opacity: [0, 1, 1, 1, 0],
+                  x: [0, 30, 60, 95, 130],
+                  y: [0, -10, 4, -12, 2],
+                  rotate: [0, 20, -15, 25, 10],
+                  transition: { duration: 1.3, repeat: Infinity },
+                },
+              }}
+              className="pointer-events-none absolute -right-6 top-1 text-3xl"
+            >
+              🐛
+            </motion.span>
+          )}
+        </motion.span>
+        {word.br && <br />}
+      </>
+    );
+  }
+
+  return (
+    <>
+      <motion.span
+        style={{ opacity, y, color: word.c ?? CREAM }}
+        whileHover={{
+          y: -10,
+          rotate: index % 2 ? 3 : -3,
+          scale: 1.06,
+          transition: { type: "spring", stiffness: 400, damping: 12 },
+        }}
+        className="inline-block cursor-default whitespace-pre"
+      >
+        {word.t}
+        {!word.br && " "}
+      </motion.span>
+      {word.br && <br />}
+    </>
+  );
+};
+
+/** Dark inverted band on the cream home page — events freelancing + vibe coding */
+const SideQuestsSection = () => {
+  const ref = useRef(null);
+  const inView = useInView(ref, { once: true, margin: "-80px" });
+  const { scrollYProgress } = useScroll({
+    target: ref,
+    offset: ["start 0.85", "start 0.3"],
+  });
+
+  return (
+    <section
+      ref={ref}
+      className="relative overflow-hidden border-y-2 border-foreground bg-[#1F271B] px-6 py-24 text-[#FAF0D7] md:px-12 lg:px-24"
+    >
+      {/* Subtle volt grid */}
+      <div
+        className="pointer-events-none absolute inset-0"
+        style={{
+          backgroundImage: `linear-gradient(${VOLT}0D 1px, transparent 1px), linear-gradient(90deg, ${VOLT}0D 1px, transparent 1px)`,
+          backgroundSize: "70px 70px",
+        }}
+      />
+
+      <div className="relative mx-auto grid max-w-6xl items-center gap-12 lg:grid-cols-2">
+        {/* Statement */}
+        <div>
+          <motion.span
+            initial={{ opacity: 0 }}
+            animate={inView ? { opacity: 1 } : {}}
+            className="mb-6 flex items-center gap-2 font-grotesk text-xs font-bold uppercase tracking-[0.25em] text-[#FAF0D7]/50"
+          >
+            <span className="inline-block h-2 w-2 rotate-45" style={{ background: ORANGE }} />
+            Side Quests
+          </motion.span>
+
+          <h2 className="font-display text-4xl uppercase leading-[1.08] tracking-tight md:text-6xl">
+            {statementWords.map((word, i) => (
+              <QuestWord
+                key={i}
+                word={word}
+                index={i}
+                total={statementWords.length}
+                progress={scrollYProgress}
+              />
+            ))}
+          </h2>
+
+          <motion.p
+            initial={{ opacity: 0, y: 16 }}
+            animate={inView ? { opacity: 1, y: 0 } : {}}
+            transition={{ delay: 0.7 }}
+            className="mt-6 max-w-md text-sm leading-relaxed text-[#FAF0D7]/60"
+          >
+            Tournaments, watch parties, community nights — if it's a gaming event, I can run it.
+            Between gigs I'm building things with AI and pretending the bugs are features.
+          </motion.p>
+
+          <motion.a
+            initial={{ opacity: 0, y: 16 }}
+            animate={inView ? { opacity: 1, y: 0 } : {}}
+            transition={{ delay: 0.85 }}
+            href="#contact"
+            className="cursor-hover mt-8 inline-flex items-center gap-2 rounded-full border-2 px-6 py-3 font-grotesk text-xs font-bold uppercase tracking-widest transition-transform hover:translate-x-[2px] hover:translate-y-[2px]"
+            style={{ borderColor: ORANGE, color: ORANGE, boxShadow: `4px 4px 0 ${ORANGE}` }}
+          >
+            <PartyPopper className="h-4 w-4" /> Book me for your event
+          </motion.a>
+        </div>
+
+        {/* Fake terminal */}
+        <motion.div
+          initial={{ opacity: 0, y: 50, rotate: 2 }}
+          animate={inView ? { opacity: 1, y: 0, rotate: 1 } : {}}
+          transition={{ duration: 0.7, delay: 0.3, ease: [0.22, 1, 0.36, 1] }}
+          className="overflow-hidden border-2"
+          style={{ borderColor: VOLT, boxShadow: `8px 8px 0 ${VOLT}`, background: "#15190F" }}
+        >
+          {/* Title bar */}
+          <div
+            className="flex items-center justify-between border-b-2 px-4 py-3"
+            style={{ borderColor: `${VOLT}40` }}
+          >
+            <span
+              className="flex items-center gap-2 font-grotesk text-[10px] font-bold uppercase tracking-widest"
+              style={{ color: VOLT }}
+            >
+              <Terminal className="h-3.5 w-3.5" /> vibe-station — zsh
+            </span>
+            <span className="flex gap-1.5">
+              <span className="h-3 w-3 rounded-full" style={{ background: PINK }} />
+              <span className="h-3 w-3 rounded-full" style={{ background: ORANGE }} />
+              <span className="h-3 w-3 rounded-full" style={{ background: VOLT }} />
+            </span>
+          </div>
+
+          {/* Lines type in one by one */}
+          <div className="space-y-3 p-5 font-mono text-xs md:text-sm">
+            {terminalLines.map((line, i) => (
+              <motion.p
+                key={i}
+                initial={{ opacity: 0, x: -12 }}
+                animate={inView ? { opacity: 1, x: 0 } : {}}
+                transition={{ delay: 0.6 + i * 0.35, duration: 0.25 }}
+                style={{ color: line.color }}
+              >
+                {line.text}
+              </motion.p>
+            ))}
+            <motion.span
+              initial={{ opacity: 0 }}
+              animate={inView ? { opacity: [1, 0, 1] } : {}}
+              transition={{ delay: 0.6 + terminalLines.length * 0.35, duration: 1, repeat: Infinity }}
+              className="inline-block h-4 w-2.5"
+              style={{ background: VOLT }}
+            />
+          </div>
+        </motion.div>
+      </div>
+    </section>
+  );
+};
+
+export default SideQuestsSection;

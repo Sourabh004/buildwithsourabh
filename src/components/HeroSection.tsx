@@ -126,49 +126,101 @@ const HeroSection = () => {
         </motion.div>
       </motion.div>
 
-      {/* Floating sticky note */}
+      {/* Sticky note — peek from right edge, slide in on hover */}
       <motion.div
-        initial={{ opacity: 0, y: 30, rotate: -8 }}
-        animate={{ opacity: 1, y: 0, rotate: -4 }}
-        transition={{ delay: 1.1, type: "spring", stiffness: 120, damping: 14 }}
-        className="absolute bottom-16 right-6 z-10 hidden md:bottom-20 md:right-20 md:block"
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ delay: 1.3 }}
+        whileHover="open"
+        className="absolute bottom-24 right-0 z-20 hidden cursor-pointer md:block"
+        style={{ width: 220 }}
       >
         <motion.div
-          animate={{ y: [0, -8, 0] }}
-          transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
-          whileHover={{ rotate: -1, scale: 1.04 }}
-          className="border-2 border-foreground"
-          style={{ background: VOLT, boxShadow: `6px 6px 0 ${INK}`, width: 210 }}
+          variants={{
+            open: { x: -16, rotate: -3, transition: { type: "spring", stiffness: 220, damping: 22 } },
+          }}
+          initial={{ x: "calc(100% - 36px)", rotate: -6 }}
+          animate={{ x: "calc(100% - 36px)", rotate: -6 }}
+          style={{ originX: 1, originY: 0.5 }}
         >
-          {/* Sticky strip at top */}
-          <div className="h-6 w-full border-b-2 border-foreground" style={{ background: `${INK}18` }} />
-
-          {/* Note content */}
-          <div className="px-4 py-4 space-y-3">
-            {[
-              { dot: ORANGE, label: "Role",   val: "PM + Vibe Coder" },
-              { dot: PINK,   label: "Stack",  val: "AI & Automation" },
-              { dot: TEAL,   label: "Energy", val: "Esports & Gaming" },
-            ].map(({ dot, label, val }) => (
-              <div key={label} className="flex items-start gap-2">
-                <span className="mt-1.5 h-2 w-2 shrink-0 rounded-full border border-foreground" style={{ background: dot }} />
-                <div>
-                  <p className="font-grotesk text-[9px] font-bold uppercase tracking-widest" style={{ color: `${INK}70` }}>{label}</p>
-                  <p className="font-display text-sm uppercase leading-tight" style={{ color: INK }}>{val}</p>
-                </div>
-              </div>
-            ))}
-            <div className="flex items-center gap-2 pt-1 border-t border-foreground/20">
-              <motion.span
-                animate={{ opacity: [1, 0.3, 1] }}
-                transition={{ duration: 1.4, repeat: Infinity }}
-                className="h-2 w-2 rounded-full"
-                style={{ background: INK }}
-              />
-              <span className="font-grotesk text-[10px] font-bold uppercase tracking-widest" style={{ color: INK }}>
-                Currently building...
+          {/* Paper sticky note */}
+          <div
+            className="overflow-hidden"
+            style={{
+              width: 220,
+              background: "linear-gradient(160deg, #fffef0 0%, #fef9c3 60%, #fef3a0 100%)",
+              boxShadow: "1px 2px 8px rgba(0,0,0,0.18), 3px 5px 20px rgba(0,0,0,0.12), inset 0 1px 0 rgba(255,255,255,0.8)",
+              borderRadius: 2,
+            }}
+          >
+            {/* Volt adhesive strip at top */}
+            <div
+              className="flex items-center justify-between px-3"
+              style={{
+                height: 28,
+                background: `linear-gradient(180deg, ${VOLT} 0%, #b8e040 100%)`,
+                boxShadow: "inset 0 -1px 0 rgba(0,0,0,0.12)",
+              }}
+            >
+              <span className="font-grotesk text-[9px] font-black uppercase tracking-widest" style={{ color: INK }}>
+                who am i
               </span>
+              {/* Peek arrow — visible when closed */}
+              <motion.span
+                variants={{ open: { opacity: 0 } }}
+                className="font-bold text-xs"
+                style={{ color: INK }}
+              >
+                ←
+              </motion.span>
             </div>
+
+            {/* Faint ruled lines — paper feel */}
+            <div className="relative px-4 pt-3 pb-4 space-y-3"
+              style={{
+                backgroundImage: "repeating-linear-gradient(transparent, transparent 23px, #e5d9a0 23px, #e5d9a0 24px)",
+                backgroundPositionY: "12px",
+              }}
+            >
+              {[
+                { dot: ORANGE, label: "Role",   val: "PM + Vibe Coder" },
+                { dot: PINK,   label: "Stack",  val: "AI & Automation" },
+                { dot: TEAL,   label: "Energy", val: "Esports & Gaming" },
+              ].map(({ dot, label, val }) => (
+                <div key={label} className="flex items-start gap-2">
+                  <span className="mt-1.5 h-2.5 w-2.5 shrink-0 rounded-full" style={{ background: dot, boxShadow: `0 0 0 1.5px ${INK}40` }} />
+                  <div>
+                    <p className="font-grotesk text-[8px] font-bold uppercase tracking-widest opacity-50" style={{ color: INK }}>{label}</p>
+                    <p className="font-display text-sm uppercase leading-tight" style={{ color: INK }}>{val}</p>
+                  </div>
+                </div>
+              ))}
+
+              {/* Status row */}
+              <div className="flex items-center gap-2 pt-0.5">
+                <motion.span
+                  animate={{ opacity: [1, 0.2, 1] }}
+                  transition={{ duration: 1.4, repeat: Infinity }}
+                  className="h-2 w-2 rounded-full"
+                  style={{ background: INK }}
+                />
+                <span className="font-grotesk text-[9px] font-bold uppercase tracking-widest opacity-60" style={{ color: INK }}>
+                  Currently building...
+                </span>
+              </div>
+            </div>
+
+            {/* Folded corner */}
+            <div
+              className="absolute bottom-0 right-0"
+              style={{
+                width: 0, height: 0,
+                borderStyle: "solid",
+                borderWidth: "0 0 18px 18px",
+                borderColor: `transparent transparent #c9b84a transparent`,
+                filter: "drop-shadow(-1px -1px 2px rgba(0,0,0,0.15))",
+              }}
+            />
           </div>
         </motion.div>
       </motion.div>

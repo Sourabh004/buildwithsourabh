@@ -1,5 +1,5 @@
 import { useRef, useState } from "react";
-import { motion, useInView } from "framer-motion";
+import { motion, useInView, AnimatePresence } from "framer-motion";
 import { Link } from "react-router-dom";
 import { ArrowUpRight, Cpu, Gamepad2 } from "lucide-react";
 
@@ -238,40 +238,86 @@ const SplitPortal = () => {
           </motion.div>
         ))}
 
-        {/* Spinning "pick your side" badge on the seam */}
-        <motion.div
-          initial={{ scale: 0, rotate: -180 }}
-          animate={
-            inView
-              ? {
-                  scale: 1,
-                  rotate: 0,
-                  // ride the seam as the hovered panel grows (1.6 vs 0.75 flex)
-                  left: hovered === "tech" ? "68%" : hovered === "gaming" ? "32%" : "50%",
-                }
-              : {}
-          }
-          transition={{
-            delay: inView ? 0 : 0.7,
-            type: "spring",
-            stiffness: 160,
-            damping: 18,
-          }}
-          style={{ left: "50%" }}
-          className="pointer-events-none absolute top-1/2 z-20 hidden -translate-x-1/2 -translate-y-1/2 md:block"
-        >
-          <div className="relative flex h-32 w-32 items-center justify-center rounded-full border-2 border-foreground bg-background shadow-[6px_6px_0_hsl(var(--foreground))]">
-            <svg viewBox="0 0 100 100" className="absolute inset-0 h-full w-full animate-spin-slow">
-              <defs>
-                <path id="portal-circle" d="M 50,50 m -38,0 a 38,38 0 1,1 76,0 a 38,38 0 1,1 -76,0" />
-              </defs>
-              <text className="fill-foreground font-grotesk text-[9.5px] font-bold uppercase tracking-[0.22em]">
-                <textPath href="#portal-circle">PICK YOUR SIDE ✦ PICK YOUR SIDE ✦</textPath>
-              </text>
-            </svg>
-            <span className="font-display text-2xl uppercase text-primary">VS</span>
-          </div>
-        </motion.div>
+        {/* Spinning badge on the seam — reacts to which side is hovered */}
+        {(() => {
+          const badgeBg =
+            hovered === "tech"    ? "#C6F24E"               // volt  → nudge user toward gaming
+            : hovered === "gaming" ? "#F77F1A"              // orange → nudge user toward tech
+            : "hsl(var(--background))";
+          const badgeBorder =
+            hovered ? "#1F271B" : "hsl(var(--foreground))";
+          const ringText =
+            hovered === "tech"    ? "ENTER GAMING ✦ ENTER GAMING ✦"
+            : hovered === "gaming" ? "ENTER TECH ✦ ENTER TECH ✦"
+            : "PICK YOUR SIDE ✦ PICK YOUR SIDE ✦";
+          const CenterIcon =
+            hovered === "tech"    ? Gamepad2
+            : hovered === "gaming" ? Cpu
+            : null;
+
+          return (
+            <motion.div
+              initial={{ scale: 0, rotate: -180 }}
+              animate={inView ? {
+                scale: 1,
+                rotate: 0,
+                left: hovered === "tech" ? "68%" : hovered === "gaming" ? "32%" : "50%",
+              } : {}}
+              transition={{ delay: inView ? 0 : 0.7, type: "spring", stiffness: 160, damping: 18 }}
+              style={{ left: "50%" }}
+              className="pointer-events-none absolute top-1/2 z-20 hidden -translate-x-1/2 -translate-y-1/2 md:block"
+            >
+              <motion.div
+                animate={{ background: badgeBg, borderColor: badgeBorder }}
+                transition={{ duration: 0.3 }}
+                className="relative flex h-32 w-32 items-center justify-center rounded-full border-2"
+                style={{ boxShadow: `6px 6px 0 ${badgeBorder}` }}
+              >
+                {/* Spinning ring text — swaps on hover */}
+                <svg viewBox="0 0 100 100" className="absolute inset-0 h-full w-full animate-spin-slow">
+                  <defs>
+                    <path id="portal-circle" d="M 50,50 m -38,0 a 38,38 0 1,1 76,0 a 38,38 0 1,1 -76,0" />
+                  </defs>
+                  <text
+                    fill={hovered ? "#1F271B" : "hsl(var(--foreground))"}
+                    fontFamily="inherit"
+                    fontSize="9.5"
+                    fontWeight="bold"
+                    letterSpacing="0.22em"
+                  >
+                    <textPath href="#portal-circle">{ringText}</textPath>
+                  </text>
+                </svg>
+
+                {/* Center — VS idle, icon when hovered */}
+                <AnimatePresence mode="wait">
+                  {CenterIcon ? (
+                    <motion.span
+                      key={hovered}
+                      initial={{ scale: 0, rotate: -30 }}
+                      animate={{ scale: 1, rotate: 0 }}
+                      exit={{ scale: 0, rotate: 30 }}
+                      transition={{ type: "spring", stiffness: 300, damping: 18 }}
+                    >
+                      <CenterIcon className="h-9 w-9" style={{ color: "#1F271B" }} />
+                    </motion.span>
+                  ) : (
+                    <motion.span
+                      key="vs"
+                      initial={{ scale: 0 }}
+                      animate={{ scale: 1 }}
+                      exit={{ scale: 0 }}
+                      transition={{ type: "spring", stiffness: 300, damping: 18 }}
+                      className="font-display text-2xl uppercase text-primary"
+                    >
+                      VS
+                    </motion.span>
+                  )}
+                </AnimatePresence>
+              </motion.div>
+            </motion.div>
+          );
+        })()}
       </div>
     </section>
   );

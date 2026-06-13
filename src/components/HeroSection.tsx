@@ -34,7 +34,7 @@ const HeroSection = () => {
               animate="visible"
               className="block text-[clamp(2.6rem,8.5vw,7.5rem)]"
             >
-              Making Data
+              AI. PM &amp;
             </motion.span>
           </div>
           <div className="overflow-hidden">
@@ -45,7 +45,7 @@ const HeroSection = () => {
               animate="visible"
               className="block text-[clamp(2.6rem,8.5vw,7.5rem)]"
             >
-              <span className="text-primary">Go Boom</span> — I'm
+              <span className="text-primary">Vibe Code</span> —
             </motion.span>
           </div>
           <div className="overflow-hidden">
@@ -56,7 +56,7 @@ const HeroSection = () => {
               animate="visible"
               className="block text-[clamp(2.6rem,8.5vw,7.5rem)]"
             >
-              Sourabh<span className="text-primary">.</span>
+              I'm Sourabh<span className="text-primary">.</span>
             </motion.span>
           </div>
         </h1>

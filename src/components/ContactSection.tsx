@@ -307,16 +307,6 @@ const ContactSection = () => {
                   color: link.color,
                 }}
               >
-                {/* Flood fill */}
-                <motion.span
-                  variants={{
-                    hovered: { scaleX: 1, transition: { duration: 0.18, ease: [0.22, 1, 0.36, 1] } },
-                  }}
-                  initial={{ scaleX: 0 }}
-                  className="pointer-events-none absolute inset-0 rounded-full"
-                  style={{ background: link.color, transformOrigin: "left" }}
-                />
-
                 <span className="relative flex items-center gap-2">
                   {/* Icon — spins on hover */}
                   <motion.span
@@ -329,14 +319,9 @@ const ContactSection = () => {
                     <link.icon className="h-4 w-4" />
                   </motion.span>
 
-                  {/* Label — turns dark when flooded */}
-                  <motion.span
-                    variants={{ hovered: { color: INK }, tapped: { color: link.color } }}
-                    className="font-grotesk text-xs font-bold uppercase tracking-widest"
-                    transition={{ duration: 0.12 }}
-                  >
+                  <span className="font-grotesk text-xs font-bold uppercase tracking-widest">
                     {link.label}
-                  </motion.span>
+                  </span>
                 </span>
               </motion.a>
             </motion.div>

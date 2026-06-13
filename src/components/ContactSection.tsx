@@ -166,7 +166,7 @@ const ContactSection = () => {
             initial={{ y: "110%" }}
             animate={isInView ? { y: "0%" } : {}}
             transition={{ duration: 0.8, delay: 0.1, ease: [0.22, 1, 0.36, 1] }}
-            className="font-display text-5xl uppercase leading-[1.0] tracking-tight md:text-7xl lg:text-8xl"
+            className="font-display uppercase leading-[1.0] tracking-tight text-[clamp(2rem,6.5vw,3.75rem)] whitespace-nowrap"
             style={{ color: CREAM }}
           >
             Got an idea?

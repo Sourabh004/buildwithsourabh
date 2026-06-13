@@ -3,7 +3,7 @@ import { motion } from "framer-motion";
 import { Link } from "react-router-dom";
 import { ArrowLeft, Gamepad2 } from "lucide-react";
 import { useLenis } from "@/hooks/useLenis";
-import CustomCursor from "@/components/CustomCursor";
+import TechCursor from "@/components/TechCursor";
 import VelocityMarquee from "@/components/VelocityMarquee";
 import SkillsSection from "@/components/SkillsSection";
 import AIStackSection from "@/components/AIStackSection";
@@ -23,8 +23,8 @@ const TechPage = () => {
   }, []);
 
   return (
-    <div className="relative min-h-screen bg-background">
-      <CustomCursor />
+    <div className="relative min-h-screen bg-background cursor-none">
+      <TechCursor />
 
       {/* Mini nav */}
       <header className="fixed inset-x-0 top-0 z-50 flex items-center justify-between border-b-2 border-foreground bg-background px-6 py-4 md:px-12">

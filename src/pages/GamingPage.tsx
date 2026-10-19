@@ -1,12 +1,13 @@
-import { useEffect, useRef } from "react";
-import { motion, useInView } from "framer-motion";
-import { Gamepad2, Trophy, TrendingUp, Plus, PartyPopper, MousePointerClick } from "lucide-react";
+import { useEffect } from "react";
+import { motion } from "framer-motion";
+import { Gamepad2, MousePointerClick } from "lucide-react";
 import { useLenis } from "@/hooks/useLenis";
 import GamingCursor from "@/components/GamingCursor";
 import SideHeader from "@/components/SideHeader";
 import Footer from "@/components/Footer";
 import ContactSection from "@/components/ContactSection";
 import OnTheRoadSection from "@/components/OnTheRoadSection";
+import ArenaSection from "@/components/ArenaSection";
 import { PageWipe, SectionHeading, TiltCard } from "@/components/brutal";
 import { GamingScene, SceneSlot } from "@/components/three/SceneSlot";
 
@@ -16,50 +17,6 @@ const TEAL = "#019EA5";
 const ORANGE = "#F77F1A";
 const CREAM = "#FAF0D7";
 const INK = "#1F271B";
-
-/* Add new gaming cards here — they slot straight into the grid */
-const arena = [
-  {
-    num: "01",
-    icon: Trophy,
-    title: "MOTORSPORT",
-    sub: "Race weekends, telemetry & strategy",
-    body: "F1 is my favourite dataset. Lap deltas, tyre strategy, pit windows — I follow the racing through the numbers behind it.",
-    stat: "F1",
-    statLabel: "Favourite series",
-    color: VOLT,
-  },
-  {
-    num: "02",
-    icon: Gamepad2,
-    title: "PC GAMING",
-    sub: "Deep in the ecosystem",
-    body: "From indie titles to competitive scenes — I understand what makes games sticky, what drives engagement, and why communities form.",
-    stat: "PC",
-    statLabel: "Platform of choice",
-    color: PINK,
-  },
-  {
-    num: "03",
-    icon: TrendingUp,
-    title: "ESPORTS",
-    sub: "Viewership & community analytics",
-    body: "Tracking the growth of esports: viewership analytics, audience behaviour, community dynamics and the creator economy.",
-    stat: "↑",
-    statLabel: "Always growing",
-    color: TEAL,
-  },
-  {
-    num: "04",
-    icon: PartyPopper,
-    title: "GAMING EVENTS",
-    sub: "Freelance — tournaments & community nights",
-    body: "I freelance gaming events — tournaments, watch parties, community nights and esports activations. Planning, ops, hype: handled.",
-    stat: "OPEN",
-    statLabel: "For event gigs",
-    color: ORANGE,
-  },
-];
 
 const events = [
   {
@@ -114,53 +71,6 @@ const GlitchLetter = ({ char, i }: { char: string; i: number }) => (
     {char}
   </motion.span>
 );
-
-const ArenaCard = ({ item, i }: { item: (typeof arena)[0]; i: number }) => {
-  const ref = useRef(null);
-  const inView = useInView(ref, { once: true, margin: "-60px" });
-  const Icon = item.icon;
-
-  return (
-    <motion.div
-      ref={ref}
-      initial={{ opacity: 0, y: 70, rotateX: 30 }}
-      animate={inView ? { opacity: 1, y: 0, rotateX: 0 } : {}}
-      transition={{ duration: 0.8, delay: (i % 2) * 0.12, ease: [0.22, 1, 0.36, 1] }}
-      style={{ transformPerspective: 1200 }}
-    >
-      <TiltCard className="cursor-hover rounded-2xl border-2" shadow={item.color} style={{ borderColor: item.color, background: "#23291E" }}>
-        <div className="h-2 w-full rounded-t-[14px]" style={{ background: item.color }} />
-        <div className="p-6 md:p-8" style={{ transform: "translateZ(30px)" }}>
-          <div className="mb-6 flex items-center justify-between">
-            <span
-              className="flex h-12 w-12 items-center justify-center rounded-xl border-2"
-              style={{ borderColor: item.color, background: item.color, transform: "translateZ(30px) rotate(-6deg)" }}
-            >
-              <Icon className="h-5 w-5" style={{ color: INK }} />
-            </span>
-            <span className="font-display text-5xl opacity-20" style={{ color: item.color }}>
-              {item.num}
-            </span>
-          </div>
-          <h3
-            className="mb-1 font-display uppercase leading-none"
-            style={{ color: item.color, fontSize: "clamp(1.5rem, 0.6rem + 1.6vw, 2.5rem)" }}
-          >
-            {item.title}
-          </h3>
-          <p className="mb-4 font-grotesk text-[10px] font-bold uppercase tracking-widest text-[#FAF0D7]/50">{item.sub}</p>
-          <p className="mb-8 text-sm leading-relaxed text-[#FAF0D7]/75">{item.body}</p>
-          <div className="flex items-baseline gap-3 border-t border-[#FAF0D7]/15 pt-4">
-            <span className="font-display text-4xl" style={{ color: item.color }}>
-              {item.stat}
-            </span>
-            <span className="font-grotesk text-xs font-bold uppercase tracking-widest text-[#FAF0D7]/50">{item.statLabel}</span>
-          </div>
-        </div>
-      </TiltCard>
-    </motion.div>
-  );
-};
 
 const EventsSection = () => (
   <section className="border-t-2 border-[#FAF0D7]/20 px-6 py-24 md:px-12 lg:px-24">
@@ -227,9 +137,6 @@ const GamingPage = () => {
   useEffect(() => {
     window.scrollTo(0, 0);
   }, []);
-
-  const comingRef = useRef(null);
-  const comingInView = useInView(comingRef, { once: true, margin: "-80px" });
 
   return (
     <div className="relative min-h-screen bg-[#1F271B] text-[#FAF0D7] cursor-none">
@@ -315,51 +222,10 @@ const GamingPage = () => {
         </motion.div>
       </div>
 
-      {/* Arena grid */}
-      <section className="px-6 py-24 md:px-12 lg:px-24">
-        <div className="mx-auto max-w-6xl">
-          <SectionHeading label="The Arena" dark>
-            What I'm <span style={{ color: VOLT }}>Into</span>
-          </SectionHeading>
-          <div className="grid gap-8 md:grid-cols-2">
-            {arena.map((item, i) => (
-              <ArenaCard key={item.num} item={item} i={i} />
-            ))}
-          </div>
-        </div>
-      </section>
+      <ArenaSection />
 
       <OnTheRoadSection />
       <EventsSection />
-
-      {/* Coming soon */}
-      <section ref={comingRef} className="border-t-2 border-[#FAF0D7]/20 px-6 py-24 text-center md:px-12">
-        <motion.div
-          initial={{ opacity: 0, y: 40 }}
-          animate={comingInView ? { opacity: 1, y: 0 } : {}}
-          transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
-        >
-          <span
-            className="mx-auto mb-8 flex w-fit items-center gap-2 rounded-full border-2 px-4 py-1.5 font-grotesk text-[10px] font-bold uppercase tracking-widest"
-            style={{ borderColor: PINK, color: PINK }}
-          >
-            <Plus className="h-3.5 w-3.5" /> Patch notes incoming
-          </span>
-          <h2 className="font-display text-5xl uppercase leading-none md:text-8xl" style={{ WebkitTextStroke: `2px ${VOLT}`, color: "transparent" }}>
-            MORE LOADING
-            <motion.span
-              animate={{ opacity: [1, 0, 1] }}
-              transition={{ duration: 1.2, repeat: Infinity }}
-              style={{ WebkitTextStroke: "0px", color: VOLT }}
-            >
-              _
-            </motion.span>
-          </h2>
-          <p className="mx-auto mt-6 max-w-sm text-sm leading-relaxed text-[#FAF0D7]/60">
-            New drops on the way — setups, watchlists, esports breakdowns and more. Check back soon.
-          </p>
-        </motion.div>
-      </section>
 
       <ContactSection />
       <Footer />

@@ -228,6 +228,8 @@
   height: 10px;
   background: hsl(var(--primary));
   border: 1.5px solid hsl(var(--foreground));
+  /* thin cream halo keeps the ink border readable on the dark Gaming page */
+  box-shadow: 0 0 0 1.5px #FAF0D7;
   border-radius: 50%;
   position: fixed;
   top: 0;
@@ -241,7 +243,9 @@
 .cursor-ring {
   width: 40px;
   height: 40px;
-  border: 2px solid hsl(var(--foreground) / 0.6);
+  /* white + difference blend = dark ring on cream, light ring on dark pages */
+  border: 2px solid rgba(255, 255, 255, 0.85);
+  mix-blend-mode: difference;
   border-radius: 50%;
   position: fixed;
   top: 0;
@@ -258,6 +262,7 @@
   height: 64px;
   border-color: hsl(var(--primary));
   background: hsl(var(--primary) / 0.12);
+  mix-blend-mode: normal;
 }
 
 @media (pointer: coarse) {

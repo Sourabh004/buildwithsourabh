@@ -2,7 +2,6 @@ import { useEffect } from "react";
 import { motion } from "framer-motion";
 import { ArrowDown, MousePointerClick } from "lucide-react";
 import { useLenis } from "@/hooks/useLenis";
-import TechCursor from "@/components/TechCursor";
 import SideHeader from "@/components/SideHeader";
 import { PageWipe } from "@/components/brutal";
 import { SceneSlot, TechScene } from "@/components/three/SceneSlot";
@@ -27,7 +26,6 @@ const TechPage = () => {
   return (
     <div className="relative min-h-screen bg-background cursor-none">
       <PageWipe colors={["#019EA5", "#F77F1A"]} />
-      <TechCursor />
       <SideHeader side="tech" />
 
       {/* Page hero — copy left, live 3D workflow right */}

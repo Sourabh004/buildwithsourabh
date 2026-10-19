@@ -2,14 +2,12 @@ import { Link, useLocation } from "react-router-dom";
 import { motion } from "framer-motion";
 import { ArrowLeft } from "lucide-react";
 import { NotFoundScene, SceneSlot } from "@/components/three/SceneSlot";
-import CustomCursor from "@/components/CustomCursor";
 
 const NotFound = () => {
   const { pathname } = useLocation();
 
   return (
     <div className="relative flex min-h-screen flex-col items-center justify-center overflow-hidden bg-background px-6 text-center">
-      <CustomCursor />
       <SceneSlot className="h-[360px] w-full max-w-3xl md:h-[440px]">{(active) => <NotFoundScene active={active} />}</SceneSlot>
       <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.3 }}>
         <h1 className="font-display text-3xl uppercase md:text-5xl">

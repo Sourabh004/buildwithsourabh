@@ -2,7 +2,6 @@ import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
 import { ArrowLeft, Download, Printer } from "lucide-react";
 import { PageWipe } from "@/components/brutal";
-import CustomCursor from "@/components/CustomCursor";
 
 const EMAIL = "whoissourabh@gmail.com";
 
@@ -94,7 +93,6 @@ const ResumePage = () => (
   <div className="relative min-h-screen bg-background print:bg-white">
     <div className="print:hidden">
       <PageWipe />
-      <CustomCursor />
     </div>
 
     {/* Top bar — hidden in print */}

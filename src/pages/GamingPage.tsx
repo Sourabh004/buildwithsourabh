@@ -2,7 +2,6 @@ import { useEffect } from "react";
 import { motion } from "framer-motion";
 import { Gamepad2, MousePointerClick } from "lucide-react";
 import { useLenis } from "@/hooks/useLenis";
-import GamingCursor from "@/components/GamingCursor";
 import SideHeader from "@/components/SideHeader";
 import Footer from "@/components/Footer";
 import ContactSection from "@/components/ContactSection";
@@ -141,7 +140,6 @@ const GamingPage = () => {
   return (
     <div className="relative min-h-screen bg-[#1F271B] text-[#FAF0D7] cursor-none">
       <PageWipe colors={[VOLT, PINK]} />
-      <GamingCursor />
       <SideHeader side="gaming" />
 
       {/* Hero — copy left, 3D controller + trophy right */}

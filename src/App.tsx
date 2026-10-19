@@ -8,6 +8,7 @@ import ResumePage from "./pages/ResumePage";
 import TechPage from "./pages/TechPage";
 import GamingPage from "./pages/GamingPage";
 import NotFound from "./pages/NotFound";
+import CustomCursor from "./components/CustomCursor";
 
 const queryClient = new QueryClient();
 
@@ -16,6 +17,8 @@ const App = () => (
     <TooltipProvider>
       <Toaster />
       <Sonner />
+      {/* One cursor for every page */}
+      <CustomCursor />
       <BrowserRouter>
         <Routes>
           <Route path="/" element={<Index />} />

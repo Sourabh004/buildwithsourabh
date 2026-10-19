@@ -1,5 +1,4 @@
 import { useLenis } from "@/hooks/useLenis";
-import CustomCursor from "@/components/CustomCursor";
 import VelocityMarquee from "@/components/VelocityMarquee";
 import StatementSection from "@/components/StatementSection";
 import SideQuestsSection from "@/components/SideQuestsSection";
@@ -19,7 +18,6 @@ const Index = () => {
   return (
     <div className="relative min-h-screen bg-background">
       <PageWipe />
-      <CustomCursor />
       <Navbar />
       <HeroSection />
       <VelocityMarquee text="DATA ✱ AI ✱ AUTOMATION ✱ GAMING ✱" outline />

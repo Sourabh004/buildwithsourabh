@@ -42,6 +42,14 @@ const Navbar = () => {
         className="fixed left-0 right-0 top-0 z-[60] h-1 origin-left bg-primary"
       />
 
+      {/* frosted strip only once scrolled, and it hides with the nav */}
+      <motion.div
+        aria-hidden
+        animate={{ opacity: scrolled && !hidden ? 1 : 0 }}
+        transition={{ duration: 0.3 }}
+        className="top-blur top-blur--light"
+      />
+
       <motion.nav
         initial={{ y: -100, opacity: 0 }}
         animate={{ y: hidden ? -110 : 0, opacity: 1 }}

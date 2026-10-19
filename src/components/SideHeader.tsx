@@ -12,6 +12,8 @@ const SideHeader = ({ side }: { side: "tech" | "gaming" }) => {
   const bg = dark ? "rgba(31,39,27,0.85)" : "rgba(250,240,215,0.85)";
 
   return (
+    <>
+    <div aria-hidden className={`top-blur ${dark ? "top-blur--dark" : "top-blur--light"}`} />
     <motion.header
       initial={{ y: -100 }}
       animate={{ y: 0 }}
@@ -41,6 +43,7 @@ const SideHeader = ({ side }: { side: "tech" | "gaming" }) => {
         </Link>
       </div>
     </motion.header>
+    </>
   );
 };
 

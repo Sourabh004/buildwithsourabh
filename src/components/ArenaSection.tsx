@@ -23,101 +23,149 @@ const useTick = (ms: number) => {
   return t;
 };
 
-/* ───────────────────────── Motorsport: timing tower ───────────────────────── */
+/* ───────────────────────── F1: broadcast timing tower ───────────────────────── */
+
+type Team = { name: string; color: string; logo?: string; mark?: string; logoBg: string };
+const teams: Record<string, Team> = {
+  RBR: { name: "Red Bull Racing", color: "#3671C6", logo: "/brands/redbull.svg", logoBg: "#FFFFFF" },
+  MCL: { name: "McLaren", color: "#FF8000", logo: "/f1/mclaren.svg", logoBg: "#FF8000" },
+  FER: { name: "Ferrari", color: "#E8002D", mark: "SF", logoBg: "#E8002D" },
+  MER: { name: "Mercedes", color: "#27F4D2", logo: "/f1/mercedes.svg", logoBg: "#FFFFFF" },
+};
 
 const tyre = { S: "#E10600", M: "#FFD12E", H: "#F2F2F2" } as const;
 const drivers = [
-  { pos: 1, code: "VER", team: "#3671C6", t: "LEADER", tyre: "M" as const, sector: ["#B138DD", "#2ECC71", "#2ECC71"] },
-  { pos: 2, code: "NOR", team: "#FF8000", t: "+1.204", tyre: "H" as const, sector: ["#2ECC71", "#B138DD", "#FFD12E"] },
-  { pos: 3, code: "LEC", team: "#E8002D", t: "+3.871", tyre: "M" as const, sector: ["#FFD12E", "#2ECC71", "#B138DD"] },
-  { pos: 4, code: "HAM", team: "#E8002D", t: "+6.512", tyre: "S" as const, sector: ["#FFD12E", "#FFD12E", "#2ECC71"] },
+  { pos: 1, code: "VER", team: "RBR", gap: 0, tyre: "M" as const, laps: 18, sector: ["#B138DD", "#2ECC71", "#2ECC71"] },
+  { pos: 2, code: "NOR", team: "MCL", gap: 1.204, tyre: "H" as const, laps: 24, sector: ["#2ECC71", "#B138DD", "#FFD12E"] },
+  { pos: 3, code: "LEC", team: "FER", gap: 3.871, tyre: "M" as const, laps: 15, sector: ["#FFD12E", "#2ECC71", "#B138DD"] },
+  { pos: 4, code: "RUS", team: "MER", gap: 6.512, tyre: "S" as const, laps: 7, sector: ["#FFD12E", "#FFD12E", "#2ECC71"] },
 ];
+
+const TeamBadge = ({ t }: { t: Team }) => (
+  <span
+    className="flex h-6 w-6 shrink-0 items-center justify-center overflow-hidden rounded-[5px] p-[3px]"
+    style={{ background: t.logoBg }}
+    title={t.name}
+  >
+    {t.logo ? (
+      <img src={t.logo} alt={t.name} draggable={false} className="max-h-full max-w-full object-contain" />
+    ) : (
+      // Ferrari: drawn shield (no clean logo file available)
+      <span
+        className="flex h-full w-full items-center justify-center font-display text-[8px] leading-none text-black"
+        style={{ background: "#FFF200", clipPath: "polygon(0 0,100% 0,100% 70%,50% 100%,0 70%)" }}
+      >
+        {t.mark}
+      </span>
+    )}
+  </span>
+);
 
 const TimingTower = () => {
   const tick = useTick(1400);
   const lap = 48 + (tick % 10);
+  const fastest = drivers[(tick >> 1) % drivers.length].code;
   return (
-    <div className="overflow-hidden rounded-lg border border-white/10 bg-[#0F0F12] font-mono text-[11px] text-white">
-      {/* chequered strip */}
-      <div
-        className="h-2"
-        style={{ background: "repeating-conic-gradient(#fff 0 25%, #111 0 50%) 0 0 / 8px 8px" }}
-      />
-      <div className="flex items-center justify-between border-b border-white/10 px-3 py-1.5 font-grotesk text-[10px] font-bold uppercase tracking-widest">
-        <span>
-          Lap <span style={{ color: VOLT }}>{lap}</span>/57
+    <div className="overflow-hidden rounded-lg border border-white/10 bg-[#0B0B0E] text-white">
+      {/* header: F1 mark + lap counter */}
+      <div className="flex items-center justify-between bg-[#E10600] px-3 py-1.5">
+        <span className="font-display text-sm italic leading-none tracking-tight">F1</span>
+        <span className="font-grotesk text-[10px] font-black uppercase tracking-widest">
+          Lap {lap} <span className="opacity-60">/ 57</span>
         </span>
-        <span className="flex items-center gap-1.5 text-[#E10600]">
+        <span className="flex items-center gap-1 font-grotesk text-[9px] font-black uppercase tracking-widest">
           <motion.span
             animate={{ opacity: [1, 0.2, 1] }}
             transition={{ duration: 1.2, repeat: Infinity }}
-            className="h-1.5 w-1.5 rounded-full bg-[#E10600]"
+            className="h-1.5 w-1.5 rounded-full bg-white"
           />
-          Live timing
+          Live
         </span>
       </div>
+      <div className="grid grid-cols-[18px_24px_1fr_auto_auto] items-center gap-x-2 px-3 py-1 font-grotesk text-[8px] font-bold uppercase tracking-widest text-white/40">
+        <span>P</span>
+        <span />
+        <span>Driver</span>
+        <span className="text-right">Interval</span>
+        <span>Tyre</span>
+      </div>
       {drivers.map((d, i) => {
-        // tiny jitter so the gaps feel live
-        const jitter = i === 0 ? "" : (parseFloat(d.t) + ((tick * (i + 3)) % 7) * 0.013).toFixed(3);
+        const t = teams[d.team];
+        const gap = i === 0 ? "LEADER" : `+${(d.gap + ((tick * (i + 3)) % 7) * 0.013).toFixed(3)}`;
         return (
-          <div key={d.code} className={`flex items-center gap-2 px-3 py-1.5 ${i % 2 ? "bg-white/[0.03]" : ""}`}>
-            <span className="w-4 text-right text-white/60">{d.pos}</span>
-            <span className="h-3.5 w-1 rounded-sm" style={{ background: d.team }} />
-            <span className="w-9 font-bold tracking-wider">{d.code}</span>
-            <span className="flex gap-0.5">
-              {d.sector.map((c, s) => (
-                <span key={s} className="h-1.5 w-3 rounded-sm" style={{ background: c }} />
-              ))}
+          <div
+            key={d.code}
+            className="relative grid grid-cols-[18px_24px_1fr_auto_auto] items-center gap-x-2 border-t border-white/[0.06] px-3 py-1.5 font-mono text-[11px]"
+            style={{ background: `linear-gradient(90deg, ${t.color}22, transparent 55%)` }}
+          >
+            <span className="absolute inset-y-0 left-0 w-[3px]" style={{ background: t.color }} />
+            <span className="text-center font-bold text-white/70">{d.pos}</span>
+            <TeamBadge t={t} />
+            <span className="flex min-w-0 items-center gap-2">
+              <span className="font-bold tracking-wider">{d.code}</span>
+              <span className="hidden truncate font-grotesk text-[9px] uppercase tracking-wider text-white/40 sm:inline">{t.name}</span>
+              {fastest === d.code && (
+                <span className="rounded-sm bg-[#B138DD] px-1 font-grotesk text-[8px] font-black uppercase">FL</span>
+              )}
             </span>
-            <span className="ml-auto tabular-nums text-white/85">{i === 0 ? d.t : `+${jitter}`}</span>
-            <span
-              className="flex h-4 w-4 items-center justify-center rounded-full border-2 text-[8px] font-black"
-              style={{ borderColor: tyre[d.tyre], color: tyre[d.tyre] }}
-            >
-              {d.tyre}
+            <span className="text-right tabular-nums text-white/85">{gap}</span>
+            <span className="flex items-center gap-1">
+              <span
+                className="flex h-4 w-4 items-center justify-center rounded-full border-2 text-[8px] font-black"
+                style={{ borderColor: tyre[d.tyre], color: tyre[d.tyre] }}
+              >
+                {d.tyre}
+              </span>
+              <span className="w-4 text-[9px] text-white/40">{d.laps}</span>
             </span>
           </div>
         );
       })}
+      {/* sector strip for the leader */}
+      <div className="flex items-center gap-2 border-t border-white/10 px-3 py-1.5 font-grotesk text-[8px] font-bold uppercase tracking-widest text-white/45">
+        Sectors
+        {drivers[0].sector.map((c, s) => (
+          <span key={s} className="h-1.5 flex-1 rounded-sm" style={{ background: c }} />
+        ))}
+      </div>
     </div>
   );
 };
 
-/* ───────────────────────── PC gaming: WASD keycaps ───────────────────────── */
+/* ───────────────────────── PC gaming: full keyboard ───────────────────────── */
 
-const Keycap = ({ k, pressed, wide = false }: { k: string; pressed: boolean; wide?: boolean }) => (
-  <div
-    className={`relative flex h-11 items-start justify-start rounded-[7px] p-1.5 font-grotesk text-[11px] font-black text-white/90 transition-all duration-100 ${
-      wide ? "w-28" : "w-11"
-    }`}
-    style={{
-      background: "linear-gradient(180deg, #34343E 0%, #22222A 100%)",
-      boxShadow: pressed
-        ? "0 1px 0 #0B0B0F, inset 0 1px 0 rgba(255,255,255,0.08)"
-        : "0 5px 0 #0B0B0F, 0 6px 8px rgba(0,0,0,0.5), inset 0 1px 0 rgba(255,255,255,0.12)",
-      transform: pressed ? "translateY(4px)" : "translateY(0)",
-    }}
-  >
-    {k}
-    {/* RGB legend glow */}
-    <span
-      className="pointer-events-none absolute inset-x-2 bottom-1 h-[2px] rounded-full opacity-80"
-      style={{ background: pressed ? VOLT : "rgba(155,93,229,0.8)", boxShadow: pressed ? `0 0 8px ${VOLT}` : "0 0 6px #9B5DE5" }}
-    />
-  </div>
-);
+// Each row: [label, width in units]. Gaming keys get the RGB highlight.
+const rows: [string, number][][] = [
+  [["Esc", 1], ["1", 1], ["2", 1], ["3", 1], ["4", 1], ["5", 1], ["6", 1], ["7", 1], ["8", 1], ["9", 1], ["0", 1], ["⌫", 2]],
+  [["Tab", 1.5], ["Q", 1], ["W", 1], ["E", 1], ["R", 1], ["T", 1], ["Y", 1], ["U", 1], ["I", 1], ["O", 1], ["P", 1], ["\\", 1.5]],
+  [["Caps", 1.75], ["A", 1], ["S", 1], ["D", 1], ["F", 1], ["G", 1], ["H", 1], ["J", 1], ["K", 1], ["L", 1], ["Enter", 2.25]],
+  [["Shift", 2.25], ["Z", 1], ["X", 1], ["C", 1], ["V", 1], ["B", 1], ["N", 1], ["M", 1], [",", 1], [".", 1], ["Shift", 2.75]],
+  [["Ctrl", 1.5], ["Alt", 1.25], ["Space", 6.5], ["Alt", 1.25], ["Fn", 1.25], ["Ctrl", 1.5]],
+];
+const gaming: Record<string, string> = {
+  W: VOLT, A: VOLT, S: VOLT, D: VOLT,
+  Q: "#5CE1FF", E: "#5CE1FF", R: "#FF7A9C", F: "#FF7A9C",
+  Shift: "#FCAD50", Ctrl: "#FCAD50", Space: "#9B5DE5", Tab: "#5CE1FF",
+  "1": "#FF7A9C", "2": "#FF7A9C", "3": "#FF7A9C", "4": "#FF7A9C",
+};
 
-const WASD = () => {
-  const tick = useTick(420);
-  const seq = ["W", "W", "A", "S", "D", "D", " ", "W"];
+const Keyboard = () => {
+  const tick = useTick(380);
+  const seq = ["W", "W", "A", "W", "D", "Space", "S", "Shift", "W", "E", "R", "1", "Q", "F"];
   const down = seq[tick % seq.length];
   const fps = 238 + ((tick * 7) % 9);
   return (
-    <div className="relative overflow-hidden rounded-lg border border-white/10 bg-[#101015] px-4 pb-5 pt-4">
-      {/* RGB underglow */}
+    <div className="relative overflow-hidden rounded-lg border border-white/10 bg-[#0E0E12] p-2.5 pt-7">
+      <div className="absolute left-3 top-2 font-grotesk text-[9px] font-black uppercase tracking-widest text-white/40">
+        Keybinds · FPS
+      </div>
+      <div className="absolute right-3 top-1.5 text-right font-mono text-[10px] leading-tight">
+        <span style={{ color: VOLT }}>FPS {fps}</span> <span className="text-white/45">· 12ms</span>
+      </div>
+      {/* underglow */}
       <motion.div
         aria-hidden
-        className="absolute inset-x-0 bottom-0 h-10 opacity-60 blur-xl"
+        className="absolute inset-x-0 bottom-0 h-8 opacity-50 blur-xl"
         animate={{ backgroundPosition: ["0% 50%", "100% 50%", "0% 50%"] }}
         transition={{ duration: 6, repeat: Infinity, ease: "linear" }}
         style={{
@@ -125,83 +173,168 @@ const WASD = () => {
           backgroundSize: "300% 100%",
         }}
       />
-      <div className="absolute right-3 top-2 text-right font-mono text-[10px] leading-tight">
-        <p style={{ color: VOLT }}>FPS {fps}</p>
-        <p className="text-white/50">PING 12ms</p>
+      <div className="relative flex flex-col gap-[3px] rounded-md bg-[#1A1A20] p-[5px] shadow-[inset_0_1px_0_rgba(255,255,255,0.06)]">
+        {rows.map((row, ri) => (
+          <div key={ri} className="flex gap-[3px]">
+            {row.map(([k, w], ki) => {
+              const glow = gaming[k];
+              const pressed = down === k;
+              return (
+                <span
+                  key={`${k}-${ki}`}
+                  className="relative flex h-[22px] items-center justify-center rounded-[4px] font-grotesk text-[8px] font-black uppercase transition-all duration-100"
+                  style={{
+                    flex: w,
+                    color: glow ? glow : "rgba(255,255,255,0.45)",
+                    background: glow ? "linear-gradient(180deg,#2E2E38,#1F1F27)" : "linear-gradient(180deg,#26262E,#1B1B22)",
+                    boxShadow: pressed
+                      ? `0 0 0 1px ${glow ?? "#fff"}, 0 0 10px ${glow ?? "#fff"}`
+                      : glow
+                        ? `0 2px 0 #08080B, inset 0 -2px 0 ${glow}55`
+                        : "0 2px 0 #08080B",
+                    transform: pressed ? "translateY(2px)" : undefined,
+                    textShadow: glow ? `0 0 6px ${glow}` : undefined,
+                  }}
+                >
+                  {k}
+                </span>
+              );
+            })}
+          </div>
+        ))}
       </div>
-      <div className="relative flex flex-col items-center gap-1.5">
-        <Keycap k="W" pressed={down === "W"} />
-        <div className="flex gap-1.5">
-          {["A", "S", "D"].map((k) => (
-            <Keycap key={k} k={k} pressed={down === k} />
-          ))}
-        </div>
-        <Keycap k="SPACE" pressed={down === " "} wide />
+      <div className="relative mt-2 flex flex-wrap gap-x-3 gap-y-1 font-grotesk text-[8px] font-bold uppercase tracking-widest text-white/45">
+        {[
+          ["Move", VOLT],
+          ["Abilities", "#5CE1FF"],
+          ["Utility", "#FF7A9C"],
+          ["Jump", "#9B5DE5"],
+          ["Mods", "#FCAD50"],
+        ].map(([l, c]) => (
+          <span key={l} className="flex items-center gap-1">
+            <span className="h-1.5 w-1.5 rounded-full" style={{ background: c, boxShadow: `0 0 4px ${c}` }} />
+            {l}
+          </span>
+        ))}
       </div>
     </div>
   );
 };
 
-/* ───────────────────────── Esports: broadcast score bug ───────────────────────── */
+/* ───────────────────────── Esports: BGMI points table ───────────────────────── */
 
-const ScoreBug = () => {
-  const tick = useTick(900);
-  const viewers = (1.21 + ((tick * 13) % 37) / 1000).toFixed(2);
-  const pts = [8, 14, 11, 19, 17, 26, 24, 33, 30, 38, 44, 41];
-  const path = pts.map((p, i) => `${i === 0 ? "M" : "L"} ${(i / (pts.length - 1)) * 100} ${50 - p}`).join(" ");
+// Sample standings for the widget — not real tournament results. Logos: Liquipedia.
+// Drop an official logo in /public/bgmi/<file> and set `logo` to use it instead of the drawn crest.
+const bgmi: { tag: string; name: string; color: string; ink: string; wwcd: number; place: number; fin: number; alive: number; logo?: string; wide?: boolean }[] = [
+  { tag: "TAG", name: "Team Apex Gaming", color: "#F77F1A", ink: "#06202A", wwcd: 4, place: 54, fin: 71, alive: 4, logo: "/bgmi/tag.png", wide: true },
+  { tag: "SOUL", name: "Team SouL", color: "#E10600", ink: "#FFFFFF", wwcd: 3, place: 48, fin: 62, alive: 3, logo: "/bgmi/soul.png" },
+  { tag: "GDL", name: "GodLike Esports", color: "#F5C518", ink: "#0B0B10", wwcd: 2, place: 44, fin: 58, alive: 2, logo: "/bgmi/godlike.png" },
+];
+
+/** Team crest: official logo if provided, otherwise a drawn shield in team colours */
+const Crest = ({ t }: { t: (typeof bgmi)[number] }) =>
+  t.logo ? (
+    <span className={`flex h-8 shrink-0 items-center justify-center ${t.wide ? "w-[72px]" : "w-7"}`}>
+      <img src={t.logo} alt={`${t.name} logo`} draggable={false} className="max-h-full max-w-full object-contain" />
+    </span>
+  ) : (
+    <svg viewBox="0 0 32 36" className="h-8 w-7 shrink-0" aria-label={`${t.name} crest`}>
+      <path d="M16 1 L30 6 V18 C30 27 23 32 16 35 C9 32 2 27 2 18 V6 Z" fill={t.color} stroke="#0B0B10" strokeWidth="1.5" />
+      <path d="M16 5 L26 8.5 V18 C26 24.5 21 28.5 16 31 C11 28.5 6 24.5 6 18 V8.5 Z" fill="none" stroke={t.ink} strokeOpacity="0.35" strokeWidth="1" />
+      <text
+        x="16"
+        y="21.5"
+        textAnchor="middle"
+        fontFamily="Archivo Black, sans-serif"
+        fontSize={t.tag.length > 3 ? 7.5 : 9}
+        fill={t.ink}
+      >
+        {t.tag}
+      </text>
+    </svg>
+  );
+
+const BGMILeaderboard = () => {
+  const tick = useTick(1600);
+  const match = 14 + (tick % 4);
+  // a finish point lands on a rotating team every tick
+  const scorer = tick % bgmi.length;
+  const rows = bgmi
+    .map((t, i) => ({ ...t, fin: t.fin + Math.floor((tick + (bgmi.length - i)) / bgmi.length), hot: i === scorer }))
+    .map((t) => ({ ...t, total: t.place + t.fin }))
+    .sort((a, b) => b.total - a.total);
+
   return (
-    <div className="overflow-hidden rounded-lg border border-white/10 bg-[#0D1117] text-white">
-      <div className="flex items-center justify-between px-3 py-1.5 font-grotesk text-[10px] font-bold uppercase tracking-widest">
-        <span className="flex items-center gap-1.5 rounded-sm bg-[#E10600] px-1.5 py-0.5">
+    <div className="overflow-hidden rounded-lg border border-white/10 bg-[#0B0B10] text-white">
+      {/* header */}
+      <div className="flex items-center justify-between bg-gradient-to-r from-[#F2B705] to-[#F77F1A] px-3 py-1.5 text-black">
+        <span className="font-display text-sm leading-none tracking-tight">BGMI</span>
+        <span className="font-grotesk text-[10px] font-black uppercase tracking-widest">Overall standings · Match {match}</span>
+        <span className="flex items-center gap-1 font-grotesk text-[9px] font-black uppercase tracking-widest">
           <motion.span
-            animate={{ opacity: [1, 0.3, 1] }}
-            transition={{ duration: 1, repeat: Infinity }}
-            className="h-1.5 w-1.5 rounded-full bg-white"
+            animate={{ opacity: [1, 0.2, 1] }}
+            transition={{ duration: 1.2, repeat: Infinity }}
+            className="h-1.5 w-1.5 rounded-full bg-black"
           />
           Live
         </span>
-        <span className="text-white/60">Grand Final · Map 3</span>
-        <span className="tabular-nums" style={{ color: "#5CE1FF" }}>
-          👁 {viewers}M
-        </span>
       </div>
-      <div className="grid grid-cols-[1fr_auto_1fr] items-center border-y border-white/10">
-        <div className="flex items-center gap-2 bg-gradient-to-r from-[#019EA5]/40 to-transparent px-3 py-2">
-          <span className="flex h-6 w-6 items-center justify-center rounded bg-[#019EA5] font-display text-[10px]">BLR</span>
-          <span className="font-grotesk text-[11px] font-bold uppercase">Team Blue</span>
-        </div>
-        <div className="flex items-center gap-2 bg-black px-3 py-2 font-display text-lg tabular-nums">
-          <span style={{ color: "#5CE1FF" }}>11</span>
-          <span className="text-white/40">:</span>
-          <span style={{ color: "#FF7A9C" }}>9</span>
-        </div>
-        <div className="flex items-center justify-end gap-2 bg-gradient-to-l from-[#FF7A9C]/40 to-transparent px-3 py-2">
-          <span className="font-grotesk text-[11px] font-bold uppercase">Team Red</span>
-          <span className="flex h-6 w-6 items-center justify-center rounded bg-[#FF7A9C] font-display text-[10px] text-black">HYD</span>
-        </div>
+      <div className="grid grid-cols-[18px_1fr_34px_34px_34px_44px] items-center gap-x-2 px-3 py-1 font-grotesk text-[8px] font-bold uppercase tracking-widest text-white/40">
+        <span>#</span>
+        <span>Team</span>
+        <span className="text-center">🍗</span>
+        <span className="text-center">Place</span>
+        <span className="text-center">Fin</span>
+        <span className="text-right">Total</span>
       </div>
-      <div className="px-3 pb-2 pt-1.5">
-        <p className="font-grotesk text-[9px] font-bold uppercase tracking-widest text-white/45">Peak viewership</p>
-        <svg viewBox="0 0 100 50" preserveAspectRatio="none" className="h-12 w-full">
-          <defs>
-            <linearGradient id="vw" x1="0" x2="0" y1="0" y2="1">
-              <stop offset="0" stopColor="#5CE1FF" stopOpacity="0.45" />
-              <stop offset="1" stopColor="#5CE1FF" stopOpacity="0" />
-            </linearGradient>
-          </defs>
-          <path d={`${path} L 100 50 L 0 50 Z`} fill="url(#vw)" />
-          <motion.path
-            d={path}
-            fill="none"
-            stroke="#5CE1FF"
-            strokeWidth="1.5"
-            vectorEffect="non-scaling-stroke"
-            initial={{ pathLength: 0 }}
-            whileInView={{ pathLength: 1 }}
-            viewport={{ once: true }}
-            transition={{ duration: 1.6, ease: "easeOut" }}
-          />
-        </svg>
+      {rows.map((t, i) => (
+        <motion.div
+          layout
+          key={t.tag}
+          transition={{ type: "spring", stiffness: 300, damping: 30 }}
+          className="relative grid grid-cols-[18px_1fr_34px_34px_34px_44px] items-center gap-x-2 border-t border-white/[0.06] px-3 py-2 font-mono text-[11px]"
+          style={{ background: `linear-gradient(90deg, ${t.color}26, transparent 60%)` }}
+        >
+          <span className="absolute inset-y-0 left-0 w-[3px]" style={{ background: t.color }} />
+          <span className="text-center font-display text-sm" style={{ color: i === 0 ? "#F2B705" : "rgba(255,255,255,0.7)" }}>
+            {i + 1}
+          </span>
+          <span className="flex min-w-0 items-center gap-2">
+            <Crest t={t} />
+            <span className="min-w-0">
+              <span className="block truncate font-grotesk text-[11px] font-bold uppercase">{t.name}</span>
+              {/* alive squad — 4 players */}
+              <span className="mt-0.5 flex gap-[2px]">
+                {[0, 1, 2, 3].map((p) => (
+                  <span key={p} className="h-1.5 w-3 rounded-[1px]" style={{ background: p < t.alive ? t.color : "rgba(255,255,255,0.15)" }} />
+                ))}
+              </span>
+            </span>
+          </span>
+          <span className="text-center text-white/80">{t.wwcd}</span>
+          <span className="text-center text-white/80">{t.place}</span>
+          <span className="relative text-center text-white/80">
+            {t.fin}
+            {t.hot && (
+              <motion.span
+                key={tick}
+                initial={{ opacity: 1, y: 0 }}
+                animate={{ opacity: 0, y: -10 }}
+                transition={{ duration: 1.1 }}
+                className="absolute -top-1 right-0 font-grotesk text-[9px] font-black text-[#C6F24E]"
+              >
+                +1
+              </motion.span>
+            )}
+          </span>
+          <span className="text-right font-display text-sm tabular-nums" style={{ color: i === 0 ? "#F2B705" : "#FFFFFF" }}>
+            {t.total}
+          </span>
+        </motion.div>
+      ))}
+      <div className="flex items-center justify-between border-t border-white/10 px-3 py-1.5 font-grotesk text-[8px] font-bold uppercase tracking-widest text-white/40">
+        <span>Erangel · Zone 6</span>
+        <span>Sample standings</span>
       </div>
     </div>
   );
@@ -241,13 +374,6 @@ const Ticket = () => (
           ))}
         </div>
       </div>
-      {/* stamp */}
-      <span
-        className="pointer-events-none absolute right-[37%] top-[38px] rotate-[-10deg] rounded-md border-[3px] px-2 py-0.5 font-display text-sm uppercase tracking-wider opacity-80 transition-transform group-hover:scale-110"
-        style={{ borderColor: "#E10600", color: "#E10600" }}
-      >
-        Open for gigs
-      </span>
     </div>
   </a>
 );
@@ -263,7 +389,7 @@ const cards: {
   widget: ReactNode;
 }[] = [
   {
-    title: "Motorsport",
+    title: "F1",
     sub: "Race weekends, telemetry & strategy",
     body: "F1 is my favourite dataset. Lap deltas, tyre strategy, pit windows — I follow the racing through the numbers behind it.",
     color: VOLT,
@@ -276,7 +402,7 @@ const cards: {
     body: "From indie titles to competitive scenes — what makes games sticky, what drives engagement, and why communities form.",
     color: "#9B5DE5",
     icon: Gamepad2,
-    widget: <WASD />,
+    widget: <Keyboard />,
   },
   {
     title: "Esports",
@@ -284,7 +410,7 @@ const cards: {
     body: "Viewership, audience behaviour, community dynamics and the creator economy — I watch the broadcast and the numbers.",
     color: "#019EA5",
     icon: TrendingUp,
-    widget: <ScoreBug />,
+    widget: <BGMILeaderboard />,
   },
   {
     title: "Gaming Events",

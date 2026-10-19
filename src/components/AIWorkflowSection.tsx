@@ -1,7 +1,7 @@
-import { motion, useInView, AnimatePresence } from "framer-motion";
-import { useRef, useState } from "react";
-import { MessageSquare, Users, FileText, Zap, ArrowRight, Plus, Minus } from "lucide-react";
-
+import { motion, AnimatePresence, useReducedMotion } from "framer-motion";
+import { useState } from "react";
+import { MessageSquare, Users, FileText, Zap, Play, CheckCircle2 } from "lucide-react";
+import { SectionHeading } from "./brutal";
 const workflows = [
   {
     num: "01",
@@ -45,166 +45,159 @@ const workflows = [
   },
 ];
 
-const WorkflowRow = ({ wf, i }: { wf: (typeof workflows)[0]; i: number }) => {
-  const [open, setOpen] = useState(false);
-  const rowRef = useRef(null);
-  const isInView = useInView(rowRef, { once: true, margin: "-60px" });
-  const Icon = wf.icon;
+const INK = "#1F271B";
+
+/** n8n-style canvas: the selected workflow's steps as connected nodes, with a pulse running through them */
+const FlowCanvas = ({ wf }: { wf: (typeof workflows)[number] }) => {
+  const reduce = useReducedMotion();
+  const n = wf.steps.length;
 
   return (
-    <motion.div
-      ref={rowRef}
-      initial={{ opacity: 0, y: 40 }}
-      animate={isInView ? { opacity: 1, y: 0 } : {}}
-      transition={{ duration: 0.6, delay: i * 0.1, ease: [0.22, 1, 0.36, 1] }}
-      className="border-b-2 border-foreground"
+    <div
+      className="relative overflow-hidden rounded-2xl border-2 border-foreground bg-[#1F271B] p-5 text-[#FAF0D7] shadow-[6px_6px_0_hsl(var(--foreground))] md:p-7"
+      style={{
+        backgroundImage: "radial-gradient(rgba(250,240,215,0.12) 1px, transparent 1px)",
+        backgroundSize: "18px 18px",
+      }}
     >
-      <button
-        onClick={() => setOpen(!open)}
-        className="group w-full text-left"
-      >
-        <div className="relative flex items-center gap-4 px-0 py-6 md:py-8">
-          {/* Color flood on hover */}
-          <motion.div
-            initial={{ scaleX: 0 }}
-            animate={open ? { scaleX: 1 } : { scaleX: 0 }}
-            transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
-            style={{ background: wf.color, originX: 0 }}
-            className="absolute inset-0 -mx-4 md:-mx-6"
+      {/* window bar */}
+      <div className="mb-6 flex items-center justify-between">
+        <span className="flex items-center gap-2 font-grotesk text-[10px] font-bold uppercase tracking-widest text-[#FAF0D7]/60">
+          <span className="flex gap-1">
+            <span className="h-2.5 w-2.5 rounded-full bg-[#FF7A9C]" />
+            <span className="h-2.5 w-2.5 rounded-full bg-[#FCAD50]" />
+            <span className="h-2.5 w-2.5 rounded-full bg-[#C6F24E]" />
+          </span>
+          n8n · {wf.title.toLowerCase()}
+        </span>
+        <span className="flex items-center gap-1.5 rounded-full border border-[#C6F24E]/50 px-2 py-0.5 font-grotesk text-[9px] font-black uppercase tracking-widest text-[#C6F24E]">
+          <motion.span
+            animate={reduce ? undefined : { opacity: [1, 0.3, 1] }}
+            transition={{ duration: 1.2, repeat: Infinity }}
+            className="h-1.5 w-1.5 rounded-full bg-[#C6F24E]"
           />
+          Active
+        </span>
+      </div>
 
-          <div className="relative flex w-full items-center gap-4 md:gap-8">
-            {/* Number */}
-            <span
-              className="shrink-0 font-display text-5xl font-bold leading-none md:text-7xl lg:text-8xl"
-              style={{ WebkitTextStroke: "2px hsl(var(--foreground))", color: "transparent" }}
-            >
-              {wf.num}
-            </span>
-
-            {/* Icon pill */}
-            <span
-              className="hidden shrink-0 items-center justify-center rounded-full border-2 border-foreground md:flex"
-              style={{
-                width: 52,
-                height: 52,
-                background: open ? "hsl(var(--foreground))" : wf.color + "20",
-                transition: "background 0.3s",
-              }}
-            >
-              <Icon className="h-5 w-5" style={{ color: open ? "hsl(var(--background))" : wf.color }} />
-            </span>
-
-            {/* Title */}
-            <div className="min-w-0 flex-1">
-              <p className="mb-0.5 font-grotesk text-[10px] font-bold uppercase tracking-widest text-muted-foreground">
-                Workflow
-              </p>
-              <h3 className="font-display text-lg font-bold uppercase leading-tight tracking-tight md:text-2xl lg:text-3xl">
-                {wf.title}
-              </h3>
-            </div>
-
-            {/* Toggle */}
-            <span className="ml-auto shrink-0 flex h-9 w-9 items-center justify-center rounded-full border-2 border-foreground transition-colors">
-              {open ? <Minus className="h-4 w-4" /> : <Plus className="h-4 w-4" />}
-            </span>
-          </div>
-        </div>
-      </button>
-
-      <AnimatePresence>
-        {open && (
-          <motion.div
-            initial={{ height: 0, opacity: 0 }}
-            animate={{ height: "auto", opacity: 1 }}
-            exit={{ height: 0, opacity: 0 }}
-            transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
-            className="overflow-hidden"
-          >
-            <div className="grid gap-6 pb-8 md:grid-cols-[1fr_auto]">
-              <div>
-                <p className="mb-3 font-grotesk text-sm font-bold italic" style={{ color: wf.color }}>
-                  {wf.tagline}
-                </p>
-                <p className="max-w-xl text-sm leading-relaxed text-muted-foreground md:text-base">
-                  {wf.description}
-                </p>
-              </div>
-
-              {/* Steps */}
-              <div className="flex flex-col gap-2 md:items-end">
-                {wf.steps.map((step, si) => (
-                  <div key={si} className="flex items-center gap-2">
-                    <span className="font-grotesk text-[10px] font-bold text-muted-foreground">
-                      {String(si + 1).padStart(2, "0")}
-                    </span>
+      <AnimatePresence mode="wait">
+        <motion.div
+          key={wf.num}
+          initial={{ opacity: 0, y: 12 }}
+          animate={{ opacity: 1, y: 0 }}
+          exit={{ opacity: 0, y: -12 }}
+          transition={{ duration: 0.3 }}
+        >
+          {/* nodes */}
+          <ol className="relative grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+            {wf.steps.map((step, si) => (
+              <motion.li
+                key={step}
+                initial={{ opacity: 0, scale: 0.9 }}
+                animate={{ opacity: 1, scale: 1 }}
+                transition={{ delay: 0.08 * si }}
+                className="relative"
+              >
+                <div className="relative z-10 h-full rounded-xl border-2 bg-[#2A3423] p-3" style={{ borderColor: si === 0 ? wf.color : "rgba(250,240,215,0.25)" }}>
+                  {/* execution glow sweeps node to node */}
+                  {!reduce && (
+                    <motion.span
+                      className="pointer-events-none absolute inset-0 rounded-[10px]"
+                      style={{ boxShadow: `0 0 0 2px ${wf.color}, 0 0 18px ${wf.color}66` }}
+                      animate={{ opacity: [0, 1, 0] }}
+                      transition={{ duration: 0.9, repeat: Infinity, repeatDelay: (n - 1) * 0.6, delay: si * 0.6 }}
+                    />
+                  )}
+                  <div className="mb-2 flex items-center justify-between">
                     <span
-                      className="rounded-full border-2 border-foreground px-3 py-1 font-grotesk text-xs font-bold uppercase tracking-wide"
-                      style={{ background: wf.color + "20" }}
+                      className="flex h-7 w-7 items-center justify-center rounded-lg border-2 font-display text-[11px]"
+                      style={{ background: si === 0 ? wf.color : "transparent", borderColor: wf.color, color: si === 0 ? INK : wf.color }}
                     >
-                      {step}
+                      {si === 0 ? <Play className="h-3.5 w-3.5" /> : si + 1}
                     </span>
-                    {si < wf.steps.length - 1 && (
-                      <ArrowRight className="h-3 w-3 text-muted-foreground md:hidden" />
-                    )}
+                    <CheckCircle2 className="h-3.5 w-3.5 text-[#C6F24E]/70" />
                   </div>
-                ))}
-              </div>
-            </div>
-          </motion.div>
-        )}
+                  <p className="font-grotesk text-[9px] font-bold uppercase tracking-widest text-[#FAF0D7]/45">
+                    {si === 0 ? "Trigger" : si === n - 1 ? "Output" : "Step"}
+                  </p>
+                  <p className="mt-0.5 font-grotesk text-sm font-bold leading-snug">{step}</p>
+                </div>
+                {/* connector to the next node (desktop: right, mobile: down) */}
+                {si < n - 1 && (
+                  <span
+                    className="absolute z-0 hidden lg:block"
+                    style={{ left: "100%", top: "50%", width: 12, height: 2, background: wf.color }}
+                  />
+                )}
+              </motion.li>
+            ))}
+          </ol>
+
+          <div className="mt-6 grid gap-4 border-t border-dashed border-[#FAF0D7]/20 pt-5 md:grid-cols-[auto_1fr] md:items-start">
+            <p className="font-display text-lg uppercase leading-tight" style={{ color: wf.color }}>
+              {wf.tagline}
+            </p>
+            <p className="text-sm leading-relaxed text-[#FAF0D7]/75">{wf.description}</p>
+          </div>
+        </motion.div>
       </AnimatePresence>
-    </motion.div>
+    </div>
   );
 };
 
 const AIWorkflowSection = () => {
-  const ref = useRef(null);
-  const isInView = useInView(ref, { once: true, margin: "-100px" });
+  const [active, setActive] = useState(0);
+  const wf = workflows[active];
 
   return (
-    <section id="ai-workflows" className="section-padding" ref={ref}>
+    <section id="ai-workflows" className="section-padding">
       <div className="mx-auto max-w-6xl">
-        {/* Header */}
-        <div className="mb-12">
-          <motion.span
-            initial={{ opacity: 0 }}
-            animate={isInView ? { opacity: 1 } : {}}
-            className="section-label"
-          >
-            <span className="inline-block h-2 w-2 rotate-45 bg-primary" />
-            Powered by n8n
-          </motion.span>
+        <SectionHeading
+          label="Powered by n8n"
+          aside={
+            <p className="max-w-sm text-sm leading-relaxed text-muted-foreground">
+              Built at The Experience Co. on n8n with Claude/GPT, Airtable, Postgres and MCP. Pick one to watch it run.
+            </p>
+          }
+        >
+          AI workflows <span className="text-primary">I build</span>
+        </SectionHeading>
 
-          <div className="flex flex-wrap items-end justify-between gap-6">
-            <div className="overflow-hidden">
-              <motion.h2
-                initial={{ y: "100%" }}
-                animate={isInView ? { y: "0%" } : {}}
-                transition={{ duration: 0.8, delay: 0.1, ease: [0.22, 1, 0.36, 1] }}
-                className="font-display text-4xl uppercase leading-tight md:text-6xl"
-              >
-                AI WORKFLOWS <span className="text-primary">I BUILD</span>
-              </motion.h2>
-            </div>
-            <motion.p
-              initial={{ opacity: 0 }}
-              animate={isInView ? { opacity: 1 } : {}}
-              transition={{ delay: 0.45 }}
-              className="max-w-sm text-sm leading-relaxed text-muted-foreground"
-            >
-              Built at The Experience Co. on n8n with Claude/GPT, Airtable, Postgres and MCP. Click one to see how it
-              runs, step by step.
-            </motion.p>
+        <div className="grid gap-6 lg:grid-cols-[0.9fr_2fr]">
+          {/* picker */}
+          <div role="tablist" aria-label="Workflows" className="grid gap-3 sm:grid-cols-2 lg:grid-cols-1">
+            {workflows.map((w, i) => {
+              const on = i === active;
+              const Icon = w.icon;
+              return (
+                <button
+                  key={w.num}
+                  role="tab"
+                  aria-selected={on}
+                  onClick={() => setActive(i)}
+                  className="cursor-hover flex items-center gap-3 rounded-xl border-2 border-foreground p-3 text-left transition-all duration-200"
+                  style={{
+                    background: on ? w.color : "hsl(var(--card))",
+                    boxShadow: on ? "4px 4px 0 hsl(var(--foreground))" : "2px 2px 0 hsl(var(--foreground))",
+                    transform: on ? "translate(-2px,-2px)" : undefined,
+                  }}
+                >
+                  <span
+                    className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg border-2 border-foreground"
+                    style={{ background: on ? "hsl(var(--card))" : w.color }}
+                  >
+                    <Icon className="h-4 w-4" />
+                  </span>
+                  <span className="min-w-0">
+                    <span className="block font-grotesk text-[10px] font-bold uppercase tracking-widest opacity-60">Workflow {w.num}</span>
+                    <span className="block font-display text-sm uppercase leading-tight">{w.title}</span>
+                  </span>
+                </button>
+              );
+            })}
           </div>
-        </div>
 
-        {/* Accordion rows */}
-        <div className="border-t-2 border-foreground">
-          {workflows.map((wf, i) => (
-            <WorkflowRow key={wf.num} wf={wf} i={i} />
-          ))}
+          <FlowCanvas wf={wf} />
         </div>
       </div>
     </section>

@@ -210,6 +210,23 @@
   .page-wipe { display: none; }
 }
 
+/* ─── Frosted strip behind the floating headers ─────── */
+/* Blurs content scrolling under the pill and fades out downward so there's no hard edge */
+
+.top-blur {
+  position: fixed;
+  inset: 0 0 auto 0;
+  height: 110px;
+  z-index: 40;
+  pointer-events: none;
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  mask-image: linear-gradient(to bottom, black 45%, transparent);
+  -webkit-mask-image: linear-gradient(to bottom, black 45%, transparent);
+}
+.top-blur--light { background: linear-gradient(to bottom, hsl(var(--background) / 0.75), transparent); }
+.top-blur--dark  { background: linear-gradient(to bottom, rgba(31, 39, 27, 0.8), transparent); }
+
 /* ─── Lanyard pass idle sway ────────────────────────── */
 
 .pass-sway {

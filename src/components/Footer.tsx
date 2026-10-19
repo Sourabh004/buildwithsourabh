@@ -68,13 +68,14 @@ const Footer = () => {
       <div style={{ perspective: 900 }} className="px-4">
         <motion.p
           style={{ rotateX, y, transformOrigin: "50% 100%" }}
-          className="select-none text-center font-display uppercase leading-[0.8] tracking-tight text-transparent"
+          className="select-none text-center font-display uppercase leading-[0.8] tracking-tight text-foreground"
         >
+          {/* solid ink with a hard orange offset — reads clearly on the cream footer */}
           <span
             className="block text-[clamp(3rem,14vw,15rem)]"
-            style={{ WebkitTextStroke: "2px hsl(var(--foreground))" }}
+            style={{ textShadow: "0.04em 0.04em 0 hsl(var(--primary))" }}
           >
-            Sourabh<span className="text-primary" style={{ WebkitTextStroke: "0" }}>.</span>
+            Sourabh<span className="text-primary">.</span>
           </span>
         </motion.p>
       </div>

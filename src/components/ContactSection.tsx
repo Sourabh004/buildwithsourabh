@@ -1,6 +1,6 @@
 import { motion, useInView, AnimatePresence } from "framer-motion";
 import { useRef, useState } from "react";
-import { Mail, Linkedin, Instagram, Twitter, ArrowRight, MousePointerClick } from "lucide-react";
+import { Mail, Linkedin, Instagram, Twitter, ArrowRight, ArrowUpRight, MousePointerClick } from "lucide-react";
 import { ContactScene, SceneSlot } from "./three/SceneSlot";
 
 const INK = "#1F271B";
@@ -13,10 +13,10 @@ const TEAL = "#019EA5";
 const EMAIL = "whoissourabh@gmail.com";
 
 const socialLinks = [
-  { href: `mailto:${EMAIL}`, icon: Mail, label: "Email", color: ORANGE, tilt: -6 },
-  { href: "https://www.linkedin.com/in/sourabhpawarai/", icon: Linkedin, label: "LinkedIn", color: TEAL, tilt: 4 },
-  { href: "https://www.instagram.com/who_is_sourabh_/", icon: Instagram, label: "Instagram", color: PINK, tilt: -4 },
-  { href: "https://x.com/0xSOURABH", icon: Twitter, label: "X", color: VOLT, tilt: 6 },
+  { href: "https://www.linkedin.com/in/sourabhpawarai/", icon: Linkedin, label: "LinkedIn", handle: "/in/sourabhpawarai", color: TEAL },
+  { href: "https://www.instagram.com/who_is_sourabh_/", icon: Instagram, label: "Instagram", handle: "@who_is_sourabh_", color: PINK },
+  { href: "https://x.com/0xSOURABH", icon: Twitter, label: "X", handle: "@0xSOURABH", color: VOLT },
+  { href: `mailto:${EMAIL}`, icon: Mail, label: "Email", handle: EMAIL, color: ORANGE },
 ];
 
 // Underline-only input with volt focus line
@@ -183,7 +183,7 @@ const ContactSection = () => {
             </motion.button>
           </motion.form>
 
-          <div className="mt-12 flex flex-wrap items-center gap-4">
+          <div className="mt-12 grid gap-3 sm:grid-cols-2">
             {socialLinks.map((link, i) => (
               <motion.a
                 key={link.label}
@@ -192,14 +192,23 @@ const ContactSection = () => {
                 rel={link.label !== "Email" ? "noopener noreferrer" : undefined}
                 initial={{ opacity: 0, y: 20 }}
                 animate={isInView ? { opacity: 1, y: 0 } : {}}
-                transition={{ delay: 0.65 + i * 0.1, ease: [0.22, 1, 0.36, 1] }}
-                whileHover={{ y: -8, rotate: link.tilt, scale: 1.06, boxShadow: `7px 7px 0 ${link.color}` }}
-                whileTap={{ y: 2, scale: 0.94 }}
-                className="cursor-hover flex items-center gap-2 rounded-full border-2 px-5 py-3"
-                style={{ borderColor: link.color, boxShadow: `4px 4px 0 ${link.color}`, color: link.color }}
+                transition={{ delay: 0.65 + i * 0.08, ease: [0.22, 1, 0.36, 1] }}
+                whileHover={{ y: -3, boxShadow: `6px 6px 0 ${link.color}` }}
+                whileTap={{ y: 1, boxShadow: `1px 1px 0 ${link.color}` }}
+                className="cursor-hover group flex min-w-0 items-center gap-3 rounded-xl border-2 p-2.5 pr-3"
+                style={{ background: CREAM, borderColor: INK, color: INK, boxShadow: `4px 4px 0 ${link.color}` }}
               >
-                <link.icon className="h-4 w-4" />
-                <span className="font-grotesk text-xs font-bold uppercase tracking-widest">{link.label}</span>
+                <span
+                  className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg border-2"
+                  style={{ background: link.color, borderColor: INK }}
+                >
+                  <link.icon className="h-4 w-4" />
+                </span>
+                <span className="min-w-0 flex-1">
+                  <span className="block font-grotesk text-[10px] font-black uppercase tracking-[0.2em] opacity-55">{link.label}</span>
+                  <span className="block whitespace-nowrap font-grotesk text-[13px] font-bold leading-tight tracking-tight" style={{ fontSize: link.handle.length > 18 ? 11.5 : undefined }}>{link.handle}</span>
+                </span>
+                <ArrowUpRight className="h-4 w-4 shrink-0 transition-transform duration-200 group-hover:rotate-45" />
               </motion.a>
             ))}
           </div>

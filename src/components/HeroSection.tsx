@@ -1,6 +1,7 @@
 import { motion, useScroll, useTransform } from "framer-motion";
 import { useRef } from "react";
-import { ArrowDown, Download, Mail } from "lucide-react";
+import { ArrowDown, Download, Mail, MousePointerClick } from "lucide-react";
+import { HeroScene, SceneSlot } from "./three/SceneSlot";
 
 const VOLT   = "#C6F24E";
 const CREAM  = "#FAF0D7";
@@ -13,7 +14,7 @@ const lineReveal = {
   hidden: { y: "110%" },
   visible: (delay: number) => ({
     y: "0%",
-    transition: { duration: 0.9, delay, ease: [0.22, 1, 0.36, 1] },
+    transition: { duration: 0.9, delay, ease: [0.22, 1, 0.36, 1] as const },
   }),
 };
 
@@ -26,9 +27,22 @@ const HeroSection = () => {
   return (
     <section
       ref={ref}
-      className="relative flex min-h-screen items-center overflow-hidden section-padding pt-32"
+      className="relative flex min-h-screen flex-col overflow-hidden section-padding pt-32 lg:flex-row lg:items-center"
     >
-      <motion.div style={{ y, opacity }} className="relative z-10 mx-auto w-full max-w-6xl">
+      {/* 3D scene — sits behind the headline on desktop, below it on mobile */}
+      <motion.div
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ delay: 0.5, duration: 0.8 }}
+        className="relative order-2 mt-10 h-[380px] w-full lg:absolute lg:inset-y-0 lg:right-0 lg:order-none lg:mt-0 lg:h-auto lg:w-[52%]"
+      >
+        <SceneSlot className="h-full w-full">{(active) => <HeroScene active={active} />}</SceneSlot>
+        <span className="pointer-events-none absolute bottom-4 right-4 flex items-center gap-1.5 rounded-full border-2 border-foreground bg-card px-3 py-1 font-grotesk text-[10px] font-bold uppercase tracking-widest shadow-[3px_3px_0_hsl(var(--foreground))] lg:bottom-10 lg:right-10">
+          <MousePointerClick className="h-3.5 w-3.5" /> Click a shape
+        </span>
+      </motion.div>
+
+      <motion.div style={{ y, opacity }} className="pointer-events-none relative z-10 mx-auto w-full max-w-6xl">
         {/* Headline */}
         <h1 className="font-display uppercase leading-[0.92] tracking-tight">
           <div className="overflow-hidden">
@@ -37,7 +51,7 @@ const HeroSection = () => {
               variants={lineReveal}
               initial="hidden"
               animate="visible"
-              className="block text-[clamp(2.6rem,8.5vw,7.5rem)]"
+              className="block text-[clamp(2.6rem,8vw,6.75rem)]"
             >
               AI, PM &amp;
             </motion.span>
@@ -48,7 +62,7 @@ const HeroSection = () => {
               variants={lineReveal}
               initial="hidden"
               animate="visible"
-              className="block text-[clamp(2.6rem,8.5vw,7.5rem)]"
+              className="block text-[clamp(2.6rem,8vw,6.75rem)]"
             >
               <span className="text-primary">Vibe Code</span> —
             </motion.span>
@@ -59,7 +73,7 @@ const HeroSection = () => {
               variants={lineReveal}
               initial="hidden"
               animate="visible"
-              className="block text-[clamp(2.6rem,8.5vw,7.5rem)]"
+              className="block text-[clamp(2.6rem,8vw,6.75rem)]"
             >
               I'm Sourabh<span className="text-primary">.</span>
             </motion.span>
@@ -73,7 +87,7 @@ const HeroSection = () => {
           transition={{ duration: 0.6, delay: 0.9 }}
           className="mt-8 flex flex-wrap items-center gap-3"
         >
-          {["AI Workflow Builder", "Community Builder", "Esports & Gaming"].map((tag, i) => {
+          {["AI & Automation", "Product", "Esports Content"].map((tag, i) => {
             const colors = ["#019EA5", "#9B5DE5", "#FCAD50"];
             return (
               <span
@@ -94,8 +108,8 @@ const HeroSection = () => {
           transition={{ duration: 0.6, delay: 1.05 }}
           className="mt-6 max-w-lg font-grotesk text-base leading-relaxed text-muted-foreground md:text-lg"
         >
-          I design systems that turn data into insights and automate workflows with AI —
-          analytics, automation, and communities around tech, sports & gaming.
+          I build AI agents and internal tools at The Experience Co. in Bengaluru — mostly n8n,
+          Claude and MCP. On the side, I make esports content with Viral Gamer.
         </motion.p>
 
         {/* CTAs */}
@@ -103,7 +117,7 @@ const HeroSection = () => {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5, delay: 1.2 }}
-          className="mt-10 flex flex-wrap items-center gap-4"
+          className="pointer-events-auto mt-10 flex flex-wrap items-center gap-4"
         >
           <a href="#sides" className="btn-brutal cursor-hover">
             Pick a side <ArrowDown className="h-4 w-4" />
@@ -183,9 +197,9 @@ const HeroSection = () => {
               }}
             >
               {[
-                { dot: ORANGE, label: "Role",   val: "PM + Vibe Coder" },
-                { dot: PINK,   label: "Stack",  val: "AI & Automation" },
-                { dot: TEAL,   label: "Energy", val: "Esports & Gaming" },
+                { dot: ORANGE, label: "Role",  val: "Tech & Automation" },
+                { dot: PINK,   label: "Stack", val: "n8n · Claude · MCP" },
+                { dot: TEAL,   label: "Base",  val: "Bengaluru" },
               ].map(({ dot, label, val }) => (
                 <div key={label} className="flex items-start gap-2">
                   <span className="mt-1.5 h-2.5 w-2.5 shrink-0 rounded-full" style={{ background: dot, boxShadow: `0 0 0 1.5px ${INK}40` }} />

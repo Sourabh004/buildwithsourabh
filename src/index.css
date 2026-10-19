@@ -71,6 +71,12 @@
     scroll-behavior: auto; /* Lenis handles smooth scroll */
   }
 
+  /* 3D-tilted cards and full-window cursor canvases can poke a pixel past the edge */
+  html,
+  body {
+    overflow-x: clip;
+  }
+
   a, button, [role="button"] {
     cursor: none;
   }
@@ -183,6 +189,36 @@
 @keyframes marquee-reverse {
   from { transform: translateX(-50%); }
   to   { transform: translateX(0); }
+}
+
+/* ─── Page entrance wipe ────────────────────────────── */
+
+.page-wipe {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  pointer-events: none;
+  animation: wipe-up 0.75s cubic-bezier(0.76, 0, 0.24, 1) forwards;
+}
+
+@keyframes wipe-up {
+  from { transform: translateY(0); }
+  to   { transform: translateY(-100%); visibility: hidden; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .page-wipe { display: none; }
+}
+
+/* ─── Lanyard pass idle sway ────────────────────────── */
+
+.pass-sway {
+  animation: pass-sway 5.5s ease-in-out infinite;
+}
+
+@keyframes pass-sway {
+  0%, 100% { transform: rotate(-1.6deg); }
+  50%      { transform: rotate(1.6deg); }
 }
 
 /* ─── Custom Cursor ─────────────────────────────────── */

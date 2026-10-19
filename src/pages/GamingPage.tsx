@@ -1,14 +1,21 @@
 import { useEffect, useRef } from "react";
 import { motion, useInView } from "framer-motion";
-import { Link } from "react-router-dom";
-import { ArrowLeft, Cpu, Gamepad2, Trophy, TrendingUp, Plus, PartyPopper, Camera, ImagePlus } from "lucide-react";
+import { Gamepad2, Trophy, TrendingUp, Plus, PartyPopper, MousePointerClick } from "lucide-react";
 import { useLenis } from "@/hooks/useLenis";
 import GamingCursor from "@/components/GamingCursor";
+import SideHeader from "@/components/SideHeader";
+import Footer from "@/components/Footer";
+import ContactSection from "@/components/ContactSection";
+import OnTheRoadSection from "@/components/OnTheRoadSection";
+import { PageWipe, SectionHeading, TiltCard } from "@/components/brutal";
+import { GamingScene, SceneSlot } from "@/components/three/SceneSlot";
 
 const VOLT = "#C6F24E";
 const PINK = "#9B5DE5";
 const TEAL = "#019EA5";
 const ORANGE = "#F77F1A";
+const CREAM = "#FAF0D7";
+const INK = "#1F271B";
 
 /* Add new gaming cards here — they slot straight into the grid */
 const arena = [
@@ -37,7 +44,7 @@ const arena = [
     icon: TrendingUp,
     title: "ESPORTS",
     sub: "Viewership & community analytics",
-    body: "Tracking the explosive growth of esports: viewership analytics, audience behaviour, community dynamics and the creator economy.",
+    body: "Tracking the growth of esports: viewership analytics, audience behaviour, community dynamics and the creator economy.",
     stat: "↑",
     statLabel: "Always growing",
     color: TEAL,
@@ -54,7 +61,6 @@ const arena = [
   },
 ];
 
-// ── Brands & Events ──────────────────────────────────────────────────────────
 const events = [
   {
     name: "EWC Riyadh",
@@ -62,7 +68,6 @@ const events = [
     location: "Riyadh, Saudi Arabia",
     sub: ["Opening Ceremony", "Main Stage", "Fan Zone"],
     color: "#F5C518",
-    emoji: "🏆",
     year: "2024",
     photo: "/ewc.jpg",
   },
@@ -71,8 +76,7 @@ const events = [
     full: "Motojam & Events",
     location: "Multiple Cities",
     sub: ["Motojam", "Gaming Activations", "Brand Events"],
-    color: "#CC1E1E",
-    emoji: "🐂",
+    color: "#E23B3B",
     year: "2023–24",
     photo: "/redbull.jpeg",
   },
@@ -81,8 +85,7 @@ const events = [
     full: "PUBG Mobile Circuit",
     location: "India",
     sub: ["BMPS", "BGIS", "BGIC"],
-    color: "#F77F1A",
-    emoji: "🎮",
+    color: ORANGE,
     year: "2023–24",
     photo: "/krafton.jpeg",
   },
@@ -91,257 +94,22 @@ const events = [
     full: "Comic-Con India",
     location: "India",
     sub: ["Gaming Zone", "Creator Meet", "Panels"],
-    color: "#9B5DE5",
-    emoji: "🦸",
+    color: PINK,
     year: "2024",
     photo: "/comiccon.jpeg",
   },
 ];
 
-const EventsSection = () => {
-  const ref = useRef<HTMLElement>(null);
-  const isInView = useInView(ref, { once: true, margin: "-80px" });
-
-  return (
-    <section ref={ref} className="border-t-2 border-[#FAF0D7]/20 px-6 py-24 md:px-12 lg:px-24">
-      <div className="mx-auto max-w-6xl">
-        {/* Header */}
-        <div className="mb-12">
-          <span className="mb-3 flex items-center gap-2 font-grotesk text-xs font-bold uppercase tracking-[0.25em] text-[#FAF0D7]/50">
-            <span className="inline-block h-2 w-2 rotate-45" style={{ background: VOLT }} />
-            Been There
-          </span>
-          <div className="flex flex-wrap items-end justify-between gap-4">
-            <motion.h2
-              initial={{ opacity: 0, y: 30 }}
-              animate={isInView ? { opacity: 1, y: 0 } : {}}
-              transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
-              className="font-display text-4xl uppercase leading-tight md:text-6xl"
-            >
-              BRANDS <span style={{ color: VOLT }}>&</span> EVENTS
-            </motion.h2>
-            <motion.p
-              initial={{ opacity: 0 }}
-              animate={isInView ? { opacity: 1 } : {}}
-              transition={{ delay: 0.3 }}
-              className="max-w-xs font-grotesk text-xs leading-relaxed text-[#FAF0D7]/50"
-            >
-              Events I've attended, brands I've worked with, moments I was part of.
-            </motion.p>
-          </div>
-        </div>
-
-        {/* Cards */}
-        <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
-          {events.map((ev, i) => (
-            <motion.div
-              key={ev.name}
-              initial={{ opacity: 0, y: 50, rotate: i % 2 === 0 ? -2 : 2 }}
-              animate={isInView ? { opacity: 1, y: 0, rotate: i % 2 === 0 ? -1 : 1 } : {}}
-              transition={{ duration: 0.6, delay: i * 0.1, type: "spring", stiffness: 130, damping: 18 }}
-              whileHover={{ rotate: 0, y: -8, transition: { duration: 0.2 } }}
-              className="group relative flex flex-col overflow-hidden border-2 border-[#FAF0D7]/20 bg-[#23291E]"
-              style={{ boxShadow: `5px 5px 0 ${ev.color}` }}
-            >
-              {/* Image / placeholder */}
-              <div
-                className="relative flex items-center justify-center overflow-hidden border-b-2 border-[#FAF0D7]/10"
-                style={{ height: 160, background: ev.color + "12" }}
-              >
-                {ev.photo ? (
-                  <img
-                    src={ev.photo}
-                    alt={ev.name}
-                    className="h-full w-full object-cover"
-                  />
-                ) : (
-                  <>
-                    <div
-                      className="pointer-events-none absolute inset-3 rounded-sm border border-dashed"
-                      style={{ borderColor: ev.color + "35" }}
-                    />
-                    <div className="flex flex-col items-center gap-2 text-center">
-                      <motion.span
-                        className="text-4xl leading-none"
-                        animate={{ scale: [1, 1.1, 1], opacity: [0.55, 0.9, 0.55] }}
-                        transition={{ duration: 2.6, repeat: Infinity, ease: "easeInOut", delay: i * 0.5 }}
-                      >
-                        {ev.emoji}
-                      </motion.span>
-                      <span
-                        className="font-grotesk text-[9px] font-bold uppercase tracking-widest"
-                        style={{ color: ev.color + "80" }}
-                      >
-                        Add photo
-                      </span>
-                    </div>
-                  </>
-                )}
-                {/* Year badge — top-right, always visible */}
-                <span
-                  className="absolute right-3 top-3 font-grotesk text-[9px] font-bold uppercase tracking-widest rounded-full px-2.5 py-0.5 border"
-                  style={{ color: ev.color, borderColor: ev.color + "50", background: "#23291E" }}
-                >
-                  {ev.year}
-                </span>
-              </div>
-
-              {/* Body */}
-              <div className="flex flex-1 flex-col p-5">
-                <h3
-                  className="font-display text-2xl uppercase leading-none tracking-tight mb-1"
-                  style={{ color: ev.color }}
-                >
-                  {ev.name}
-                </h3>
-                <p className="mb-1 font-grotesk text-[10px] font-bold uppercase tracking-widest text-[#FAF0D7]/40">
-                  {ev.full}
-                </p>
-                <p className="mb-4 font-grotesk text-[10px] uppercase tracking-wider text-[#FAF0D7]/30">
-                  📍 {ev.location}
-                </p>
-
-                {/* Sub-events */}
-                <div className="mt-auto flex flex-wrap gap-1.5">
-                  {ev.sub.map((s) => (
-                    <span
-                      key={s}
-                      className="rounded-sm border px-2 py-0.5 font-grotesk text-[9px] font-bold uppercase tracking-wider text-[#FAF0D7]/60"
-                      style={{ borderColor: ev.color + "40", background: ev.color + "0D" }}
-                    >
-                      {s}
-                    </span>
-                  ))}
-                </div>
-              </div>
-
-              {/* Bottom volt bar on hover */}
-              <motion.div
-                className="absolute bottom-0 left-0 h-0.5 w-full"
-                style={{ background: ev.color, originX: 0 }}
-                initial={{ scaleX: 0 }}
-                whileHover={{ scaleX: 1 }}
-                transition={{ duration: 0.3 }}
-              />
-            </motion.div>
-          ))}
-        </div>
-      </div>
-    </section>
-  );
-};
-// ─────────────────────────────────────────────────────────────────────────────
-
-// ── IRL Gallery ──────────────────────────────────────────────────────────────
-const photos = [
-  { slot: 1, label: "Event drop",      hint: "Drop your event photo here", span: "md:col-span-2 md:row-span-2", tilt: -1.2 },
-  { slot: 2, label: "Meet & greet",    hint: "Gaming celeb or creator pic",  span: "",                           tilt:  1.5 },
-  { slot: 3, label: "On stage",        hint: "Stage / tournament moment",    span: "",                           tilt: -0.8 },
-  { slot: 4, label: "Behind the scenes", hint: "Event ops or backstage",     span: "",                           tilt:  2   },
-  { slot: 5, label: "Squad shot",      hint: "With your crew",               span: "",                           tilt: -1.5 },
-  { slot: 6, label: "Highlight reel",  hint: "Best moment of the night",     span: "md:col-span-2",              tilt:  0.8 },
-];
-
-const GallerySection = () => {
-  const ref = useRef<HTMLElement>(null);
-  const isInView = useInView(ref, { once: true, margin: "-80px" });
-
-  return (
-    <section ref={ref} className="border-t-2 border-[#FAF0D7]/20 px-6 py-24 md:px-12 lg:px-24">
-      <div className="mx-auto max-w-6xl">
-        {/* Header */}
-        <div className="mb-10">
-          <span className="mb-3 flex items-center gap-2 font-grotesk text-xs font-bold uppercase tracking-[0.25em] text-[#FAF0D7]/50">
-            <Camera className="h-3 w-3" style={{ color: VOLT }} /> IRL Moments
-          </span>
-          <div className="flex flex-wrap items-end justify-between gap-4">
-            <motion.h2
-              initial={{ opacity: 0, y: 30 }}
-              animate={isInView ? { opacity: 1, y: 0 } : {}}
-              transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
-              className="font-display text-4xl uppercase leading-tight md:text-6xl"
-            >
-              IN THE <span style={{ color: VOLT }}>FIELD</span>
-            </motion.h2>
-            <motion.p
-              initial={{ opacity: 0 }}
-              animate={isInView ? { opacity: 1 } : {}}
-              transition={{ delay: 0.35 }}
-              className="max-w-xs font-grotesk text-xs leading-relaxed text-[#FAF0D7]/50"
-            >
-              Events, meetups, tournaments — the gaming world IRL.
-            </motion.p>
-          </div>
-        </div>
-
-        {/* Grid */}
-        <div className="grid grid-cols-2 gap-4 md:grid-cols-4 md:grid-rows-3">
-          {photos.map((p, i) => (
-            <motion.div
-              key={p.slot}
-              initial={{ opacity: 0, y: 40, rotate: p.tilt * 2 }}
-              animate={isInView ? { opacity: 1, y: 0, rotate: p.tilt } : {}}
-              transition={{ duration: 0.6, delay: i * 0.09, type: "spring", stiffness: 130, damping: 18 }}
-              whileHover={{ rotate: 0, y: -6, scale: 1.02, transition: { duration: 0.2 } }}
-              className={`group relative overflow-hidden border-2 border-[#FAF0D7]/20 bg-[#23291E] ${p.span}`}
-              style={{ boxShadow: `4px 4px 0 ${VOLT}40`, minHeight: 180 }}
-            >
-              {/* Placeholder body */}
-              <div className="absolute inset-0 flex flex-col items-center justify-center gap-3 p-4 text-center">
-                {/* Dashed inner border */}
-                <div className="pointer-events-none absolute inset-3 border border-dashed border-[#FAF0D7]/15 rounded-sm" />
-
-                <motion.div
-                  animate={{ scale: [1, 1.12, 1], opacity: [0.4, 0.7, 0.4] }}
-                  transition={{ duration: 2.8, repeat: Infinity, ease: "easeInOut", delay: i * 0.4 }}
-                >
-                  <ImagePlus className="h-7 w-7" style={{ color: VOLT }} />
-                </motion.div>
-
-                <div>
-                  <p className="font-display text-sm uppercase tracking-wide text-[#FAF0D7]/70">
-                    {p.label}
-                  </p>
-                  <p className="mt-0.5 font-grotesk text-[10px] uppercase tracking-widest text-[#FAF0D7]/30">
-                    {p.hint}
-                  </p>
-                </div>
-
-                {/* Slot number */}
-                <span
-                  className="absolute bottom-3 right-4 font-display text-4xl font-bold leading-none"
-                  style={{ color: VOLT + "18", WebkitTextStroke: `1px ${VOLT}25` }}
-                >
-                  {String(p.slot).padStart(2, "0")}
-                </span>
-              </div>
-
-              {/* Hover accent bar */}
-              <motion.div
-                className="absolute bottom-0 left-0 h-0.5 w-full"
-                style={{ background: VOLT }}
-                initial={{ scaleX: 0, originX: 0 }}
-                whileHover={{ scaleX: 1 }}
-                transition={{ duration: 0.3 }}
-              />
-            </motion.div>
-          ))}
-        </div>
-      </div>
-    </section>
-  );
-};
-// ─────────────────────────────────────────────────────────────────────────────
-
 const heroWord = "GAMING";
 
 const GlitchLetter = ({ char, i }: { char: string; i: number }) => (
   <motion.span
-    initial={{ y: 90, rotate: 8, opacity: 0 }}
-    animate={{ y: 0, rotate: 0, opacity: 1 }}
-    transition={{ delay: 0.15 + i * 0.07, type: "spring", stiffness: 220, damping: 16 }}
-    whileHover={{ y: -14, rotate: i % 2 ? 4 : -4, color: VOLT, transition: { duration: 0.15 } }}
-    className="inline-block cursor-default"
+    initial={{ y: 90, rotateX: -90, opacity: 0 }}
+    animate={{ y: 0, rotateX: 0, opacity: 1 }}
+    transition={{ delay: 0.55 + i * 0.07, type: "spring", stiffness: 220, damping: 16 }}
+    whileHover={{ y: -14, rotate: i % 2 ? 4 : -4, color: CREAM, transition: { duration: 0.15 } }}
+    style={{ transformPerspective: 500 }}
+    className="pointer-events-auto inline-block cursor-default"
   >
     {char}
   </motion.span>
@@ -355,48 +123,104 @@ const ArenaCard = ({ item, i }: { item: (typeof arena)[0]; i: number }) => {
   return (
     <motion.div
       ref={ref}
-      initial={{ opacity: 0, y: 60, rotate: i % 2 ? 1.5 : -1.5 }}
-      animate={inView ? { opacity: 1, y: 0, rotate: i % 2 ? 1 : -1 } : {}}
-      whileHover={{ rotate: 0, y: -8 }}
-      transition={{ duration: 0.6, delay: i * 0.12, ease: [0.22, 1, 0.36, 1] }}
-      className="relative overflow-hidden border-2"
-      style={{ borderColor: item.color, boxShadow: `6px 6px 0 ${item.color}`, background: "#23291E" }}
+      initial={{ opacity: 0, y: 70, rotateX: 30 }}
+      animate={inView ? { opacity: 1, y: 0, rotateX: 0 } : {}}
+      transition={{ duration: 0.8, delay: (i % 2) * 0.12, ease: [0.22, 1, 0.36, 1] }}
+      style={{ transformPerspective: 1200 }}
     >
-      <div className="h-2 w-full" style={{ background: item.color }} />
-      <div className="p-6 md:p-8">
-        <div className="mb-6 flex items-center justify-between">
-          <span
-            className="flex h-11 w-11 items-center justify-center rounded-full border-2"
-            style={{ borderColor: item.color, background: `${item.color}20` }}
+      <TiltCard className="cursor-hover rounded-2xl border-2" shadow={item.color} style={{ borderColor: item.color, background: "#23291E" }}>
+        <div className="h-2 w-full rounded-t-[14px]" style={{ background: item.color }} />
+        <div className="p-6 md:p-8" style={{ transform: "translateZ(30px)" }}>
+          <div className="mb-6 flex items-center justify-between">
+            <span
+              className="flex h-12 w-12 items-center justify-center rounded-xl border-2"
+              style={{ borderColor: item.color, background: item.color, transform: "translateZ(30px) rotate(-6deg)" }}
+            >
+              <Icon className="h-5 w-5" style={{ color: INK }} />
+            </span>
+            <span className="font-display text-5xl opacity-20" style={{ color: item.color }}>
+              {item.num}
+            </span>
+          </div>
+          <h3
+            className="mb-1 font-display uppercase leading-none"
+            style={{ color: item.color, fontSize: "clamp(1.5rem, 0.6rem + 1.6vw, 2.5rem)" }}
           >
-            <Icon className="h-5 w-5" style={{ color: item.color }} />
-          </span>
-          <span className="font-display text-4xl opacity-15" style={{ color: item.color }}>
-            {item.num}
-          </span>
+            {item.title}
+          </h3>
+          <p className="mb-4 font-grotesk text-[10px] font-bold uppercase tracking-widest text-[#FAF0D7]/50">{item.sub}</p>
+          <p className="mb-8 text-sm leading-relaxed text-[#FAF0D7]/75">{item.body}</p>
+          <div className="flex items-baseline gap-3 border-t border-[#FAF0D7]/15 pt-4">
+            <span className="font-display text-4xl" style={{ color: item.color }}>
+              {item.stat}
+            </span>
+            <span className="font-grotesk text-xs font-bold uppercase tracking-widest text-[#FAF0D7]/50">{item.statLabel}</span>
+          </div>
         </div>
-        <h3
-          className="mb-1 font-display uppercase leading-none"
-          style={{ color: item.color, fontSize: "clamp(1.3rem, 0.5rem + 1.5vw, 2.25rem)" }}
-        >
-          {item.title}
-        </h3>
-        <p className="mb-4 font-grotesk text-[10px] font-bold uppercase tracking-widest text-[#FAF0D7]/50">
-          {item.sub}
-        </p>
-        <p className="mb-8 text-sm leading-relaxed text-[#FAF0D7]/75">{item.body}</p>
-        <div className="flex items-baseline gap-3 border-t border-[#FAF0D7]/15 pt-4">
-          <span className="font-display text-4xl" style={{ color: item.color }}>
-            {item.stat}
-          </span>
-          <span className="font-grotesk text-xs font-bold uppercase tracking-widest text-[#FAF0D7]/50">
-            {item.statLabel}
-          </span>
-        </div>
-      </div>
+      </TiltCard>
     </motion.div>
   );
 };
+
+const EventsSection = () => (
+  <section className="border-t-2 border-[#FAF0D7]/20 px-6 py-24 md:px-12 lg:px-24">
+    <div className="mx-auto max-w-6xl">
+      <SectionHeading
+        label="Been There"
+        dark
+        aside={
+          <p className="max-w-xs font-grotesk text-xs leading-relaxed text-[#FAF0D7]/50">
+            Events I've attended, brands I've worked with, moments I was part of.
+          </p>
+        }
+      >
+        Brands <span style={{ color: VOLT }}>&amp;</span> Events
+      </SectionHeading>
+
+      <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
+        {events.map((ev, i) => (
+          <motion.div
+            key={ev.name}
+            initial={{ opacity: 0, y: 50, rotate: i % 2 === 0 ? -3 : 3 }}
+            whileInView={{ opacity: 1, y: 0, rotate: i % 2 === 0 ? -1 : 1 }}
+            viewport={{ once: true, margin: "-60px" }}
+            transition={{ duration: 0.6, delay: i * 0.1, type: "spring", stiffness: 130, damping: 18 }}
+          >
+            <TiltCard className="cursor-hover flex flex-col rounded-2xl border-2 border-[#FAF0D7]/25 bg-[#23291E]" shadow={ev.color} max={14}>
+              <div className="relative h-44 overflow-hidden rounded-t-[14px] border-b-2 border-[#FAF0D7]/10">
+                <img src={ev.photo} alt={ev.full} loading="lazy" className="h-full w-full object-cover" />
+                <span
+                  className="absolute right-3 top-3 rounded-full border px-2.5 py-0.5 font-grotesk text-[9px] font-bold uppercase tracking-widest"
+                  style={{ color: ev.color, borderColor: ev.color + "80", background: "#23291E" }}
+                >
+                  {ev.year}
+                </span>
+              </div>
+              <div className="flex flex-1 flex-col p-5" style={{ transform: "translateZ(30px)" }}>
+                <h3 className="mb-1 font-display text-2xl uppercase leading-none tracking-tight" style={{ color: ev.color }}>
+                  {ev.name}
+                </h3>
+                <p className="mb-1 font-grotesk text-[10px] font-bold uppercase tracking-widest text-[#FAF0D7]/45">{ev.full}</p>
+                <p className="mb-4 font-grotesk text-[10px] uppercase tracking-wider text-[#FAF0D7]/35">📍 {ev.location}</p>
+                <div className="mt-auto flex flex-wrap gap-1.5">
+                  {ev.sub.map((s) => (
+                    <span
+                      key={s}
+                      className="rounded-full border px-2 py-0.5 font-grotesk text-[9px] font-bold uppercase tracking-wider text-[#FAF0D7]/70"
+                      style={{ borderColor: ev.color + "50" }}
+                    >
+                      {s}
+                    </span>
+                  ))}
+                </div>
+              </div>
+            </TiltCard>
+          </motion.div>
+        ))}
+      </div>
+    </div>
+  </section>
+);
 
 const GamingPage = () => {
   useLenis();
@@ -409,30 +233,12 @@ const GamingPage = () => {
 
   return (
     <div className="relative min-h-screen bg-[#1F271B] text-[#FAF0D7] cursor-none">
+      <PageWipe colors={[VOLT, PINK]} />
       <GamingCursor />
+      <SideHeader side="gaming" />
 
-      {/* Mini nav */}
-      <header className="fixed inset-x-0 top-0 z-50 flex items-center justify-between border-b-2 border-[#FAF0D7]/20 bg-[#1F271B] px-6 py-4 md:px-12">
-        <Link
-          to="/"
-          className="cursor-hover flex items-center gap-2 rounded-full border-2 border-[#FAF0D7] px-4 py-2 font-grotesk text-xs font-bold uppercase tracking-widest shadow-[4px_4px_0_#C6F24E] transition-transform hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-[2px_2px_0_#C6F24E]"
-        >
-          <ArrowLeft className="h-4 w-4" /> Home
-        </Link>
-        <span className="font-display text-lg uppercase italic" style={{ color: VOLT }}>
-          Sourabh
-        </span>
-        <Link
-          to="/tech"
-          className="cursor-hover flex items-center gap-2 rounded-full border-2 border-[#FAF0D7] bg-[#FAF0D7] px-4 py-2 font-grotesk text-xs font-bold uppercase tracking-widest text-[#1F271B] shadow-[4px_4px_0_#F77F1A] transition-transform hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-[2px_2px_0_#F77F1A]"
-        >
-          <Cpu className="h-4 w-4" /> Switch side
-        </Link>
-      </header>
-
-      {/* Hero */}
-      <section className="relative flex min-h-[75vh] flex-col justify-end overflow-hidden px-6 pb-16 pt-32 md:px-12 lg:px-24">
-        {/* Scanline-ish grid */}
+      {/* Hero — copy left, 3D controller + trophy right */}
+      <section className="relative flex min-h-screen flex-col overflow-hidden px-6 pb-16 pt-32 md:px-12 lg:flex-row lg:items-center lg:px-24">
         <div
           className="pointer-events-none absolute inset-0"
           style={{
@@ -440,49 +246,58 @@ const GamingPage = () => {
             backgroundSize: "70px 70px",
           }}
         />
-        <span
-          className="mb-6 inline-flex w-fit items-center gap-2 rounded-full border-2 px-4 py-1.5 font-grotesk text-[10px] font-bold uppercase tracking-widest"
-          style={{ borderColor: VOLT, color: VOLT, boxShadow: `4px 4px 0 ${VOLT}` }}
-        >
-          <Gamepad2 className="h-3.5 w-3.5" /> 02 / Play, Watch, Analyze
-        </span>
-        <div className="overflow-hidden">
-          <motion.h1
-            initial={{ y: "110%" }}
-            animate={{ y: "0%" }}
-            transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
-            className="font-display text-6xl uppercase leading-[0.95] tracking-tight sm:text-8xl md:text-9xl"
+        <div className="pointer-events-none relative z-10 lg:w-1/2">
+          <span
+            className="mb-6 inline-flex w-fit items-center gap-2 rounded-full border-2 px-4 py-1.5 font-grotesk text-[10px] font-bold uppercase tracking-widest"
+            style={{ borderColor: VOLT, color: VOLT, boxShadow: `4px 4px 0 ${VOLT}` }}
           >
-            THE
-          </motion.h1>
-        </div>
-        <h1
-          className="font-display text-6xl uppercase leading-[0.95] tracking-tight sm:text-8xl md:text-9xl"
-          style={{ color: VOLT }}
-        >
-          {heroWord.split("").map((c, i) => (
-            <GlitchLetter key={i} char={c} i={i} />
-          ))}
-        </h1>
-        <div className="overflow-hidden">
-          <motion.h1
-            initial={{ y: "110%" }}
-            animate={{ y: "0%" }}
-            transition={{ duration: 0.8, delay: 0.5, ease: [0.22, 1, 0.36, 1] }}
-            className="font-display text-6xl uppercase leading-[0.95] tracking-tight sm:text-8xl md:text-9xl"
+            <Gamepad2 className="h-3.5 w-3.5" /> 02 / Play, Watch, Analyze
+          </span>
+          <div className="overflow-hidden">
+            <motion.h1
+              initial={{ y: "110%" }}
+              animate={{ y: "0%" }}
+              transition={{ duration: 0.8, delay: 0.45, ease: [0.22, 1, 0.36, 1] }}
+              className="font-display text-6xl uppercase leading-[0.95] tracking-tight sm:text-8xl md:text-9xl"
+            >
+              THE
+            </motion.h1>
+          </div>
+          <h1 className="font-display text-6xl uppercase leading-[0.95] tracking-tight sm:text-8xl md:text-9xl" style={{ color: VOLT }}>
+            {heroWord.split("").map((c, i) => (
+              <GlitchLetter key={i} char={c} i={i} />
+            ))}
+          </h1>
+          <div className="overflow-hidden">
+            <motion.h1
+              initial={{ y: "110%" }}
+              animate={{ y: "0%" }}
+              transition={{ duration: 0.8, delay: 0.9, ease: [0.22, 1, 0.36, 1] }}
+              className="font-display text-6xl uppercase leading-[0.95] tracking-tight sm:text-8xl md:text-9xl"
+            >
+              SIDE<span style={{ color: PINK }}>.</span>
+            </motion.h1>
+          </div>
+          <motion.p
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 1.1 }}
+            className="mt-6 max-w-md text-sm leading-relaxed text-[#FAF0D7]/70 md:text-base"
           >
-            SIDE<span style={{ color: PINK }}>.</span>
-          </motion.h1>
+            The other half of my brain. Esports communities since 2020, and content with Viral Gamer since 2022 —
+            working with brands like Red Bull India, Nodwin Gaming and Krafton.
+          </motion.p>
         </div>
-        <motion.p
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.8 }}
-          className="mt-6 max-w-md text-sm leading-relaxed text-[#FAF0D7]/70 md:text-base"
-        >
-          The other half of my brain — motorsport, gaming culture and esports, treated with the
-          same curiosity I bring to data.
-        </motion.p>
+
+        <div className="relative mt-10 h-[380px] w-full lg:absolute lg:inset-y-0 lg:right-0 lg:mt-0 lg:h-auto lg:w-[52%]">
+          <SceneSlot className="h-full w-full">{(active) => <GamingScene active={active} />}</SceneSlot>
+          <span
+            className="pointer-events-none absolute bottom-4 right-4 flex items-center gap-1.5 rounded-full border-2 px-3 py-1 font-grotesk text-[10px] font-bold uppercase tracking-widest lg:bottom-10 lg:right-10"
+            style={{ borderColor: VOLT, color: VOLT }}
+          >
+            <MousePointerClick className="h-3.5 w-3.5" /> Press start — click anything
+          </span>
+        </div>
       </section>
 
       {/* Volt marquee */}
@@ -503,14 +318,10 @@ const GamingPage = () => {
       {/* Arena grid */}
       <section className="px-6 py-24 md:px-12 lg:px-24">
         <div className="mx-auto max-w-6xl">
-          <span className="mb-3 flex items-center gap-2 font-grotesk text-xs font-bold uppercase tracking-[0.25em] text-[#FAF0D7]/50">
-            <span className="inline-block h-2 w-2 rotate-45" style={{ background: VOLT }} />
-            The Arena
-          </span>
-          <h2 className="mb-12 font-display text-4xl uppercase leading-tight md:text-6xl">
-            WHAT I'M <span style={{ color: VOLT }}>INTO</span>
-          </h2>
-          <div className="grid gap-6 md:grid-cols-2">
+          <SectionHeading label="The Arena" dark>
+            What I'm <span style={{ color: VOLT }}>Into</span>
+          </SectionHeading>
+          <div className="grid gap-8 md:grid-cols-2">
             {arena.map((item, i) => (
               <ArenaCard key={item.num} item={item} i={i} />
             ))}
@@ -518,11 +329,8 @@ const GamingPage = () => {
         </div>
       </section>
 
-      {/* Brands & Events */}
+      <OnTheRoadSection />
       <EventsSection />
-
-      {/* IRL Gallery */}
-      <GallerySection />
 
       {/* Coming soon */}
       <section ref={comingRef} className="border-t-2 border-[#FAF0D7]/20 px-6 py-24 text-center md:px-12">
@@ -537,10 +345,7 @@ const GamingPage = () => {
           >
             <Plus className="h-3.5 w-3.5" /> Patch notes incoming
           </span>
-          <h2
-            className="font-display text-5xl uppercase leading-none md:text-8xl"
-            style={{ WebkitTextStroke: `2px ${VOLT}`, color: "transparent" }}
-          >
+          <h2 className="font-display text-5xl uppercase leading-none md:text-8xl" style={{ WebkitTextStroke: `2px ${VOLT}`, color: "transparent" }}>
             MORE LOADING
             <motion.span
               animate={{ opacity: [1, 0, 1] }}
@@ -556,13 +361,8 @@ const GamingPage = () => {
         </motion.div>
       </section>
 
-      {/* Footer strip */}
-      <footer className="flex items-center justify-between border-t-2 border-[#FAF0D7]/20 px-6 py-6 font-grotesk text-[10px] font-bold uppercase tracking-widest text-[#FAF0D7]/50 md:px-12">
-        <span>© {new Date().getFullYear()} Sourabh</span>
-        <Link to="/" className="cursor-hover transition-colors hover:text-[#C6F24E]">
-          ← Back to home
-        </Link>
-      </footer>
+      <ContactSection />
+      <Footer />
     </div>
   );
 };

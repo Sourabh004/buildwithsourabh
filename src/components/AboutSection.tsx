@@ -1,35 +1,64 @@
 import { motion, useInView, useScroll, useTransform } from "framer-motion";
 import { useRef } from "react";
-import { GraduationCap, Briefcase, Bot, Gamepad2 } from "lucide-react";
+import { GraduationCap, Bot, Gamepad2, Users, Video, Music, BarChart3 } from "lucide-react";
+import { TiltCard } from "./brutal";
 
 const timeline = [
   {
-    icon: Gamepad2,
-    title: "Community & Culture",
-    description: "Passionate about sports, esports, and gaming culture — building communities at the intersection of tech and entertainment.",
-    color: "#CA5449",
-    tag: "Community",
+    icon: GraduationCap,
+    title: "BCA, Bengaluru City University",
+    description: "Bachelor of Computer Applications with a coding focus, 2019–2022.",
+    color: "#FCAD50",
+    tag: "2019",
   },
   {
-    icon: Briefcase,
-    title: "Early-Stage Web3 Startup",
-    description: "Joined a Web3 startup where I gained hands-on experience in the fast-paced world of decentralized tech.",
+    icon: Gamepad2,
+    title: "Esports Community Manager",
+    description: "Self-employed, Dec 2020 – May 2022. Ran esports communities — moderation, events and the people side of play.",
+    color: "#CA5449",
+    tag: "2020",
+  },
+  {
+    icon: Users,
+    title: "One World Nation (OWN)",
+    description: "Community manager from Jan 2022, then QA manager from Nov 2022 until Sep 2023.",
     color: "#019EA5",
-    tag: "First Gig",
+    tag: "2022",
+  },
+  {
+    icon: Video,
+    title: "Viral Gamer — Content",
+    description: "Freelance since May 2022. Content for the esports audience with brands like Red Bull India, Nodwin Gaming and Krafton.",
+    color: "#9B5DE5",
+    tag: "2022 →",
+  },
+  {
+    icon: Music,
+    title: "One Mind Music",
+    description: "Freelance, 2023–24. Ran the invite-only fan community (~1k core fans) for artist Arjun Kanungo — online meet-and-greets and event access.",
+    color: "#FF7A9C",
+    tag: "2023",
+  },
+  {
+    icon: BarChart3,
+    title: "STAN · CropBytes",
+    description: "Business analytics intern at STAN (push engagement 0.5% → ~4–5%, ad revenue ~2x). Community manager at CropBytes for ~15k Discord and ~20k Telegram members.",
+    color: "#F77F1A",
+    tag: "2024",
   },
   {
     icon: GraduationCap,
-    title: "MCA Graduate",
-    description: "Built a strong foundation in computer applications with a growing passion for data analytics and AI.",
-    color: "#FCAD50",
-    tag: "Education",
+    title: "MCA, Jain University",
+    description: "Master of Computer Applications, 2023–2024.",
+    color: "#C6F24E",
+    tag: "2024",
   },
   {
     icon: Bot,
-    title: "AI Workflow Builder",
-    description: "Started building powerful AI automations using n8n — from sales follow-ups to content pipelines.",
+    title: "The Experience Co.",
+    description: "Junior Tech & Automation Manager since Apr 2025. I design and ship internal AI and automation tools — n8n with Claude/GPT, Airtable, Postgres and MCP — plus sprint planning and release tracking.",
     color: "#758C32",
-    tag: "Automation",
+    tag: "Now",
   },
 ];
 
@@ -48,20 +77,17 @@ const TimelineItem = ({ item, i }: { item: (typeof timeline)[0]; i: number }) =>
       className={`relative flex flex-col md:flex-row ${isLeft ? "md:flex-row" : "md:flex-row-reverse"} items-start gap-8`}
     >
       <div className="flex-1">
-        <motion.div
-          whileHover={{ rotate: 0, scale: 1.02, y: -4 }}
-          transition={{ type: "spring", stiffness: 300, damping: 18 }}
-          className="glass-card cursor-hover group relative overflow-visible p-0"
-        >
-          {/* Giant step number hanging off the corner */}
+        <TiltCard className="glass-card cursor-hover group overflow-visible p-0" max={10}>
+          {/* Giant step number hanging off the corner — floats above the card */}
           <span
-            className={`pointer-events-none absolute -top-6 font-display text-5xl md:text-6xl select-none ${
+            className={`pointer-events-none absolute -top-6 z-10 font-display text-5xl md:text-6xl select-none ${
               isLeft ? "-right-3 md:-right-5" : "-left-3 md:-left-5"
             }`}
             style={{
               color: item.color,
               WebkitTextStroke: "2px hsl(var(--foreground))",
               textShadow: "4px 4px 0 hsl(var(--foreground) / 0.15)",
+              transform: "translateZ(60px)",
             }}
           >
             {String(i + 1).padStart(2, "0")}
@@ -88,8 +114,10 @@ const TimelineItem = ({ item, i }: { item: (typeof timeline)[0]; i: number }) =>
             </span>
           </div>
 
-          <p className="p-5 text-sm leading-relaxed text-muted-foreground">{item.description}</p>
-        </motion.div>
+          <p className="p-5 text-sm leading-relaxed text-muted-foreground" style={{ transform: "translateZ(20px)" }}>
+            {item.description}
+          </p>
+        </TiltCard>
       </div>
 
       {/* Center node — rotated square with border */}
@@ -116,7 +144,7 @@ const AboutSection = () => {
   const lineHeight = useTransform(scrollYProgress, [0, 1], ["0%", "100%"]);
 
   return (
-    <section id="about" className="section-padding relative" ref={ref}>
+    <section id="about" className="section-padding relative overflow-x-clip" ref={ref}>
       {/* Decorative spinning asterisk */}
       <span className="pointer-events-none absolute left-[6%] top-32 hidden animate-spin-slow font-display text-6xl text-primary/70 lg:block">
         ✱

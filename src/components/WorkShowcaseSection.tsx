@@ -26,14 +26,14 @@ const works = [
   {
     image: work2,
     title: "AI Workflow Automation",
-    description: "Designed end-to-end AI sales follow-up automation using n8n, integrating CRM, email, and lead qualification systems.",
-    tags: ["n8n", "OpenAI", "Automation"],
+    description: "Internal AI tools at The Experience Co. — call analysis, hotel vouchers, invoice filing and trip recommendations, all on n8n.",
+    tags: ["n8n", "Claude", "MCP"],
     accent: TEAL,
   },
   {
     image: work3,
     title: "Push Notification Optimization",
-    description: "Achieved 10× engagement increase by analysing notification patterns and optimising delivery timing with data-driven strategies.",
+    description: "At STAN, BigQuery analysis of user trends lifted push notification engagement from 0.5% to ~4–5%.",
     tags: ["Analytics", "A/B Testing", "Growth"],
     accent: VOLT,
   },
@@ -134,16 +134,17 @@ const WorkShowcaseSection = () => {
             <div className="grid md:grid-cols-2">
 
               {/* Image */}
-              <div className="relative aspect-[4/3] overflow-hidden md:aspect-auto">
+              <div className="relative aspect-[4/3] overflow-hidden bg-foreground md:aspect-auto">
                 <AnimatePresence mode="wait">
                   <motion.img
                     key={current}
                     src={w.image}
                     alt={w.title}
-                    initial={{ opacity: 0, scale: 1.06, x: 20 }}
-                    animate={{ opacity: 1, scale: 1, x: 0 }}
-                    exit={{ opacity: 0, scale: 0.97, x: -20 }}
-                    transition={{ duration: 0.45, ease: [0.22, 1, 0.36, 1] }}
+                    initial={{ opacity: 0, rotateY: -40, x: 60, scale: 0.9 }}
+                    animate={{ opacity: 1, rotateY: 0, x: 0, scale: 1 }}
+                    exit={{ opacity: 0, rotateY: 40, x: -60, scale: 0.9 }}
+                    transition={{ duration: 0.55, ease: [0.22, 1, 0.36, 1] }}
+                    style={{ transformPerspective: 900 }}
                     className="h-full w-full object-cover"
                   />
                 </AnimatePresence>

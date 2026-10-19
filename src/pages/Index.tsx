@@ -4,6 +4,8 @@ import VelocityMarquee from "@/components/VelocityMarquee";
 import StatementSection from "@/components/StatementSection";
 import SideQuestsSection from "@/components/SideQuestsSection";
 import SplitPortal from "@/components/SplitPortal";
+import PlayerCardSection from "@/components/PlayerCardSection";
+import { PageWipe } from "@/components/brutal";
 import Navbar from "@/components/Navbar";
 import HeroSection from "@/components/HeroSection";
 import AboutSection from "@/components/AboutSection";
@@ -16,12 +18,14 @@ const Index = () => {
 
   return (
     <div className="relative min-h-screen bg-background">
+      <PageWipe />
       <CustomCursor />
       <Navbar />
       <HeroSection />
       <VelocityMarquee text="DATA ✱ AI ✱ AUTOMATION ✱ GAMING ✱" outline />
       <SplitPortal />
       <StatementSection />
+      <PlayerCardSection />
       <SideQuestsSection />
       <AboutSection />
       <VelocityMarquee text="TECH ✱ GAMING ✱ COMMUNITY ✱ CULTURE ✱" baseVelocity={-2} />

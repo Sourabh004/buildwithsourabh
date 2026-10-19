@@ -1,5 +1,5 @@
 import { useRef, useState } from "react";
-import { motion, useInView, AnimatePresence } from "framer-motion";
+import { motion, useInView, AnimatePresence, useMotionValue, useSpring, useTransform } from "framer-motion";
 import { Link } from "react-router-dom";
 import { ArrowUpRight, Cpu, Gamepad2 } from "lucide-react";
 
@@ -104,6 +104,18 @@ const Panel = ({
   const Icon = side.icon;
   const textColor = active ? side.inkActive : side.ink;
 
+  // Content block tilts toward the pointer while the panel is hovered
+  const px = useMotionValue(0.5);
+  const py = useMotionValue(0.5);
+  const tiltSpring = { stiffness: 150, damping: 16 };
+  const tiltX = useSpring(useTransform(py, [0, 1], [10, -10]), tiltSpring);
+  const tiltY = useSpring(useTransform(px, [0, 1], [-14, 14]), tiltSpring);
+  const onTilt = (e: React.PointerEvent<HTMLDivElement>) => {
+    const r = e.currentTarget.getBoundingClientRect();
+    px.set((e.clientX - r.left) / r.width);
+    py.set((e.clientY - r.top) / r.height);
+  };
+
   return (
     <motion.div
       initial={{ x: index === 0 ? "-100%" : "100%" }}
@@ -116,7 +128,12 @@ const Panel = ({
         animate={{ flexGrow: 1 }}
         className="h-full w-full"
         onMouseEnter={() => setHovered(side.id)}
-        onMouseLeave={() => setHovered(null)}
+        onMouseLeave={() => {
+          setHovered(null);
+          px.set(0.5);
+          py.set(0.5);
+        }}
+        onPointerMove={onTilt}
       >
         <Link to={side.to} className="cursor-hover block h-full w-full">
           {/* Color flood rising from the bottom */}
@@ -141,7 +158,7 @@ const Panel = ({
             animate={{ scale: dimmed ? 0.92 : 1, opacity: dimmed ? 0.55 : 1 }}
             transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
             className="relative flex h-full flex-col items-center justify-center gap-5 px-12 py-16 text-center transition-colors duration-300 md:gap-7"
-            style={{ color: textColor }}
+            style={{ color: textColor, rotateX: tiltX, rotateY: tiltY, transformPerspective: 900 }}
           >
             {/* Tag */}
             <span

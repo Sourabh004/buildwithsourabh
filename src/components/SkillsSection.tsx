@@ -1,6 +1,7 @@
 import { motion, useInView } from "framer-motion";
 import { useRef } from "react";
 import { Database, Bot, BarChart3, Users } from "lucide-react";
+import { TiltCard } from "./brutal";
 
 const categories = [
   {
@@ -8,28 +9,28 @@ const categories = [
     title: "Analytics",
     color: "#FCAD50",
     tag: "Crunch",
-    skills: ["SQL", "Excel", "Power BI", "Data Visualization", "Statistical Analysis"],
+    skills: ["SQL", "BigQuery", "Looker Studio", "Power BI", "Data Visualization", "Strategic Insights"],
   },
   {
     icon: Bot,
     title: "Automation & AI",
     color: "#019EA5",
     tag: "Robots",
-    skills: ["n8n Workflow Automation", "AI Agents", "API Integrations", "Workflow Design", "AI Tooling"],
+    skills: ["n8n", "Make.com", "LLMs", "RAG", "Prompt Engineering", "MCP"],
   },
   {
     icon: Database,
-    title: "Data Tools",
+    title: "Product & Build",
     color: "#9B5DE5",
-    tag: "Stack",
-    skills: ["BigQuery", "Looker Studio", "Data Dashboards", "Growth Analytics"],
+    tag: "Ship",
+    skills: ["Product Management", "Sprint Planning", "Prioritisation", "Release Tracking", "Airtable", "Postgres"],
   },
   {
     icon: Users,
     title: "Community & Media",
     color: "#758C32",
     tag: "People",
-    skills: ["Community Management", "Web3 Ecosystem", "Sports & Esports Strategy", "Social Media Growth"],
+    skills: ["Community Building", "Moderation", "Esports Content", "Video Editing", "Team Leadership"],
   },
 ];
 
@@ -47,16 +48,16 @@ const SkillCard = ({ cat, i }: { cat: (typeof categories)[0]; i: number }) => {
       initial={{ opacity: 0, y: 60, rotate: i % 2 === 0 ? -5 : 5 }}
       animate={isInView ? { opacity: 1, y: 0, rotate: tilt } : {}}
       transition={{ duration: 0.7, delay: i * 0.08, type: "spring", stiffness: 90, damping: 14 }}
-      whileHover={{ rotate: 0, y: -6, scale: 1.01 }}
-      className="glass-card cursor-hover group relative overflow-visible p-0"
     >
-      {/* Corner number sticker */}
+      <TiltCard className="glass-card cursor-hover group overflow-visible p-0" max={10}>
+      {/* Corner number sticker — floats above the card */}
       <span
         className="pointer-events-none absolute -top-5 -right-3 z-10 font-display text-4xl md:text-5xl select-none"
         style={{
           color: cat.color,
           WebkitTextStroke: "2px hsl(var(--foreground))",
           textShadow: "3px 3px 0 hsl(var(--foreground) / 0.15)",
+          transform: "translateZ(60px)",
         }}
       >
         {String(i + 1).padStart(2, "0")}
@@ -85,7 +86,7 @@ const SkillCard = ({ cat, i }: { cat: (typeof categories)[0]; i: number }) => {
       </div>
 
       {/* Sticker pills */}
-      <div className="flex flex-wrap gap-2.5 p-5 pb-6">
+      <div className="flex flex-wrap gap-2.5 p-5 pb-6" style={{ transform: "translateZ(30px)" }}>
         {cat.skills.map((skill, si) => (
           <motion.span
             key={skill}
@@ -105,6 +106,7 @@ const SkillCard = ({ cat, i }: { cat: (typeof categories)[0]; i: number }) => {
           </motion.span>
         ))}
       </div>
+      </TiltCard>
     </motion.div>
   );
 };

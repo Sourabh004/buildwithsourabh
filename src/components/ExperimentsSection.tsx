@@ -1,10 +1,12 @@
 import { motion, useInView } from "framer-motion";
 import { useRef } from "react";
 import { FlaskConical, Bot, Wrench, BarChart3, Zap, LineChart } from "lucide-react";
+import { SectionHeading, TiltCard } from "./brutal";
 
 const ORANGE = "#F77F1A";
-const TEAL   = "#019EA5";
+const TEAL = "#019EA5";
 const PURPLE = "#9B5DE5";
+const VOLT = "#C6F24E";
 
 const experiments = [
   {
@@ -35,7 +37,7 @@ const experiments = [
     icon: Zap,
     label: "LLM-Powered Internal Tools",
     desc: "Custom AI tools built for teams — designed around how people actually work, not how tools want them to.",
-    color: TEAL,
+    color: VOLT,
     rotate: 2,
     status: "Exploring",
   },
@@ -43,17 +45,17 @@ const experiments = [
     icon: LineChart,
     label: "Dashboard & Data Storytelling",
     desc: "Dashboards that make numbers feel human and turn metrics into momentum.",
-    color: PURPLE,
+    color: ORANGE,
     rotate: -1.5,
     status: "Ongoing",
   },
 ];
 
 const STATUS_COLOR: Record<string, string> = {
-  Active:    "#C6F24E",
-  Building:  ORANGE,
+  Active: VOLT,
+  Building: ORANGE,
   Exploring: TEAL,
-  Ongoing:   PURPLE,
+  Ongoing: PURPLE,
 };
 
 const ExperimentsSection = () => {
@@ -62,120 +64,68 @@ const ExperimentsSection = () => {
 
   return (
     <section className="section-padding" ref={ref}>
-      <div className="mx-auto max-w-5xl">
-
-        {/* Header */}
-        <div className="mb-12 flex flex-wrap items-end justify-between gap-6">
-          <div>
-            <motion.span
-              initial={{ opacity: 0 }}
-              animate={isInView ? { opacity: 1 } : {}}
-              className="section-label"
+      <div className="mx-auto max-w-6xl">
+        <SectionHeading
+          label="Currently Exploring"
+          aside={
+            <motion.div
+              initial={{ rotate: -12 }}
+              animate={{ rotate: [0, -8, 8, 0] }}
+              transition={{ duration: 4, repeat: Infinity }}
+              className="flex h-16 w-16 items-center justify-center rounded-full border-2 border-foreground bg-primary shadow-[4px_4px_0_hsl(var(--foreground))]"
             >
-              <span className="inline-block h-2 w-2 rotate-45 bg-primary" />
-              Currently Exploring
-            </motion.span>
-            <div className="overflow-hidden">
-              <motion.h2
-                initial={{ y: "100%" }}
-                animate={isInView ? { y: "0%" } : {}}
-                transition={{ duration: 0.8, delay: 0.1, ease: [0.22, 1, 0.36, 1] }}
-                className="font-display text-4xl uppercase leading-tight md:text-6xl"
-              >
-                WHAT I'M <span className="text-primary">BUILDING</span>
-              </motion.h2>
-            </div>
-          </div>
+              <FlaskConical className="h-7 w-7" />
+            </motion.div>
+          }
+        >
+          What I'm <span className="text-primary">Building</span>
+        </SectionHeading>
 
-          <motion.div
-            initial={{ opacity: 0, rotate: -12, scale: 0.8 }}
-            animate={isInView ? { opacity: 1, rotate: 0, scale: 1 } : {}}
-            transition={{ delay: 0.5, type: "spring", stiffness: 200 }}
-            className="flex h-16 w-16 items-center justify-center rounded-full border-2 border-foreground bg-primary"
-            style={{ boxShadow: "4px 4px 0 hsl(var(--foreground))" }}
-          >
-            <FlaskConical className="h-7 w-7 text-white" />
-          </motion.div>
-        </div>
-
-        {/* Card grid */}
-        <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+        <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
           {experiments.map((exp, i) => {
             const Icon = exp.icon;
             const statusColor = STATUS_COLOR[exp.status] ?? ORANGE;
-            // Last card spans 2 cols on lg if odd count
             const isLast = i === experiments.length - 1 && experiments.length % 3 !== 0;
 
             return (
               <motion.div
-                key={i}
-                initial={{ opacity: 0, y: 40, rotate: exp.rotate * 1.5 }}
+                key={exp.label}
+                initial={{ opacity: 0, y: 50, rotate: exp.rotate * 2 }}
                 animate={isInView ? { opacity: 1, y: 0, rotate: exp.rotate } : {}}
                 transition={{ duration: 0.6, delay: i * 0.1, type: "spring", stiffness: 140, damping: 18 }}
-                whileHover={{ y: -6, rotate: 0, transition: { duration: 0.2 } }}
-                className={`group relative flex flex-col border-2 border-foreground bg-card overflow-hidden cursor-default${isLast ? " lg:col-span-2" : ""}`}
-                style={{ boxShadow: `5px 5px 0 hsl(var(--foreground))` }}
+                className={isLast ? "lg:col-span-2" : ""}
               >
-                {/* Accent bar */}
-                <div className="h-1.5 w-full" style={{ background: exp.color }} />
-
-                <div className="flex flex-1 flex-col p-5">
-                  {/* Icon + status row */}
-                  <div className="mb-4 flex items-start justify-between">
-                    <span
-                      className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full border-2 border-foreground"
-                      style={{ background: exp.color + "25" }}
-                    >
-                      <Icon className="h-4 w-4" style={{ color: exp.color }} />
-                    </span>
-                    <span
-                      className="rounded-full border-2 border-foreground px-2.5 py-0.5 font-grotesk text-[9px] font-bold uppercase tracking-widest"
-                      style={{ background: statusColor + "20", color: statusColor, borderColor: statusColor }}
-                    >
-                      ● {exp.status}
-                    </span>
+                <TiltCard className="cursor-hover flex flex-col rounded-2xl border-2 border-foreground bg-card" max={10}>
+                  <div className="h-2 w-full rounded-t-[14px] border-b-2 border-foreground" style={{ background: exp.color }} />
+                  <div className="flex flex-1 flex-col p-6" style={{ transform: "translateZ(30px)" }}>
+                    <div className="mb-5 flex items-start justify-between">
+                      <span
+                        className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl border-2 border-foreground shadow-[3px_3px_0_hsl(var(--foreground))]"
+                        style={{ background: exp.color, transform: "translateZ(25px) rotate(-4deg)" }}
+                      >
+                        <Icon className="h-5 w-5" />
+                      </span>
+                      <span className="flex items-center gap-1.5 rounded-full border-2 border-foreground bg-background px-2.5 py-0.5 font-grotesk text-[9px] font-bold uppercase tracking-widest">
+                        <span className="h-2 w-2 rounded-full border border-foreground" style={{ background: statusColor }} />
+                        {exp.status}
+                      </span>
+                    </div>
+                    <h3 className="mb-2 font-display text-lg uppercase leading-tight tracking-tight">{exp.label}</h3>
+                    <p className="text-sm leading-relaxed text-muted-foreground">{exp.desc}</p>
                   </div>
-
-                  {/* Title */}
-                  <h3
-                    className="mb-2 font-display text-base uppercase leading-tight tracking-tight md:text-lg"
-                    style={{ color: "hsl(var(--foreground))" }}
-                  >
-                    {exp.label}
-                  </h3>
-
-                  {/* Description */}
-                  <p className="text-xs leading-relaxed text-muted-foreground">
-                    {exp.desc}
-                  </p>
-                </div>
-
-                {/* Hover color wash */}
-                <motion.div
-                  className="pointer-events-none absolute inset-0"
-                  initial={{ opacity: 0 }}
-                  whileHover={{ opacity: 1 }}
-                  transition={{ duration: 0.25 }}
-                  style={{ background: exp.color + "0A" }}
-                />
+                </TiltCard>
               </motion.div>
             );
           })}
         </div>
 
-        {/* Bottom rule */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={isInView ? { opacity: 1, y: 0 } : {}}
-          transition={{ delay: 0.9 }}
-          className="mt-14 flex items-center justify-center gap-3"
-        >
+        <div className="mt-14 flex items-center justify-center gap-3">
           <div className="h-px flex-1 bg-foreground/20" />
           <span className="font-grotesk text-xs font-bold uppercase tracking-widest text-muted-foreground">
             ...and still exploring ✱
           </span>
           <div className="h-px flex-1 bg-foreground/20" />
-        </motion.div>
+        </div>
       </div>
     </section>
   );

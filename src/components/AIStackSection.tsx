@@ -24,18 +24,18 @@ type Tool = {
 };
 
 const tools: Tool[] = [
-  { name: "n8n", description: "Workflow automation and AI integrations", category: "AI & Automation", icon: Workflow },
-  { name: "OpenAI APIs", description: "Building AI-powered systems", category: "AI & Automation", icon: Brain },
-  { name: "Airtable", description: "Database workflows and automation", category: "AI & Automation", icon: Database },
-  { name: "API Integrations", description: "Connecting different tools seamlessly", category: "AI & Automation", icon: Plug },
-  { name: "SQL", description: "Querying and managing relational databases", category: "Data & Analytics", icon: TableProperties },
-  { name: "Excel", description: "Advanced data analysis and modeling", category: "Data & Analytics", icon: FileSpreadsheet },
+  { name: "n8n", description: "Where most of my workflows and AI agents run", category: "AI & Automation", icon: Workflow },
+  { name: "Claude & GPT", description: "LLMs behind the agents — scoring, extraction, ranking", category: "AI & Automation", icon: Brain },
+  { name: "MCP", description: "Model Context Protocol — giving agents tools and data", category: "AI & Automation", icon: Plug },
+  { name: "Make.com", description: "Visual automation for quick integrations", category: "AI & Automation", icon: Workflow },
+  { name: "Airtable", description: "Ops databases the workflows read and write", category: "Data & Analytics", icon: Database },
+  { name: "Postgres", description: "Production data for internal tools", category: "Data & Analytics", icon: TableProperties },
+  { name: "BigQuery", description: "Large-dataset analysis with SQL", category: "Data & Analytics", icon: Search },
+  { name: "Looker Studio", description: "Daily activity and metric dashboards", category: "Data & Analytics", icon: LayoutDashboard },
   { name: "Power BI", description: "Interactive dashboards and reporting", category: "Data & Analytics", icon: BarChart3 },
-  { name: "BigQuery", description: "Cloud-scale data warehousing", category: "Data & Analytics", icon: Search },
-  { name: "Looker Studio", description: "Visual data exploration and dashboards", category: "Data & Analytics", icon: LayoutDashboard },
-  { name: "Discord", description: "Community management and automation", category: "Community & Platforms", icon: MessageCircle },
-  { name: "Social Analytics", description: "Social media performance tracking", category: "Community & Platforms", icon: TrendingUp },
-  { name: "Growth Platforms", description: "User growth and engagement analytics", category: "Community & Platforms", icon: Users },
+  { name: "Excel", description: "Quick analysis and modelling", category: "Data & Analytics", icon: FileSpreadsheet },
+  { name: "Discord & Telegram", description: "Running and moderating communities", category: "Community & Platforms", icon: MessageCircle },
+  { name: "Slack", description: "Where the automations report back to teams", category: "Community & Platforms", icon: Users },
 ];
 
 const categoryColor: Record<string, string> = {

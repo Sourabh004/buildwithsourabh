@@ -6,42 +6,42 @@ const workflows = [
   {
     num: "01",
     icon: MessageSquare,
-    title: "AI SALES FOLLOW-UP AUTOMATION",
-    tagline: "Close more deals, automatically.",
+    title: "REAL-TIME AI CALL ANALYST",
+    tagline: "Every call, scored.",
     description:
-      "Analyzes every sales call transcript with AI, then fires personalized follow-up messages to each prospect—timing, tone, and content all tuned to the conversation.",
-    steps: ["Record sales call", "AI extracts key signals", "Personalized email drafted", "Auto-sent at optimal time"],
+      "Transcribes calls with Whisper and routes them to five specialised AI agents. Structured scores land in Airtable and a summary posts to Slack, so teams can see friction and drop-off per call.",
+    steps: ["Call recorded", "Whisper transcribes", "Five AI agents score", "Airtable + Slack summary"],
     color: "#F77F1A",
   },
   {
     num: "02",
-    icon: Users,
-    title: "AUTOMATED LEAD QUALIFICATION",
-    tagline: "Let AI filter the noise.",
+    icon: FileText,
+    title: "HOTEL VOUCHER GENERATOR",
+    tagline: "Booked → voucher, no manual PDFs.",
     description:
-      "Incoming leads are scored by AI the moment they land, then auto-routed to the right rep or pipeline stage. No more manual triage.",
-    steps: ["Lead submits form", "AI scores & classifies", "Routed to right team", "CRM updated instantly"],
+      "On booking, picks the right brand template, exports a PDF voucher and emails it to the traveller. Slack alerts the team when a hotel confirmation is missing.",
+    steps: ["Booking confirmed", "Brand template picked", "PDF emailed to traveller", "Slack alert if unconfirmed"],
     color: "#019EA5",
   },
   {
     num: "03",
-    icon: FileText,
-    title: "AI CONTENT GENERATION PIPELINE",
-    tagline: "Publish without the grind.",
+    icon: Zap,
+    title: "INVOICE FETCH & UPLOAD",
+    tagline: "Invoices file themselves.",
     description:
-      "A fully automated pipeline that takes a topic brief, generates platform-native content via AI, schedules it, and tracks performance.",
-    steps: ["Brief entered", "AI writes + formats", "Scheduled across platforms", "Analytics loop back"],
+      "Reads invoice emails, files the PDFs, extracts vendor, date and amount with an LLM, and appends each one to a reconciliation sheet.",
+    steps: ["Invoice email arrives", "PDF filed", "LLM extracts fields", "Reconciliation sheet updated"],
     color: "#9B5DE5",
   },
   {
     num: "04",
-    icon: Zap,
-    title: "CRM WORKFLOW AUTOMATION",
-    tagline: "Your CRM, finally alive.",
+    icon: Users,
+    title: "FIND MY TRIP",
+    tagline: "The right trip, ranked.",
     description:
-      "Syncs data between your CRM and every other tool in real-time. No duplicate entries, no stale contacts—just clean, accurate pipelines.",
-    steps: ["Trigger event fires", "Data mapped & cleaned", "CRM record updated", "Team notified"],
-    color: "#8B5CF6",
+      "A recommendation API: an LLM agent ranks travel options against a traveller's preferences and returns the top matches as JSON.",
+    steps: ["Preferences in", "LLM agent ranks options", "Top matches picked", "JSON response"],
+    color: "#C6F24E",
   },
 ];
 
@@ -194,7 +194,8 @@ const AIWorkflowSection = () => {
               transition={{ delay: 0.45 }}
               className="max-w-sm text-sm leading-relaxed text-muted-foreground"
             >
-              Click any workflow below to see exactly how it runs — step by step.
+              Built at The Experience Co. on n8n with Claude/GPT, Airtable, Postgres and MCP. Click one to see how it
+              runs, step by step.
             </motion.p>
           </div>
         </div>
